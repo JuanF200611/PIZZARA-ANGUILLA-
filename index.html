@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<title>Anguilla Lottery | Sistema Multipantalla Premium</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --anguilla-orange: #ff7900;
+        --anguilla-blue: #0000a5;
+        --anguilla-blue-dark: #000066;
+        --anguilla-yellow: #ffcc00;
+        --white: #ffffff;
+        --gray-text: #475569;
+        --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+        --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+        background: #000;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    #canvas-master {
+        width: 1920px;
+        height: 1080px;
+        background: radial-gradient(circle at 50% 50%, #ff881a 0%, #cc5200 100%);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        transform-origin: center center;
+        overflow: hidden;
+    }
+
+    /* --- TOPBAR REFINADA --- */
+    .topbar {
+        width: 100%; height: 151px;
+        background: linear-gradient(135deg, var(--anguilla-blue) 0%, var(--anguilla-blue-dark) 100%);
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0 50px; border-bottom: 5px solid var(--anguilla-yellow);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+        position: relative; z-index: 10;
+    }
+    .logo-main-area img { height: 210px; object-fit: contain; padding-top: 2%; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.25)); }
+    
+    .header-info { display: flex; align-items: center; gap: 40px; }
+    .header-clock { 
+        font-size: 61px; font-weight: 900; color: var(--white); line-height: 1; 
+        border-right: 4px solid rgba(255, 204, 0, 0.4); padding-right: 40px; 
+        font-variant-numeric: tabular-nums; text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .date-header { text-align: right; }
+    .main-date { font-size: 38px; font-weight: 900; color: var(--anguilla-yellow); text-transform: uppercase; line-height: 1; text-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    .sub-date { font-size: 19px; font-weight: 700; color: var(--white); opacity: 0.95; letter-spacing: 0.5px; margin-top: 2px; }
+
+    /* --- TICKER BAR --- */
+    .ticker-bar {
+        width: 100%; height: 54px;
+        background: #090909; border-bottom: 4px solid var(--anguilla-yellow);
+        overflow: hidden; display: flex; align-items: center;
+        position: relative; z-index: 10; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+    .ticker-text {
+        white-space: nowrap; font-size: 26px; font-weight: 800; color: #fff;
+        animation: marquee 25s linear infinite; padding-left: 100%; letter-spacing: 0.5px;
+    }
+    @keyframes marquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+
+    /* --- CONTENEDORES --- */
+    #view-grid, #view-featured, #view-ads {
+        height: 875px;
+        padding: 25px 30px;
+        position: absolute; 
+        width: 100%; 
+        top: 205px;
+        left: 0;
+        transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1;
+    }
+
+    .hidden { display: none !important; opacity: 0; transform: scale(0.97) translateY(10px); }
+
+    /* --- TARJETAS SUTILES Y LIMPIAS --- */
+    .grid-container {
+        display: grid; grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(2, 1fr); gap: 25px; height: 100%;
+    }
+    .card {
+        background: var(--white); border-radius: 24px; border: 1px solid rgba(255, 204, 0, 0.7);
+        display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--shadow-md);
+        position: relative;
+    }
+    .card::before {
+        content: ''; position: absolute; top:0; left:0; right:0; height: 6px; background: var(--anguilla-yellow);
+    }
+    
+    .card-header { padding: 15px 0 10px 0; display: flex; flex-direction: column; align-items: center; background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); }
+    .mini-logo { height: 65px; margin-bottom: 10px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05)); }
+    .time-bar { width: 85%; text-align: center; padding: 5px 0; font-size: 28px; font-weight: 900; border-radius: 50px; background: #1e293b; color: #ffcc00; box-shadow: var(--shadow-sm); }
+    .card-hoy .time-bar { background: #16a34a; color: white; }
+    .date-tag { font-size: 16px; font-weight: 800; color: var(--gray-text); text-transform: uppercase; margin-top: 6px; letter-spacing: 0.5px; }
+
+    /* --- DIVISIONES --- */
+    .split-container { display: flex; gap: 25px; height: 100%; }
+    .split-main {
+        width: 1190px;
+        background: linear-gradient(145deg, var(--anguilla-blue) 0%, var(--anguilla-blue-dark) 100%); 
+        border: 5px solid var(--anguilla-yellow);
+        border-radius: 32px; display: flex; flex-direction: column; align-items: center; 
+        justify-content: center; padding: 30px; box-shadow: var(--shadow-lg); overflow: hidden;
+    }
+    .side-panel { 
+        width: 730px;
+        display: flex; flex-direction: column; gap: 15px; 
+    }
+    .side-row {
+        background: white; border-radius: 20px; padding: 0 30px; display: flex;
+        justify-content: space-between; align-items: center; border-left: 12px solid var(--anguilla-blue);
+        box-shadow: var(--shadow-md); flex: 1;
+    }
+    .side-time { color: var(--anguilla-blue); font-size: 34px; font-weight: 900; }
+
+    .featured-label { font-size: 26px; background: rgba(255,255,255,0.12); padding: 6px 30px; border-radius: 50px; margin-bottom: 20px; font-weight: 800; color: #fff; letter-spacing: 1px; }
+    .featured-logo-big { height: 130px; margin-bottom: 20px; filter: drop-shadow(0 12px 20px rgba(0,0,0,0.4)); }
+    .featured-time-box { font-size: 80px; background: var(--anguilla-yellow); color: var(--anguilla-blue); padding: 4px 70px; border-radius: 24px; font-weight: 900; box-shadow: var(--shadow-md); }
+    
+    /* --- CONTENEDOR DE BOLOS ORIGINAL --- */
+    .balls-container { 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        gap: 18px; 
+        padding: 15px; 
+        background: transparent; 
+        border-radius: 20px; 
+        flex-grow: 1; 
+        width: 100%; 
+    }
+    
+    /* --- BOLOS PREMIUM CON CONTORNO OSCURO REFORZADO PARA VISIBILIDAD --- */
+    .ball-flat {
+        width: 125px; height: 125px; 
+        background: radial-gradient(circle at 35% 35%, #ffffff 0%, #f1f5f9 40%, #cbd5e1 75%, #94a3b8 100%);
+        border: 3px solid rgba(15, 23, 42, 0.85); /* CONTORNO NEGRO/PIZARRA AGREGADO AQUÍ */
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        font-size: 56px; font-weight: 900; color: #0f172a;
+        box-shadow: inset -6px -6px 14px rgba(0,0,0,0.1), inset 4px 4px 10px rgba(255,255,255,0.8), 0 10px 20px rgba(0,0,0,0.2);
+    }
+    .ball-big {
+        width: 205px; height: 205px; 
+        background: radial-gradient(circle at 35% 35%, #ffffff 0%, #f8fafc 35%, #e2e8f0 70%, #cbd5e1 100%);
+        border: 4px solid rgba(15, 23, 42, 0.9); /* Contorno también en la vista destacada */
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center; font-size: 100px; font-weight: 900; color: #0f172a;
+        box-shadow: inset -10px -10px 25px rgba(0,0,0,0.12), inset 6px 6px 15px rgba(255,255,255,0.9), 0 20px 35px rgba(0,0,0,0.35); 
+        animation: dropIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
+    }
+    .ball-small {
+        width: 100px; height: 100px; 
+        background: radial-gradient(circle at 35% 35%, #2563eb 0%, #1d4ed8 45%, #0000a5 80%, #000066 100%);
+        color: white; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center; font-size: 38px; font-weight: 800;
+        box-shadow: inset -4px -4px 12px rgba(0,0,0,0.35), inset 3px 3px 8px rgba(255,255,255,0.4), 0 8px 16px rgba(0, 0, 165, 0.25);
+    }
+
+    /* --- PUBLICIDAD --- */
+    .ad-box { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #000; overflow: hidden; border-radius: 24px; }
+    .ad-box img, .ad-box video { width: 100%; height: 100%; object-fit: contain; } 
+    .ad-box iframe { width: 100%; height: 100%; border: none; }
+
+    .waiting-text { color: #dc2626; font-size: 26px; font-weight: 900; text-align: center; animation: pulse 1.2s infinite alternate; width: 100%; margin: auto 0; letter-spacing: 0.5px; }
+
+    @keyframes dropIn { 0% { transform: scale(0.6) translateY(50px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
+    @keyframes pulse { 0% { opacity: 0.4; } 100% { opacity: 1; } }
+</style>
+</head>
+<body>
+
+<div id="canvas-master">
+    <div class="topbar">
+        <div class="logo-main-area"><img src="logo.png" alt="Logo"></div>
+        <div class="header-info">
+            <div class="header-clock" id="liveClock">00:00:00</div>
+            <div class="date-header">
+                <div class="main-date" id="currentDay">...</div>
+                <div class="sub-date" id="currentMonth">...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ticker-bar">
+        <div class="ticker-text" id="marqueeText">CARGANDO INFORMACIÓN...</div>
+    </div>
+
+    <div id="view-grid">
+        <div class="grid-container" id="mainGrid"></div>
+    </div>
+
+    <div id="view-featured" class="hidden">
+        <div class="split-container">
+            <div class="split-main">
+                <div class="featured-label">ÚLTIMO SORTEO REALIZADO</div>
+                <img src="anguilla.png" class="featured-logo-big">
+                <div class="featured-time-box" id="fTime">--:--</div>
+                <div class="balls-container" style="background:transparent; margin-top:20px;" id="fBalls"></div>
+            </div>
+            <div class="side-panel" id="sidePanelFeatured"></div>
+        </div>
+    </div>
+
+    <div id="view-ads" class="hidden">
+        <div class="split-container">
+            <div class="split-main" style="background: #000; padding: 0; border: none;">
+                <div class="ad-box" id="adDisplay"></div>
+            </div>
+            <div class="side-panel" id="sidePanelAds"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+<script>
+    const firebaseConfig = { databaseURL: "https://pizarra-loteria-36ba5-default-rtdb.firebaseio.com/" };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    let SORTEOS = [];
+    let ANUNCIOS = [];
+    let currentView = 0; 
+    let gridPage = 0;
+    let adIndex = 0;
+    let rotationInterval = null;
+    let enTransmisionVivo = false;
+
+    function dimensionarPantalla() {
+        const baseWidth = 1920;
+        const baseHeight = 1080;
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+        
+        const scaleX = windowWidth / baseWidth;
+        const scaleY = windowHeight / baseHeight;
+        const elScale = Math.min(scaleX, scaleY);
+
+        document.getElementById('canvas-master').style.transform = `translate(-50%, -50%) scale(${elScale})`;
+    }
+    
+    window.addEventListener('resize', dimensionarPantalla);
+
+    function getFormatDate(offsetDays = 0) {
+        const d = new Date();
+        d.setDate(d.getDate() - offsetDays);
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    function inicializarDatos() {
+        const hoyStr = getFormatDate(0);
+        const ayerStr = getFormatDate(1);
+
+        database.ref('ticker').on('value', snap => {
+            document.getElementById('marqueeText').innerText = snap.val() || "BIENVENIDOS A ANGUILLA LOTTERY";
+        });
+
+        database.ref('anunciosList').on('value', snap => {
+            ANUNCIOS = [];
+            snap.forEach(child => { ANUNCIOS.push(child.val()); });
+        });
+
+        database.ref(`sorteos/${hoyStr}`).on('value', snapHoy => {
+            const dataHoy = snapHoy.val() || [];
+            database.ref(`sorteos/${ayerStr}`).once('value', snapAyer => {
+                const dataAyer = snapAyer.val() || [];
+                procesarSorteos(dataHoy, dataAyer);
+            });
+        });
+
+        database.ref('transmisionVivo').on('value', snap => {
+            const live = snap.val();
+            const vGrid = document.getElementById('view-grid');
+            const vFeat = document.getElementById('view-featured');
+            const vAds = document.getElementById('view-ads');
+            const boxAd = document.getElementById('adDisplay');
+
+            if (live && live.activo === true) {
+                enTransmisionVivo = true;
+                clearInterval(rotationInterval); 
+                
+                vGrid.classList.add('hidden');
+                vFeat.classList.add('hidden');
+                vAds.classList.remove('hidden');
+
+                generarPanelLateral('sidePanelAds');
+
+                let rawUrl = live.url || "";
+                let embedUrl = rawUrl.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/");
+                if(embedUrl.includes("?")) { embedUrl = embedUrl.split("?")[0]; }
+
+                boxAd.innerHTML = `<iframe src="${embedUrl}?autoplay=1&mute=0&controls=1&autoplay=1" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;"></iframe>`;
+            } else {
+                if (enTransmisionVivo) {
+                    enTransmisionVivo = false;
+                    boxAd.innerHTML = "";
+                    gridPage = 0;
+                    currentView = 0;
+                    
+                    vGrid.classList.remove('hidden');
+                    vFeat.classList.add('hidden');
+                    vAds.classList.add('hidden');
+                    renderGrid();
+
+                    clearInterval(rotationInterval);
+                    rotationInterval = setInterval(rotateDisplay, 15000);
+                }
+            }
+        });
+    }
+
+    function procesarSorteos(dataHoy, dataAyer) {
+        let finalSorteos = [];
+        const ahora = new Date();
+        const horaAct = SecurityDateCheck(ahora);
+
+        function SecurityDateCheck(d) { return { hrs: d.getHours(), mins: d.getMinutes() }; }
+
+        dataHoy.forEach((sHoy, index) => {
+            if(!sHoy) return;
+            
+            let [h, mP] = sHoy.hora.split(":");
+            let mSor = parseInt(mP.substring(0, 2));
+            let ampm = mP.substring(2);
+            let hSor = parseInt(h);
+            if (ampm === "PM" && hSor !== 12) hSor += 12;
+            if (ampm === "AM" && hSor === 12) hSor = 0;
+
+            const tieneHoy = sHoy.premios && sHoy.premios[0] !== "";
+            const yaPasoHora = (horaAct.hrs > hSor || (horaAct.hrs === hSor && horaAct.mins >= mSor + 5));
+
+            let sorteoFinal = {
+                hour: sHoy.hora.replace(/(AM|PM)/, ' $1'),
+                key: index
+            };
+
+            if (tieneHoy) {
+                sorteoFinal.day = "hoy";
+                sorteoFinal.date = "HOY";
+                sorteoFinal.nums = [sHoy.premios[0], sHoy.premios[1], sHoy.premios[2]];
+                sorteoFinal.isWaiting = false;
+            } else if (yaPasoHora) {
+                sorteoFinal.day = "hoy";
+                sorteoFinal.date = "HOY";
+                sorteoFinal.nums = null;
+                sorteoFinal.isWaiting = true;
+            } else {
+                const sAyer = dataAyer[index];
+                sorteoFinal.day = "ayer";
+                sorteoFinal.date = "AYER";
+                sorteoFinal.nums = (sAyer && sAyer.premios) ? [sAyer.premios[0], sAyer.premios[1], sAyer.premios[2]] : null;
+                sorteoFinal.isWaiting = false;
+            }
+            finalSorteos.push(sorteoFinal);
+        });
+
+        SORTEOS = finalSorteos;
+        if (!enTransmisionVivo) {
+            renderGrid();
+        } else {
+            generarPanelLateral('sidePanelAds');
+        }
+    }
+
+    function renderGrid() {
+        const grid = document.getElementById('mainGrid');
+        grid.innerHTML = '';
+        if (SORTEOS.length === 0) return;
+        const start = gridPage * 8;
+        const pageItems = SORTEOS.slice(start, start + 8);
+
+        pageItems.forEach(s => {
+            const card = document.createElement('div');
+            card.className = `card ${s.day === 'hoy' ? 'card-hoy' : 'card-ayer'}`;
+            let bottom = s.isWaiting ? `<div class="waiting-text">ESPERANDO RESULTADOS...</div>` : `
+                <div class="balls-container">
+                    <div class="ball-flat">${s.nums ? s.nums[0] : '--'}</div>
+                    <div class="ball-flat">${s.nums ? s.nums[1] : '--'}</div>
+                    <div class="ball-flat">${s.nums ? s.nums[2] : '--'}</div>
+                </div>`;
+            card.innerHTML = `<div class="card-header"><img class="mini-logo" src="anguilla.png"><div class="time-bar">${s.hour}</div><div class="date-tag">${s.date}</div></div>${bottom}`;
+            grid.appendChild(card);
+        });
+    }
+
+    function generarPanelLateral(contenedorId) {
+        let jugados = SORTEOS.filter(s => s.nums !== null && s.nums.length > 0);
+        
+        if (jugados.length === 0) {
+            const panel = document.getElementById(contenedorId);
+            panel.innerHTML = '<div class="waiting-text">NO HAY SORTEOS PREVIOS</div>';
+            return SORTEOS[0] || { hour: '--:--', date: 'HOY', nums: null };
+        }
+
+        jugados.sort((a, b) => {
+            if (a.day !== b.day) { return a.day === 'hoy' ? -1 : 1; }
+            return b.key - a.key;
+        });
+        
+        let last = jugados[0];
+        const historial = jugados.slice(1, 6); 
+        const panel = document.getElementById(contenedorId);
+        
+        panel.innerHTML = historial.map(s => `
+            <div class="side-row">
+                <div class="side-time">${s.hour} <small style="font-size:18px; display:block; color:#64748b; font-weight:700; margin-top:2px;">${s.date}</small></div>
+                <div style="display:flex; gap:10px;">
+                    <div class="ball-small">${s.nums[0]}</div>
+                    <div class="ball-small">${s.nums[1]}</div>
+                    <div class="ball-small">${s.nums[2]}</div>
+                </div>
+            </div>`).join('');
+            
+        return last;
+    }
+
+    function renderFeatured() {
+        let last = generarPanelLateral('sidePanelFeatured');
+        document.getElementById('fTime').innerText = last.hour;
+        const fBalls = document.getElementById('fBalls');
+        fBalls.innerHTML = last.nums ? last.nums.map((n, i) => `<div class="ball-big" style="animation-delay: ${i * 0.12}s">${n}</div>`).join('') : '<div class="waiting-text">PROXIMO SORTEO</div>';
+    }
+
+    function renderMediaAd() {
+        generarPanelLateral('sidePanelAds');
+        const box = document.getElementById('adDisplay');
+        box.innerHTML = "";
+        if (ANUNCIOS.length === 0) {
+            box.innerHTML = "<div style='color:white; font-size:40px; font-weight:800; letter-spacing:1px;'>ANGUILLA LOTTERY</div>";
+            return 15000; 
+        }
+        if (adIndex >= ANUNCIOS.length) adIndex = 0;
+        const ad = ANUNCIOS[adIndex];
+        if (ad.url.includes('youtube.com') || ad.url.includes('youtu.be')) {
+            let embed = ad.url.replace("watch?v=", "embed/");
+            box.innerHTML = `<iframe src="${embed}?autoplay=1&mute=1&controls=0" allow="autoplay"></iframe>`;
+        } else if (ad.url.match(/\.(mp4|webm|ogg|mov)$/i)) {
+            box.innerHTML = `<video src="${ad.url}" autoplay muted playsinline></video>`;
+        } else {
+            box.innerHTML = `<img src="${ad.url}">`;
+        }
+        let tiempoAsignado = (parseInt(ad.tiempo) || 15) * 1000;
+        adIndex++;
+        return tiempoAsignado;
+    }
+
+    function rotateDisplay() {
+        if (SORTEOS.length === 0 || enTransmisionVivo) return;
+        clearInterval(rotationInterval);
+        const vGrid = document.getElementById('view-grid');
+        const vFeat = document.getElementById('view-featured');
+        const vAds = document.getElementById('view-ads');
+        const totalPages = Math.ceil(SORTEOS.length / 8);
+
+        vGrid.classList.add('hidden'); vFeat.classList.add('hidden'); vAds.classList.add('hidden');
+        let nextTime = 15000;
+
+        if (currentView < totalPages - 1) {
+            gridPage++; currentView++;
+            vGrid.classList.remove('hidden');
+            renderGrid();
+        } else if (currentView === totalPages - 1) {
+            currentView = 88; 
+            vFeat.classList.remove('hidden');
+            renderFeatured();
+        } else if (currentView === 88) {
+            currentView = 99; 
+            vAds.classList.remove('hidden');
+            nextTime = renderMediaAd();
+        } else {
+            gridPage = 0; currentView = 0;
+            vGrid.classList.remove('hidden');
+            renderGrid();
+        }
+        rotationInterval = setInterval(rotateDisplay, nextTime);
+    }
+
+    function updateDateTime() {
+        const now = new Date();
+        const hrs = now.getHours() % 12 || 12;
+        const mins = now.getMinutes().toString().padStart(2, '0');
+        const secs = now.getSeconds().toString().padStart(2, '0');
+        const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
+        document.getElementById('liveClock').innerText = `${hrs}:${mins}:${secs} ${ampm}`;
+        const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO'];
+        const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+        document.getElementById('currentDay').innerText = `${dias[now.getDay()]} ${now.getDate()}`;
+        document.getElementById('currentMonth').innerText = `${meses[now.getMonth()]} ${now.getFullYear()}`;
+    }
+
+    window.onload = () => {
+        dimensionarPantalla();
+        updateDateTime(); setInterval(updateDateTime, 1000);
+        inicializarDatos();
+        rotationInterval = setInterval(rotateDisplay, 15000);
+    };
+</script>
+</body>
+</html>

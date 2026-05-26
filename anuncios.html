@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        :root {
+            --orange: #ff7900;
+            --blue: #0000a5;
+            --yellow: #ffcc00;
+            --white: #ffffff;
+        }
+        body {
+            margin: 0; padding: 15px;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--blue), #000066);
+            color: white;
+            height: 100vh; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        .ad-container {
+            width: 100%; height: 100%;
+            border: 4px solid var(--yellow);
+            border-radius: 20px;
+            display: flex; position: relative;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            animation: slideAd 20s infinite;
+        }
+
+        /* DISEÑO DE LAS DIAPOSITIVAS */
+        .slide {
+            min-width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: space-around;
+            padding: 20px; transition: 1s ease-in-out;
+        }
+
+        .text-side { width: 55%; }
+        .text-side h1 { font-size: 2.5vw; color: var(--yellow); margin-bottom: 10px; text-transform: uppercase; }
+        .text-side p { font-size: 1.5vw; line-height: 1.4; }
+
+        .image-side { width: 35%; position: relative; }
+        .person-img { width: 100%; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); }
+
+        .logos-row {
+            display: flex; gap: 15px; margin-top: 20px; background: white;
+            padding: 10px; border-radius: 10px; justify-content: center;
+        }
+        .logos-row img { height: 40px; object-fit: contain; }
+
+        @keyframes slideAd {
+            0%, 45% { transform: translateX(0%); }
+            50%, 95% { transform: translateX(-100%); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ad-container">
+        <div class="slide">
+            <div class="text-side">
+                <h1>RECARGA TU MÓVIL AQUÍ</h1>
+                <p>¡No te quedes sin balance! Recargas al instante para todas las compañías.</p>
+                <div class="logos-row">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/af/Claro.svg" alt="Claro">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b2/Altice_logo.svg" alt="Altice">
+                    <img src="https://viva.com.do/wp-content/uploads/2021/04/viva-logo.png" alt="Viva">
+                </div>
+            </div>
+            <div class="image-side">
+                <img src="https://www.transparentpng.com/download/user/person-using-mobile-phone-png-AIn6o3.png" class="person-img">
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="text-side">
+                <h1>PAQUETICOS DE INTERNET</h1>
+                <p>Navega a la máxima velocidad. Tenemos los mejores planes de data para ti.</p>
+                <div class="logos-row">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/af/Claro.svg" alt="Claro">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b2/Altice_logo.svg" alt="Altice">
+                    <img src="https://viva.com.do/wp-content/uploads/2021/04/viva-logo.png" alt="Viva">
+                </div>
+            </div>
+            <div class="image-side">
+                <img src="https://www.transparentpng.com/download/user/person-using-mobile-phone-png-AIn6o3.png" class="person-img" style="transform: scaleX(-1);">
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
