@@ -509,6 +509,30 @@
         inicializarDatos();
         rotationInterval = setInterval(rotateDisplay, 15000);
     };
+
+
+    // --- FUNCIÓN PARA EVITAR QUE EL FIRE TV SE APAGUE ---
+let wakeLock = null;
+
+async function activarMantenerPantallaEncendida() {
+    try {
+        if ('wakeLock' in navigator) {
+            wakeLock = await navigator.wakeLock.request('screen');
+            console.log('Wake Lock activo: La pantalla no se apagará.');
+            
+            // Si el Fire TV cambia de app o se minimiza, vuelve a activarlo al regresar
+            document.addEventListener('visibilitychange', async () => {
+                if (wakeLock !== null && document.visibilityState === 'visible') {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                }
+            });
+        } else {
+            console.warn('El navegador actual no soporta Wake Lock API.');
+        }
+    } catch (err) {
+        console.error(`Error al activar Wake Lock: ${err.name}, ${err.message}`);
+    }
+}
 </script>
 </body>
 </html>
