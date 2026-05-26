@@ -48,7 +48,7 @@
         box-shadow: 0 8px 32px rgba(0,0,0,0.35);
         position: relative; z-index: 10;
     }
-    .logo-main-area img { height: 210px; object-fit: contain; padding-top: 2%; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.25)); }
+    .logo-main-area img { height: 210px; object-fit: contain; padding-top: 10%; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.25)); }
     
     .header-info { display: flex; align-items: center; gap: 40px; }
     .header-clock { 
@@ -102,8 +102,8 @@
     }
     
     .card-header { padding: 15px 0 10px 0; display: flex; flex-direction: column; align-items: center; background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); }
-    .mini-logo { height: 65px; margin-bottom: 10px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05)); }
-    .time-bar { width: 85%; text-align: center; padding: 5px 0; font-size: 28px; font-weight: 900; border-radius: 50px; background: #1e293b; color: #ffcc00; box-shadow: var(--shadow-sm); }
+    .mini-logo { height: 135px; margin-bottom: 10px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05)); }
+    .time-bar { width: 85%; text-align: center; padding: 5px 0; font-size: 35px; font-weight: 900; border-radius: 50px; background: #1e293b; color: #ffcc00; box-shadow: var(--shadow-sm); }
     .card-hoy .time-bar { background: #16a34a; color: white; }
     .date-tag { font-size: 16px; font-weight: 800; color: var(--gray-text); text-transform: uppercase; margin-top: 6px; letter-spacing: 0.5px; }
 
@@ -128,8 +128,8 @@
     .side-time { color: var(--anguilla-blue); font-size: 34px; font-weight: 900; }
 
     .featured-label { font-size: 26px; background: rgba(255,255,255,0.12); padding: 6px 30px; border-radius: 50px; margin-bottom: 20px; font-weight: 800; color: #fff; letter-spacing: 1px; }
-    .featured-logo-big { height: 130px; margin-bottom: 20px; filter: drop-shadow(0 12px 20px rgba(0,0,0,0.4)); }
-    .featured-time-box { font-size: 80px; background: var(--anguilla-yellow); color: var(--anguilla-blue); padding: 4px 70px; border-radius: 24px; font-weight: 900; box-shadow: var(--shadow-md); }
+    .featured-logo-big { height: 275px; margin-bottom: 20px; filter: drop-shadow(0 12px 20px rgba(0,0,0,0.4)); }
+    .featured-time-box { font-size: 100px; background: var(--anguilla-yellow); color: var(--anguilla-blue); padding: 4px 70px; border-radius: 24px; font-weight: 900; box-shadow: var(--shadow-md); }
     
     /* --- CONTENEDOR DE BOLOS ORIGINAL --- */
     .balls-container { 
@@ -148,7 +148,7 @@
     .ball-flat {
         width: 125px; height: 125px; 
         background: radial-gradient(circle at 35% 35%, #ffffff 0%, #f1f5f9 40%, #cbd5e1 75%, #94a3b8 100%);
-        border: 3px solid rgba(15, 23, 42, 0.85); /* CONTORNO NEGRO/PIZARRA AGREGADO AQUÍ */
+        border: 3px solid rgba(15, 23, 42, 0.85); 
         border-radius: 50%; display: flex; align-items: center; justify-content: center;
         font-size: 56px; font-weight: 900; color: #0f172a;
         box-shadow: inset -6px -6px 14px rgba(0,0,0,0.1), inset 4px 4px 10px rgba(255,255,255,0.8), 0 10px 20px rgba(0,0,0,0.2);
@@ -156,7 +156,7 @@
     .ball-big {
         width: 205px; height: 205px; 
         background: radial-gradient(circle at 35% 35%, #ffffff 0%, #f8fafc 35%, #e2e8f0 70%, #cbd5e1 100%);
-        border: 4px solid rgba(15, 23, 42, 0.9); /* Contorno también en la vista destacada */
+        border: 4px solid rgba(15, 23, 42, 0.9); 
         border-radius: 50%;
         display: flex; align-items: center; justify-content: center; font-size: 100px; font-weight: 900; color: #0f172a;
         box-shadow: inset -10px -10px 25px rgba(0,0,0,0.12), inset 6px 6px 15px rgba(255,255,255,0.9), 0 20px 35px rgba(0,0,0,0.35); 
@@ -182,6 +182,12 @@
 </style>
 </head>
 <body>
+
+<!-- TRUCO ANTISUSPENSIÓN DEFINITIVO: Video de 1px invisible en bucle infinito -->
+<video src="https://assets.mixkit.co/videos/preview/mixkit-blank-video-background-43048-large.mp4" 
+       autoplay loop muted playsinline 
+       style="position: absolute; width: 1px; height: 1px; opacity: 0.001; z-index: -999; pointer-events: none;">
+</video>
 
 <div id="canvas-master">
     <div class="topbar">
@@ -503,36 +509,37 @@
         document.getElementById('currentMonth').innerText = `${meses[now.getMonth()]} ${now.getFullYear()}`;
     }
 
+    // --- CORRECCIÓN EN EL INICIO: SE ACTIVA EL WAKE LOCK AUTOMÁTICAMENTE ---
     window.onload = () => {
         dimensionarPantalla();
-        updateDateTime(); setInterval(updateDateTime, 1000);
+        updateDateTime(); 
+        setInterval(updateDateTime, 1000);
         inicializarDatos();
         rotationInterval = setInterval(rotateDisplay, 15000);
+        
+        // Ejecución obligatoria para evitar cierres en Android
+        activarMantenerPantallaEncendida();
     };
 
-
-    // --- FUNCIÓN PARA EVITAR QUE EL FIRE TV SE APAGUE ---
-let wakeLock = null;
-
-async function activarMantenerPantallaEncendida() {
-    try {
-        if ('wakeLock' in navigator) {
-            wakeLock = await navigator.wakeLock.request('screen');
-            console.log('Wake Lock activo: La pantalla no se apagará.');
-            
-            // Si el Fire TV cambia de app o se minimiza, vuelve a activarlo al regresar
-            document.addEventListener('visibilitychange', async () => {
-                if (wakeLock !== null && document.visibilityState === 'visible') {
-                    wakeLock = await navigator.wakeLock.request('screen');
-                }
-            });
-        } else {
-            console.warn('El navegador actual no soporta Wake Lock API.');
+    let wakeLock = null;
+    async function activarMantenerPantallaEncendida() {
+        try {
+            if ('wakeLock' in navigator) {
+                wakeLock = await navigator.wakeLock.request('screen');
+                console.log('Wake Lock activo con éxito.');
+                
+                document.addEventListener('visibilitychange', async () => {
+                    if (wakeLock !== null && document.visibilityState === 'visible') {
+                        wakeLock = await navigator.wakeLock.request('screen');
+                    }
+                });
+            } else {
+                console.warn('Wake Lock API no soportada directamente por este WebView.');
+            }
+        } catch (err) {
+            console.error(`Error de Wake Lock: ${err.message}`);
         }
-    } catch (err) {
-        console.error(`Error al activar Wake Lock: ${err.name}, ${err.message}`);
     }
-}
 </script>
 </body>
 </html>
