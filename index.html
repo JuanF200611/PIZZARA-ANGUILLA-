@@ -27,6 +27,43 @@
         overflow: hidden;
     }
 
+    /* --- PANTALLA DE INICIO (SPLASH SCREEN) --- */
+    #splash-screen {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: radial-gradient(circle at 50% 50%, var(--anguilla-blue) 0%, var(--anguilla-blue-dark) 100%);
+        z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 1s ease-in-out, visibility 1s;
+    }
+    .splash-logo {
+        height: 320px;
+        object-fit: contain;
+        animation: floating 3s ease-in-out infinite;
+        filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5));
+    }
+    .splash-text {
+        color: var(--white);
+        font-family: 'Inter', sans-serif;
+        font-size: 42px;
+        font-weight: 800;
+        margin-top: 40px;
+        letter-spacing: 2px;
+        text-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+    .splash-sub {
+        color: var(--anguilla-yellow);
+        font-family: 'Inter', sans-serif;
+        font-size: 24px;
+        font-weight: 700;
+        margin-top: 10px;
+        letter-spacing: 4px;
+        animation: pulse 1.5s infinite alternate;
+    }
+
     #canvas-master {
         width: 1920px;
         height: 1080px;
@@ -87,7 +124,7 @@
 
     .hidden { display: none !important; opacity: 0; transform: scale(0.97) translateY(10px); }
 
-    /* --- TARJETAS SUTILES Y LIMPIAS --- */
+    /* --- TARJETAS --- */
     .grid-container {
         display: grid; grid-template-columns: repeat(4, 1fr);
         grid-template-rows: repeat(2, 1fr); gap: 25px; height: 100%;
@@ -131,33 +168,21 @@
     .featured-logo-big { height: 275px; margin-bottom: 20px; filter: drop-shadow(0 12px 20px rgba(0,0,0,0.4)); }
     .featured-time-box { font-size: 100px; background: var(--anguilla-yellow); color: var(--anguilla-blue); padding: 4px 70px; border-radius: 24px; font-weight: 900; box-shadow: var(--shadow-md); }
     
-    /* --- CONTENEDOR DE BOLOS ORIGINAL --- */
     .balls-container { 
-        display: flex; 
-        justify-content: center; 
-        align-items: center; 
-        gap: 18px; 
-        padding: 15px; 
-        background: transparent; 
-        border-radius: 20px; 
-        flex-grow: 1; 
-        width: 100%; 
+        display: flex; justify-content: center; align-items: center; gap: 18px; padding: 15px; background: transparent; border-radius: 20px; flex-grow: 1; width: 100%; 
     }
     
-    /* --- BOLOS PREMIUM CON CONTORNO OSCURO REFORZADO PARA VISIBILIDAD --- */
     .ball-flat {
         width: 125px; height: 125px; 
         background: radial-gradient(circle at 35% 35%, #ffffff 0%, #f1f5f9 40%, #cbd5e1 75%, #94a3b8 100%);
-        border: 3px solid rgba(15, 23, 42, 0.85); 
-        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        border: 3px solid rgba(15, 23, 42, 0.85); border-radius: 50%; display: flex; align-items: center; justify-content: center;
         font-size: 56px; font-weight: 900; color: #0f172a;
         box-shadow: inset -6px -6px 14px rgba(0,0,0,0.1), inset 4px 4px 10px rgba(255,255,255,0.8), 0 10px 20px rgba(0,0,0,0.2);
     }
     .ball-big {
         width: 205px; height: 205px; 
         background: radial-gradient(circle at 35% 35%, #ffffff 0%, #f8fafc 35%, #e2e8f0 70%, #cbd5e1 100%);
-        border: 4px solid rgba(15, 23, 42, 0.9); 
-        border-radius: 50%;
+        border: 4px solid rgba(15, 23, 42, 0.9); border-radius: 50%;
         display: flex; align-items: center; justify-content: center; font-size: 100px; font-weight: 900; color: #0f172a;
         box-shadow: inset -10px -10px 25px rgba(0,0,0,0.12), inset 6px 6px 15px rgba(255,255,255,0.9), 0 20px 35px rgba(0,0,0,0.35); 
         animation: dropIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
@@ -165,25 +190,36 @@
     .ball-small {
         width: 100px; height: 100px; 
         background: radial-gradient(circle at 35% 35%, #2563eb 0%, #1d4ed8 45%, #0000a5 80%, #000066 100%);
-        color: white; border-radius: 50%;
-        display: flex; align-items: center; justify-content: center; font-size: 38px; font-weight: 800;
+        color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 38px; font-weight: 800;
         box-shadow: inset -4px -4px 12px rgba(0,0,0,0.35), inset 3px 3px 8px rgba(255,255,255,0.4), 0 8px 16px rgba(0, 0, 165, 0.25);
     }
 
-    /* --- PUBLICIDAD --- */
     .ad-box { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #000; overflow: hidden; border-radius: 24px; }
     .ad-box img, .ad-box video { width: 100%; height: 100%; object-fit: contain; } 
     .ad-box iframe { width: 100%; height: 100%; border: none; }
 
     .waiting-text { color: #dc2626; font-size: 26px; font-weight: 900; text-align: center; animation: pulse 1.2s infinite alternate; width: 100%; margin: auto 0; letter-spacing: 0.5px; }
 
+    /* --- ANIMACIONES --- */
     @keyframes dropIn { 0% { transform: scale(0.6) translateY(50px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
     @keyframes pulse { 0% { opacity: 0.4; } 100% { opacity: 1; } }
+    @keyframes floating {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-15px); }
+        100% { transform: translateY(0px); }
+    }
 </style>
 </head>
 <body>
 
-<!-- TRUCO ANTISUSPENSIÓN DEFINITIVO: Video de 1px invisible en bucle infinito -->
+<!-- PANTALLA DE CARGA GLOBAL -->
+<div id="splash-screen">
+    <img src="logo.png" class="splash-logo" alt="Logo Empresa">
+    <div class="splash-text">INICIANDO SISTEMA</div>
+    <div class="splash-sub">POR FAVOR ESPERE...</div>
+</div>
+
+<!-- TRUCO ANTISUSPENSIÓN DEFINITIVO -->
 <video src="https://assets.mixkit.co/videos/preview/mixkit-blank-video-background-43048-large.mp4" 
        autoplay loop muted playsinline 
        style="position: absolute; width: 1px; height: 1px; opacity: 0.001; z-index: -999; pointer-events: none;">
@@ -246,6 +282,7 @@
     let adIndex = 0;
     let rotationInterval = null;
     let enTransmisionVivo = false;
+    let sistemaIniciado = false; // Flag para controlar los 20 segundos iniciales
 
     function dimensionarPantalla() {
         const baseWidth = 1920;
@@ -290,6 +327,8 @@
         });
 
         database.ref('transmisionVivo').on('value', snap => {
+            if (!sistemaIniciado) return; // Ignorar cambios visuales durante el Splash Screen
+            
             const live = snap.val();
             const vGrid = document.getElementById('view-grid');
             const vFeat = document.getElementById('view-featured');
@@ -333,9 +372,7 @@
     function procesarSorteos(dataHoy, dataAyer) {
         let finalSorteos = [];
         const ahora = new Date();
-        const horaAct = SecurityDateCheck(ahora);
-
-        function SecurityDateCheck(d) { return { hrs: d.getHours(), mins: d.getMinutes() }; }
+        const horaAct = { hrs: ahora.getHours(), mins: ahora.getMinutes() };
 
         dataHoy.forEach((sHoy, index) => {
             if(!sHoy) return;
@@ -376,10 +413,8 @@
         });
 
         SORTEOS = finalSorteos;
-        if (!enTransmisionVivo) {
+        if (sistemaIniciado && !enTransmisionVivo) {
             renderGrid();
-        } else {
-            generarPanelLateral('sidePanelAds');
         }
     }
 
@@ -406,22 +441,15 @@
 
     function generarPanelLateral(contenedorId) {
         let jugados = SORTEOS.filter(s => s.nums !== null && s.nums.length > 0);
-        
         if (jugados.length === 0) {
             const panel = document.getElementById(contenedorId);
             panel.innerHTML = '<div class="waiting-text">NO HAY SORTEOS PREVIOS</div>';
             return SORTEOS[0] || { hour: '--:--', date: 'HOY', nums: null };
         }
-
-        jugados.sort((a, b) => {
-            if (a.day !== b.day) { return a.day === 'hoy' ? -1 : 1; }
-            return b.key - a.key;
-        });
-        
+        jugados.sort((a, b) => (a.day === b.day) ? b.key - a.key : (a.day === 'hoy' ? -1 : 1));
         let last = jugados[0];
         const historial = jugados.slice(1, 6); 
         const panel = document.getElementById(contenedorId);
-        
         panel.innerHTML = historial.map(s => `
             <div class="side-row">
                 <div class="side-time">${s.hour} <small style="font-size:18px; display:block; color:#64748b; font-weight:700; margin-top:2px;">${s.date}</small></div>
@@ -431,7 +459,6 @@
                     <div class="ball-small">${s.nums[2]}</div>
                 </div>
             </div>`).join('');
-            
         return last;
     }
 
@@ -466,7 +493,7 @@
     }
 
     function rotateDisplay() {
-        if (SORTEOS.length === 0 || enTransmisionVivo) return;
+        if (SORTEOS.length === 0 || enTransmisionVivo || !sistemaIniciado) return;
         clearInterval(rotationInterval);
         const vGrid = document.getElementById('view-grid');
         const vFeat = document.getElementById('view-featured');
@@ -509,16 +536,24 @@
         document.getElementById('currentMonth').innerText = `${meses[now.getMonth()]} ${now.getFullYear()}`;
     }
 
-    // --- CORRECCIÓN EN EL INICIO: SE ACTIVA EL WAKE LOCK AUTOMÁTICAMENTE ---
+    // --- MANEJO DEL ENCENDIDO CON RETRASO DE 20 SEGUNDOS ---
     window.onload = () => {
         dimensionarPantalla();
         updateDateTime(); 
         setInterval(updateDateTime, 1000);
         inicializarDatos();
-        rotationInterval = setInterval(rotateDisplay, 15000);
-        
-        // Ejecución obligatoria para evitar cierres en Android
         activarMantenerPantallaEncendida();
+
+        // Temporizador de 20 segundos para la pantalla de carga
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            splash.style.visibility = 'hidden';
+            
+            sistemaIniciado = true;
+            renderGrid();
+            rotationInterval = setInterval(rotateDisplay, 15000);
+        }, 20000); // 20000 milisegundos = 20 segundos
     };
 
     let wakeLock = null;
@@ -526,19 +561,13 @@
         try {
             if ('wakeLock' in navigator) {
                 wakeLock = await navigator.wakeLock.request('screen');
-                console.log('Wake Lock activo con éxito.');
-                
                 document.addEventListener('visibilitychange', async () => {
                     if (wakeLock !== null && document.visibilityState === 'visible') {
                         wakeLock = await navigator.wakeLock.request('screen');
                     }
                 });
-            } else {
-                console.warn('Wake Lock API no soportada directamente por este WebView.');
             }
-        } catch (err) {
-            console.error(`Error de Wake Lock: ${err.message}`);
-        }
+        } catch (err) { console.error(err); }
     }
 </script>
 </body>
