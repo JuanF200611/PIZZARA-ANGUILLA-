@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 <title>Anguilla Lottery | Sistema Multipantalla Premium</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght=600;700;800;900&display=swap" rel="stylesheet">
 <style>
     :root {
         --anguilla-orange: #ff7900;
@@ -76,7 +76,7 @@
         overflow: hidden;
     }
 
-    /* --- TOPBAR REFINADA --- */
+    /* --- TOPBAR --- */
     .topbar {
         width: 100%; height: 151px;
         background: linear-gradient(135deg, var(--anguilla-blue) 0%, var(--anguilla-blue-dark) 100%);
@@ -145,13 +145,14 @@
     .date-tag { font-size: 16px; font-weight: 800; color: var(--gray-text); text-transform: uppercase; margin-top: 6px; letter-spacing: 0.5px; }
 
     /* --- DIVISIONES --- */
-    .split-container { display: flex; gap: 25px; height: 100%; }
+    .split-container { display: flex; gap: 25px; height: 100%; width: 100%; }
     .split-main {
         width: 1190px;
         background: linear-gradient(145deg, var(--anguilla-blue) 0%, var(--anguilla-blue-dark) 100%); 
         border: 5px solid var(--anguilla-yellow);
         border-radius: 32px; display: flex; flex-direction: column; align-items: center; 
         justify-content: center; padding: 30px; box-shadow: var(--shadow-lg); overflow: hidden;
+        position: relative;
     }
     .side-panel { 
         width: 730px;
@@ -199,6 +200,21 @@
     .ad-box iframe { width: 100%; height: 100%; border: none; }
 
     .waiting-text { color: #dc2626; font-size: 26px; font-weight: 900; text-align: center; animation: pulse 1.2s infinite alternate; width: 100%; margin: auto 0; letter-spacing: 0.5px; }
+
+    /* --- NUEVO SELLO EN VIVO --- */
+    .live-indicator {
+        position: absolute;
+        top: 25px; left: 25px;
+        background: #e63946;
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+        font-size: 24px; font-weight: 900;
+        padding: 8px 24px; border-radius: 8px;
+        box-shadow: 0 0 20px #e63946;
+        letter-spacing: 1.5px; z-index: 50;
+        animation: pulse 0.8s infinite alternate;
+        display: inline-flex; align-items: center; gap: 8px;
+    }
 
     /* --- ANIMACIONES --- */
     @keyframes dropIn { 0% { transform: scale(0.6) translateY(50px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
@@ -258,8 +274,8 @@
     </div>
 
     <div id="view-ads" class="hidden">
-        <div class="split-container">
-            <div class="split-main" style="background: #000; padding: 0; border: none;">
+        <div class="split-container" id="adsContainerStructure">
+            <div class="split-main" id="adMainBox" style="background: #000; padding: 0; border: none;">
                 <div class="ad-box" id="adDisplay"></div>
             </div>
             <div class="side-panel" id="sidePanelAds"></div>
@@ -282,7 +298,8 @@
     let adIndex = 0;
     let rotationInterval = null;
     let enTransmisionVivo = false;
-    let sistemaIniciado = false; // Flag para controlar los 20 segundos iniciales
+    let sistemaIniciado = false; 
+    let tiempoRotacionGlobal = 15000; // Por defecto 15s
 
     function dimensionarPantalla() {
         const baseWidth = 1920;
@@ -313,6 +330,13 @@
             document.getElementById('marqueeText').innerText = snap.val() || "BIENVENIDOS A ANGUILLA LOTTERY";
         });
 
+        // Escucha del tiempo de rotación configurado en el Admin
+        database.ref('configuracion/tiempoPantalla').on('value', snap => {
+            if(snap.val()) {
+                tiempoRotacionGlobal = parseInt(snap.val()) * 1000;
+            }
+        });
+
         database.ref('anunciosList').on('value', snap => {
             ANUNCIOS = [];
             snap.forEach(child => { ANUNCIOS.push(child.val()); });
@@ -326,14 +350,17 @@
             });
         });
 
+        // INTERCEPCIÓN Y OPTIMIZACIÓN EN VIVO CONTROLADA
         database.ref('transmisionVivo').on('value', snap => {
-            if (!sistemaIniciado) return; // Ignorar cambios visuales durante el Splash Screen
+            if (!sistemaIniciado) return; 
             
             const live = snap.val();
             const vGrid = document.getElementById('view-grid');
             const vFeat = document.getElementById('view-featured');
             const vAds = document.getElementById('view-ads');
             const boxAd = document.getElementById('adDisplay');
+            const mainBoxArea = document.getElementById('adMainBox');
+            const sidePanelAds = document.getElementById('sidePanelAds');
 
             if (live && live.activo === true) {
                 enTransmisionVivo = true;
@@ -343,13 +370,18 @@
                 vFeat.classList.add('hidden');
                 vAds.classList.remove('hidden');
 
-                generarPanelLateral('sidePanelAds');
+                // Forzar 100% de la pantalla removiendo panel lateral para el streaming en vivo
+                sidePanelAds.style.display = "none";
+                mainBoxArea.style.width = "100%";
 
                 let rawUrl = live.url || "";
                 let embedUrl = rawUrl.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/");
                 if(embedUrl.includes("?")) { embedUrl = embedUrl.split("?")[0]; }
 
-                boxAd.innerHTML = `<iframe src="${embedUrl}?autoplay=1&mute=0&controls=1&autoplay=1" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;"></iframe>`;
+                boxAd.innerHTML = `
+                    <div class="live-indicator">● EN VIVO</div>
+                    <iframe src="${embedUrl}?autoplay=1&mute=0&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;"></iframe>
+                `;
             } else {
                 if (enTransmisionVivo) {
                     enTransmisionVivo = false;
@@ -357,13 +389,17 @@
                     gridPage = 0;
                     currentView = 0;
                     
+                    // Restaurar propiedades de la sección comercial estándar
+                    sidePanelAds.style.display = "flex";
+                    mainBoxArea.style.width = "1190px";
+
                     vGrid.classList.remove('hidden');
                     vFeat.classList.add('hidden');
                     vAds.classList.add('hidden');
                     renderGrid();
 
                     clearInterval(rotationInterval);
-                    rotationInterval = setInterval(rotateDisplay, 15000);
+                    rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
                 }
             }
         });
@@ -475,7 +511,7 @@
         box.innerHTML = "";
         if (ANUNCIOS.length === 0) {
             box.innerHTML = "<div style='color:white; font-size:40px; font-weight:800; letter-spacing:1px;'>ANGUILLA LOTTERY</div>";
-            return 15000; 
+            return tiempoRotacionGlobal; 
         }
         if (adIndex >= ANUNCIOS.length) adIndex = 0;
         const ad = ANUNCIOS[adIndex];
@@ -501,7 +537,7 @@
         const totalPages = Math.ceil(SORTEOS.length / 8);
 
         vGrid.classList.add('hidden'); vFeat.classList.add('hidden'); vAds.classList.add('hidden');
-        let nextTime = 15000;
+        let nextTime = tiempoRotacionGlobal;
 
         if (currentView < totalPages - 1) {
             gridPage++; currentView++;
@@ -536,7 +572,6 @@
         document.getElementById('currentMonth').innerText = `${meses[now.getMonth()]} ${now.getFullYear()}`;
     }
 
-    // --- MANEJO DEL ENCENDIDO CON RETRASO DE 20 SEGUNDOS ---
     window.onload = () => {
         dimensionarPantalla();
         updateDateTime(); 
@@ -544,16 +579,25 @@
         inicializarDatos();
         activarMantenerPantallaEncendida();
 
-        // Temporizador de 20 segundos para la pantalla de carga
         setTimeout(() => {
             const splash = document.getElementById('splash-screen');
             splash.style.opacity = '0';
             splash.style.visibility = 'hidden';
             
             sistemaIniciado = true;
-            renderGrid();
-            rotationInterval = setInterval(rotateDisplay, 15000);
-        }, 20000); // 20000 milisegundos = 20 segundos
+            
+            // Verificar si el administrador ya estaba transmitiendo en vivo antes de que terminara el Splash Screen
+            database.ref('transmisionVivo').once('value', snap => {
+                const live = snap.val();
+                if(live && live.activo === true) {
+                    // Si está en vivo, no inicia la rotación ordinaria de pantallas
+                    database.ref('transmisionVivo').getRef().set(live); 
+                } else {
+                    renderGrid();
+                    rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
+                }
+            });
+        }, 20000); 
     };
 
     let wakeLock = null;
