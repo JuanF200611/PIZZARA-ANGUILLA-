@@ -51,7 +51,6 @@
             letter-spacing: 1px;
         }
 
-        /* --- NUEVO LAYOUT CON MONITOR HORIZONTAL SUPERIOR --- */
         .main-layout { 
             display: flex;
             flex-direction: column;
@@ -194,11 +193,90 @@
             padding: 0 !important;
         }
 
-        .ad-item { background: #171c2e; padding: 15px; border-radius: 10px; margin-bottom: 12px; border: 1px dashed var(--card-border); position: relative; }
-        .form-group { margin-bottom: 12px; }
-        .form-group label { font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 6px; }
+        /* ESTILOS NUEVOS PARA ANUNCIOS CON VISTA PREVIA Y SWITCH */
+        .ad-item { 
+            background: #171c2e; 
+            padding: 15px; 
+            border-radius: 10px; 
+            margin-bottom: 12px; 
+            border: 1px dashed var(--card-border); 
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .ad-row-main {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        .ad-preview-box {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            background: #090b12;
+            border: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .ad-preview-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .ad-preview-box .no-img {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 5px;
+        }
+        .ad-fields {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .form-group { margin-bottom: 0; }
+        .form-group label { font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 4px; }
 
-        /* --- MONITOR EN HORIZONTAL (NUEVOS ESTILOS) --- */
+        /* Estilos del Switch de activación */
+        .switch-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #2d3554;
+            transition: .3s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--neon-green); }
+        input:checked + .slider:before { transform: translateX(22px); }
+
         .preview-horizontal { 
             width: 100%;
         }
@@ -210,14 +288,13 @@
         }
         .iframe-container-horizontal { 
             width: 100%; 
-            height: 250px; /* Tamaño móvil por defecto */
+            height: 250px; 
             background: #000; 
             border-radius: 12px; 
             overflow: hidden; 
             border: 2px solid var(--card-border); 
             position: relative; 
         }
-        /* Ajuste de aspecto panorámico 16:9 en pantallas medianas y grandes */
         @media (min-width: 580px) { .iframe-container-horizontal { height: 350px; } }
         @media (min-width: 900px) { .iframe-container-horizontal { height: 480px; } }
         @media (min-width: 1400px) { .iframe-container-horizontal { height: 560px; } }
@@ -371,7 +448,9 @@
             let contador = 0;
             snap.forEach(child => {
                 const data = child.val();
-                inyectarEstructuraAnuncio(contador, data.url, data.tiempo);
+                // Si la propiedad 'activo' no existe en la base de datos vieja, por defecto será true
+                const isActivo = data.activo !== undefined ? data.activo : true;
+                inyectarEstructuraAnuncio(contador, data.url, data.tiempo, isActivo);
                 contador++;
             });
         });
@@ -416,28 +495,97 @@
         });
     }
 
-    function inyectarEstructuraAnuncio(id, url="", tiempo="15") {
+    // FUNCIÓN PARA EXTRAER MINIATURAS (IMÁGENES O YOUTUBE)
+    function obtenerMiniaturaUrl(url) {
+        if (!url) return "";
+        
+        // Comprobar si es un enlace de YouTube estándar o shortener
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        
+        if (match && match[2].length === 11) {
+            // Retorna la miniatura por defecto de alta calidad de YouTube
+            return `https://img.youtube.com/vi/${match[2]}/mqdefault.jpg`;
+        }
+        
+        // Si no es youtube, asume que es un enlace directo de imagen normal
+        return url;
+    }
+
+    // FUNCIÓN ACTUALIZADA CON VISTA PREVIA DINÁMICA Y BOTÓN DE ACTIVACIÓN/DESACTIVACIÓN
+    function inyectarEstructuraAnuncio(id, url="", tiempo="15", activo=true) {
         const div = document.createElement('div');
         div.className = "ad-item";
         div.id = `ad_box_${id}`;
+        
+        const previewSrc = obtenerMiniaturaUrl(url);
+        const hasPreview = previewSrc !== "";
+
         div.innerHTML = `
-            <div class="form-group">
-                <label>Enlace de Imagen o YouTube:</label>
-                <input type="text" class="input-ad-url" value="${url}" placeholder="https://...">
-            </div>
-            <div class="form-group" style="margin-bottom: 0; display:flex; gap:15px; align-items:center;">
-                <div style="flex:1;">
-                    <label>Segundos:</label>
-                    <input type="number" class="input-ad-time" value="${tiempo}" min="3">
+            <div class="ad-row-main">
+                <div class="ad-preview-box" id="preview_img_box_${id}">
+                    ${hasPreview ? `<img src="${previewSrc}" onerror="this.style.display='none'; document.getElementById('no_img_${id}').style.display='block';">` : ''}
+                    <div class="no-img" id="no_img_${id}" style="display: ${hasPreview ? 'none' : 'block'};">Sin vista previa</div>
                 </div>
-                <button class="btn btn-danger" style="margin-top:20px;" onclick="eliminarNodoAd(${id})">Eliminar</button>
+                
+                <div class="ad-fields">
+                    <div class="form-group">
+                        <label>Enlace de Imagen o YouTube:</label>
+                        <input type="text" class="input-ad-url" value="${url}" placeholder="https://..." oninput="actualizarMiniaturaDinamica(${id}, this.value)">
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:15px; align-items:center; justify-content: space-between; flex-wrap: wrap;">
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <div style="width: 80px;">
+                        <label class="form-group"><span style="font-size: 0.85rem; color: var(--text-muted);">Segundos:</span></label>
+                        <input type="number" class="input-ad-time" value="${tiempo}" min="3" style="padding: 6px 10px;">
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <label class="switch-container">
+                            <div class="switch">
+                                <input type="checkbox" class="input-ad-status" ${activo ? 'checked' : ''}>
+                                <span class="slider"></span>
+                            </div>
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">Activo</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <button class="btn btn-danger" style="min-height: 36px; padding: 6px 15px; margin-top:10px;" onclick="eliminarNodoAd(${id})">Eliminar</button>
             </div>`;
         document.getElementById('contenedorAnuncios').appendChild(div);
     }
 
+    // Actualiza la foto/miniatura mientras el usuario escribe o pega un link
+    function actualizarMiniaturaDinamica(id, url) {
+        const box = document.getElementById(`preview_img_box_${id}`);
+        const noImgLabel = document.getElementById(`no_img_${id}`);
+        const src = obtenerMiniaturaUrl(url.trim());
+
+        // Limpiar imágenes previas dentro de la caja
+        const imgExistente = box.querySelector('img');
+        if(imgExistente) imgExistente.remove();
+
+        if (src) {
+            const nuevaImg = document.createElement('img');
+            nuevaImg.src = src;
+            nuevaImg.onerror = () => {
+                nuevaImg.style.display = 'none';
+                noImgLabel.style.display = 'block';
+            };
+            box.insertBefore(nuevaImg, noImgLabel);
+            noImgLabel.style.display = 'none';
+        } else {
+            noImgLabel.style.display = 'block';
+        }
+    }
+
     function agregarNuevoAnuncioVacio() {
         let idSiguiente = document.querySelectorAll('.ad-item').length;
-        inyectarEstructuraAnuncio(idSiguiente, "", "15");
+        inyectarEstructuraAnuncio(idSiguiente, "", "15", true);
     }
 
     function eliminarNodoAd(id) {
@@ -445,23 +593,26 @@
         if(el) el.remove();
     }
 
+    // FUNCIÓN GUARDAR MODIFICADA PARA EXTRAER ADEMÁS EL ESTADO DEL SWITCH (ACTIVO TRUE/FALSE)
     function guardarTodosLosAnuncios() {
         let lista = [];
         const urls = document.querySelectorAll('.input-ad-url');
         const tiempos = document.querySelectorAll('.input-ad-time');
+        const estados = document.querySelectorAll('.input-ad-status');
 
         urls.forEach((el, index) => {
             if(el.value.trim() !== "") {
                 lista.push({
                     url: el.value.trim(),
-                    tiempo: tiempos[index].value || "15"
+                    tiempo: tiempos[index].value || "15",
+                    activo: estados[index].checked // Guarda true si está encendido, false si está apagado
                 });
             }
         });
 
         database.ref('anunciosList').set(lista, err => {
             if(err) alert("Fallo al guardar anuncios");
-            else alert("¡Anuncios guardados exitosamente!");
+            else alert("¡Anuncios guardados exitosamente con sus estados!");
         });
     }
 
