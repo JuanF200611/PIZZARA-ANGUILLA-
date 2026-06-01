@@ -330,7 +330,6 @@
             document.getElementById('marqueeText').innerText = snap.val() || "BIENVENIDOS A ANGUILLA LOTTERY";
         });
 
-        // Escucha del tiempo de rotación configurado en el Admin
         database.ref('configuracion/tiempoPantalla').on('value', snap => {
             if(snap.val()) {
                 tiempoRotacionGlobal = parseInt(snap.val()) * 1000;
@@ -350,7 +349,7 @@
             });
         });
 
-        // INTERCEPCIÓN Y OPTIMIZACIÓN EN VIVO CONTROLADA
+        // ESCUCHA EN VIVO CORREGIDA SIN SONIDO PARA HACER AUTOPLAY OBLIGATORIO
         database.ref('transmisionVivo').on('value', snap => {
             if (!sistemaIniciado) return; 
             
@@ -370,7 +369,6 @@
                 vFeat.classList.add('hidden');
                 vAds.classList.remove('hidden');
 
-                // Forzar 100% de la pantalla removiendo panel lateral para el streaming en vivo
                 sidePanelAds.style.display = "none";
                 mainBoxArea.style.width = "100%";
 
@@ -378,9 +376,13 @@
                 let embedUrl = rawUrl.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/");
                 if(embedUrl.includes("?")) { embedUrl = embedUrl.split("?")[0]; }
 
+                // Modificado: Se añade obligatoriamente &mute=1 y enablejsapi=1 junto a allow="autoplay"
                 boxAd.innerHTML = `
                     <div class="live-indicator">● EN VIVO</div>
-                    <iframe src="${embedUrl}?autoplay=1&mute=0&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;"></iframe>
+                    <iframe src="${embedUrl}?autoplay=1&mute=1&controls=0&rel=0&enablejsapi=1" 
+                            allow="autoplay; encrypted-media" 
+                            style="width:100%; height:100%; border:none;">
+                    </iframe>
                 `;
             } else {
                 if (enTransmisionVivo) {
@@ -389,7 +391,6 @@
                     gridPage = 0;
                     currentView = 0;
                     
-                    // Restaurar propiedades de la sección comercial estándar
                     sidePanelAds.style.display = "flex";
                     mainBoxArea.style.width = "1190px";
 
@@ -586,11 +587,9 @@
             
             sistemaIniciado = true;
             
-            // Verificar si el administrador ya estaba transmitiendo en vivo antes de que terminara el Splash Screen
             database.ref('transmisionVivo').once('value', snap => {
                 const live = snap.val();
                 if(live && live.activo === true) {
-                    // Si está en vivo, no inicia la rotación ordinaria de pantallas
                     database.ref('transmisionVivo').getRef().set(live); 
                 } else {
                     renderGrid();
