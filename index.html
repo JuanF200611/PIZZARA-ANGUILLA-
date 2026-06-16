@@ -185,7 +185,7 @@
         background: radial-gradient(circle at 35% 35%, #ffffff 0%, #f8fafc 35%, #e2e8f0 70%, #cbd5e1 100%);
         border: 4px solid rgba(15, 23, 42, 0.9); border-radius: 50%;
         display: flex; align-items: center; justify-content: center; font-size: 100px; font-weight: 900; color: #0f172a;
-        box-shadow: inset -10px -10px 25px rgba(0,0,0,0.12), inset 6px 6px 15px rgba(255,255,255,0.9), 0 20px 35px rgba(0,0,0,0.35); 
+        box-shadow: inset -10px -10px 25px rgba(0,0,0,0.122), inset 6px 6px 15px rgba(255,255,255,0.9), 0 20px 35px rgba(0,0,0,0.35); 
         animation: dropIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
     }
     .ball-small {
@@ -300,6 +300,9 @@
     let enTransmisionVivo = false;
     let sistemaIniciado = false; 
     let tiempoRotacionGlobal = 15000; // Por defecto 15s
+    
+    // Almacenará la diferencia en milisegundos entre el dispositivo y los servidores de Google/Firebase
+    let serverTimeOffset = 0; 
 
     function dimensionarPantalla() {
         const baseWidth = 1920;
@@ -316,13 +319,19 @@
     
     window.addEventListener('resize', dimensionarPantalla);
 
+    // Obtener fecha formateada calculada con la hora real de Internet
     function getFormatDate(offsetDays = 0) {
-        const d = new Date();
+        const d = new Date(Date.now() + serverTimeOffset);
         d.setDate(d.getDate() - offsetDays);
         return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     }
 
     function inicializarDatos() {
+        // Escucha del desfase de tiempo del servidor de Firebase (Evita desconfiguración del TV Box)
+        database.ref('.info/serverTimeOffset').on('value', snap => {
+            serverTimeOffset = snap.val() || 0;
+        });
+
         const hoyStr = getFormatDate(0);
         const ayerStr = getFormatDate(1);
 
@@ -407,7 +416,7 @@
 
     function procesarSorteos(dataHoy, dataAyer) {
         let finalSorteos = [];
-        const ahora = new Date();
+        const ahora = new Date(Date.now() + serverTimeOffset);
         const horaAct = { hrs: ahora.getHours(), mins: ahora.getMinutes() };
 
         dataHoy.forEach((sHoy, index) => {
@@ -559,8 +568,9 @@
         rotationInterval = setInterval(rotateDisplay, nextTime);
     }
 
+    // Actualizar el reloj visual superior utilizando la hora real calculada
     function updateDateTime() {
-        const now = new Date();
+        const now = new Date(Date.now() + serverTimeOffset);
         const hrs = now.getHours() % 12 || 12;
         const mins = now.getMinutes().toString().padStart(2, '0');
         const secs = now.getSeconds().toString().padStart(2, '0');
