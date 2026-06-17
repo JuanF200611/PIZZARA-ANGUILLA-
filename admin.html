@@ -193,7 +193,7 @@
             padding: 0 !important;
         }
 
-        /* ESTILOS NUEVOS PARA ANUNCIOS CON VISTA PREVIA Y SWITCH */
+        /* ANUNCIOS CON VISTA PREVIA Y SWITCH */
         .ad-item { 
             background: #171c2e; 
             padding: 15px; 
@@ -220,8 +220,9 @@
             justify-content: center;
             overflow: hidden;
             flex-shrink: 0;
+            position: relative;
         }
-        .ad-preview-box img {
+        .ad-preview-box img, .ad-preview-box video {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -241,7 +242,7 @@
         .form-group { margin-bottom: 0; }
         .form-group label { font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 4px; }
 
-        /* Estilos del Switch de activación */
+        /* Switch de activación */
         .switch-container {
             display: flex;
             align-items: center;
@@ -299,8 +300,11 @@
         @media (min-width: 900px) { .iframe-container-horizontal { height: 480px; } }
         @media (min-width: 1400px) { .iframe-container-horizontal { height: 560px; } }
 
-        .iframe-container-horizontal iframe { width: 100%; height: 100%; border: none; }
-        .preview-badge { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.85); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; color: var(--neon-blue); border: 1px solid var(--neon-blue); pointer-events: none; }
+        /* Monitor interactivo dual: Soporta iFrame o Video Directo */
+        .iframe-container-horizontal iframe, .iframe-container-horizontal video { width: 100%; height: 100%; border: none; display: none; }
+        .iframe-container-horizontal .active-player { display: block; }
+
+        .preview-badge { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.85); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; color: var(--neon-blue); border: 1px solid var(--neon-blue); pointer-events: none; z-index: 10; }
 
         @keyframes pulseLive { 0% { box-shadow: 0 0 5px var(--neon-red); } 100% { box-shadow: 0 0 20px var(--neon-red); } }
         
@@ -326,7 +330,8 @@
             </div>
             <div class="iframe-container-horizontal">
                 <div class="preview-badge">VISTA PREVIA DE LA PIZARRA ACTIVA</div>
-                <iframe src="index.html" id="monitorFrame"></iframe>
+                <iframe src="index.html" id="monitorFrame" class="active-player"></iframe>
+                <video id="monitorVideo" controls autoplay muted preload="auto"></video>
             </div>
         </div>
         
@@ -355,8 +360,8 @@
                 <h2>Control de Sorteos en Vivo</h2>
                 <div style="display: flex; flex-direction: column; gap: 12px;">
                     <div class="form-group" style="margin: 0;">
-                        <label>Enlace de YouTube Live:</label>
-                        <input type="text" id="streamingUrlInp" placeholder="https://www.youtube.com/watch?v=...">
+                        <label>Enlace de Transmisión (YouTube o Video Directo MP4/GitHub):</label>
+                        <input type="text" id="streamingUrlInp" placeholder="https://www.youtube.com/watch?v=... o .mp4">
                     </div>
                     <div style="display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;">
                         <button class="btn btn-danger" id="btnStopLive" onclick="detenerTransmision()">■ Detener</button>
@@ -415,9 +420,16 @@
         fetchConfiguracionGlobal();
     };
 
+    // FUNCIÓN DE RECARGA MODIFICADA PARA DETECTAR EL TIPO DE REPRODUCTOR ACTIVO
     function recargarMonitor() {
         const frame = document.getElementById('monitorFrame');
-        frame.src = frame.src;
+        const video = document.getElementById('monitorVideo');
+        if (frame.classList.contains('active-player')) {
+            frame.src = frame.src;
+        } else {
+            video.load();
+            video.play().catch(e => console.log("Auto-play prevenido:", e));
+        }
     }
 
     function fetchConfiguracionGlobal() {
@@ -448,7 +460,6 @@
             let contador = 0;
             snap.forEach(child => {
                 const data = child.val();
-                // Si la propiedad 'activo' no existe en la base de datos vieja, por defecto será true
                 const isActivo = data.activo !== undefined ? data.activo : true;
                 inyectarEstructuraAnuncio(contador, data.url, data.tiempo, isActivo);
                 contador++;
@@ -456,23 +467,47 @@
         });
     }
 
+    // MANEJADOR INTELEGENTE DEL EN VIVO: Si es MP4 cambia a etiqueta <video>, si es YouTube usa <iframe>
     function escucharEstadoTransmision() {
         database.ref('transmisionVivo').on('value', snap => {
             const data = snap.val();
             const btnStart = document.getElementById('btnStartLive');
             const btnStop = document.getElementById('btnStopLive');
             const inpUrl = document.getElementById('streamingUrlInp');
+            const frame = document.getElementById('monitorFrame');
+            const videoPlayer = document.getElementById('monitorVideo');
 
             if (data && data.activo === true) {
                 btnStart.innerText = "● EN VIVO EMITIENDO";
                 btnStart.classList.add('live-active');
                 if(!inpUrl.value) inpUrl.value = data.url || "";
                 btnStop.style.display = "inline-flex";
+
+                // Cambiar dinámicamente el reproductor de la vista previa
+                let url = data.url || "";
+                if (esVideoDirecto(url)) {
+                    frame.classList.remove('active-player');
+                    videoPlayer.classList.add('active-player');
+                    // Pre-cargar y reproducir inmediatamente
+                    videoPlayer.src = convertirLinkGitHub(url);
+                    videoPlayer.load();
+                    videoPlayer.play().catch(e => console.log("Esperando interacción:", e));
+                } else {
+                    videoPlayer.classList.remove('active-player');
+                    frame.classList.add('active-player');
+                    frame.src = obtenerEmbedYouTube(url);
+                }
             } else {
                 btnStart.innerText = "▶ Lanzar En Vivo Now";
                 btnStart.classList.remove('live-active');
                 btnStop.style.display = "none";
                 if(data && data.url) inpUrl.value = data.url;
+
+                // Retornar a la pizarra por defecto si se apaga el Live
+                videoPlayer.classList.remove('active-player');
+                videoPlayer.src = "";
+                frame.classList.add('active-player');
+                if(!frame.src.includes("index.html")) frame.src = "index.html";
             }
         });
     }
@@ -480,7 +515,7 @@
     function iniciarTransmision() {
         const urlValue = document.getElementById('streamingUrlInp').value.trim();
         if(!urlValue) {
-            alert("Por favor, introduce un enlace válido de YouTube.");
+            alert("Por favor, introduce un enlace válido de YouTube o archivo multimedia.");
             return;
         }
         database.ref('transmisionVivo').set({ activo: true, url: urlValue }, err => {
@@ -495,42 +530,73 @@
         });
     }
 
-    // FUNCIÓN PARA EXTRAER MINIATURAS (IMÁGENES O YOUTUBE)
-    function obtenerMiniaturaUrl(url) {
-        if (!url) return "";
-        
-        // Comprobar si es un enlace de YouTube estándar o shortener
-        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-        const match = url.match(regExp);
-        
-        if (match && match[2].length === 11) {
-            // Retorna la miniatura por defecto de alta calidad de YouTube
-            return `https://img.youtube.com/vi/${match[2]}/mqdefault.jpg`;
+    // COMPROBACIÓN REFORZADA PARA FORMATOS DIRECTOS O ENLACES DE GITHUB
+    function esVideoDirecto(url) {
+        if (!url) return false;
+        return url.includes('github.com') || url.includes('raw.githubusercontent') || /\.(mp4|webm|ogg|mov)$/i.test(url);
+    }
+
+    // CONVERTIDOR INTERNO PARA ENLACES DE VIDEO DE GITHUB A LINK RAW/DIRECTO
+    function convertirLinkGitHub(url) {
+        if (url.includes('github.com') && !url.includes('raw.githubusercontent.com') && !url.includes('?raw=true')) {
+            if(url.includes('/blob/')) {
+                return url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
+            }
+            return url + "?raw=true";
         }
-        
-        // Si no es youtube, asume que es un enlace directo de imagen normal
         return url;
     }
 
-    // FUNCIÓN ACTUALIZADA CON VISTA PREVIA DINÁMICA Y BOTÓN DE ACTIVACIÓN/DESACTIVACIÓN
+    // FORMATEADOR DE LINKS YOUTUBE A EMBED CORECTO
+    function obtenerEmbedYouTube(url) {
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        if (match && match[2].length === 11) {
+            return `https://www.youtube.com/embed/${match[2]}?autoplay=1&mute=1`;
+        }
+        return url;
+    }
+
+    // FUNCIÓN PARA EXTRAER MINIATURAS (YOUTUBE, IMÁGENES O VIDEOS MP4/GITHUB)
+    function obtenerMiniaturaUrl(url) {
+        if (!url) return "";
+        
+        // Si es video directo o GitHub, devolvemos la url procesada para cargar el primer frame
+        if (esVideoDirecto(url)) {
+            return convertirLinkGitHub(url);
+        }
+
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        if (match && match[2].length === 11) {
+            return `https://img.youtube.com/vi/${match[2]}/mqdefault.jpg`;
+        }
+        return url;
+    }
+
+    // COMPONENTE DE ANUNCIO ADAPTADO A VISTA PREVIA MULTIMEDIA DUAL
     function inyectarEstructuraAnuncio(id, url="", tiempo="15", activo=true) {
         const div = document.createElement('div');
         div.className = "ad-item";
         div.id = `ad_box_${id}`;
         
-        const previewSrc = obtenerMiniaturaUrl(url);
-        const hasPreview = previewSrc !== "";
+        const srcProcessed = obtenerMiniaturaUrl(url.trim());
+        const isVid = esVideoDirecto(url);
+        const hasPreview = srcProcessed !== "";
 
         div.innerHTML = `
             <div class="ad-row-main">
                 <div class="ad-preview-box" id="preview_img_box_${id}">
-                    ${hasPreview ? `<img src="${previewSrc}" onerror="this.style.display='none'; document.getElementById('no_img_${id}').style.display='block';">` : ''}
+                    ${hasPreview ? (isVid ? 
+                        `<video src="${srcProcessed}" preload="metadata" muted playsinline onerror="this.style.display='none'; document.getElementById('no_img_${id}').style.display='block';"></video>` : 
+                        `<img src="${srcProcessed}" onerror="this.style.display='none'; document.getElementById('no_img_${id}').style.display='block';">`
+                    ) : ''}
                     <div class="no-img" id="no_img_${id}" style="display: ${hasPreview ? 'none' : 'block'};">Sin vista previa</div>
                 </div>
                 
                 <div class="ad-fields">
                     <div class="form-group">
-                        <label>Enlace de Imagen o YouTube:</label>
+                        <label>Enlace de Imagen, YouTube o GitHub (MP4):</label>
                         <input type="text" class="input-ad-url" value="${url}" placeholder="https://..." oninput="actualizarMiniaturaDinamica(${id}, this.value)">
                     </div>
                 </div>
@@ -559,24 +625,40 @@
         document.getElementById('contenedorAnuncios').appendChild(div);
     }
 
-    // Actualiza la foto/miniatura mientras el usuario escribe o pega un link
+    // ACTUALIZACIÓN DINÁMICA DE LA VISTA PREVIA (Detecta si es video o imagen al instante)
     function actualizarMiniaturaDinamica(id, url) {
         const box = document.getElementById(`preview_img_box_${id}`);
         const noImgLabel = document.getElementById(`no_img_${id}`);
-        const src = obtenerMiniaturaUrl(url.trim());
+        url = url.trim();
+        const src = obtenerMiniaturaUrl(url);
 
-        // Limpiar imágenes previas dentro de la caja
+        // Limpiar elementos multimedia previos
         const imgExistente = box.querySelector('img');
+        const vidExistente = box.querySelector('video');
         if(imgExistente) imgExistente.remove();
+        if(vidExistente) vidExistente.remove();
 
         if (src) {
-            const nuevaImg = document.createElement('img');
-            nuevaImg.src = src;
-            nuevaImg.onerror = () => {
-                nuevaImg.style.display = 'none';
-                noImgLabel.style.display = 'block';
-            };
-            box.insertBefore(nuevaImg, noImgLabel);
+            if (esVideoDirecto(url)) {
+                const nuevoVid = document.createElement('video');
+                nuevoVid.src = src;
+                nuevoVid.preload = "metadata";
+                nuevoVid.muted = true;
+                nuevoVid.playsInline = true;
+                nuevoVid.onerror = () => {
+                    nuevoVid.style.display = 'none';
+                    noImgLabel.style.display = 'block';
+                };
+                box.insertBefore(nuevoVid, noImgLabel);
+            } else {
+                const nuevaImg = document.createElement('img');
+                nuevaImg.src = src;
+                nuevaImg.onerror = () => {
+                    nuevaImg.style.display = 'none';
+                    noImgLabel.style.display = 'block';
+                };
+                box.insertBefore(nuevaImg, noImgLabel);
+            }
             noImgLabel.style.display = 'none';
         } else {
             noImgLabel.style.display = 'block';
@@ -593,7 +675,6 @@
         if(el) el.remove();
     }
 
-    // FUNCIÓN GUARDAR MODIFICADA PARA EXTRAER ADEMÁS EL ESTADO DEL SWITCH (ACTIVO TRUE/FALSE)
     function guardarTodosLosAnuncios() {
         let lista = [];
         const urls = document.querySelectorAll('.input-ad-url');
@@ -605,7 +686,7 @@
                 lista.push({
                     url: el.value.trim(),
                     tiempo: tiempos[index].value || "15",
-                    activo: estados[index].checked // Guarda true si está encendido, false si está apagado
+                    activo: estados[index].checked
                 });
             }
         });
