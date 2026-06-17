@@ -300,7 +300,7 @@
         @media (min-width: 900px) { .iframe-container-horizontal { height: 480px; } }
         @media (min-width: 1400px) { .iframe-container-horizontal { height: 560px; } }
 
-        /* Monitor interactivo dual: Soporta iFrame o Video Directo */
+        /* Monitor interactivo dual */
         .iframe-container-horizontal iframe, .iframe-container-horizontal video { width: 100%; height: 100%; border: none; display: none; }
         .iframe-container-horizontal .active-player { display: block; }
 
@@ -342,7 +342,7 @@
                 <div class="form-group" style="margin-bottom: 12px;">
                     <label>Tiempo de duración por Pantalla / Rotación (Segundos):</label>
                     <div style="display: flex; gap: 10px;">
-                        <input type="number" id="globalTimeInp" placeholder="Ej: 15" min="3" style="max-width: 150px;">
+                        <input type="number" id="globalTimeInp" placeholder="Ej: 15" min="5" style="max-width: 150px;">
                         <button class="btn btn-orange" onclick="guardarTiempoGlobal()">Actualizar Tiempo</button>
                     </div>
                 </div>
@@ -406,6 +406,8 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
+    let anunciosLocales = []; // Almacenará la lista en memoria para no romper vistas dinámicas al escribir
+
     const CRONOGRAMA_HORAS = [
         "08:00AM", "09:00AM", "10:00AM", "11:00AM", "12:00PM", 
         "01:00PM", "02:00PM", "03:00PM", "04:00PM", "05:00PM", 
@@ -415,12 +417,12 @@
     window.onload = () => {
         document.getElementById('targetDate').value = new Date().toISOString().split('T')[0];
         fetchSorteos();
-        fetchCintilloYAnuncios();
+        escucharCintillo();
+        escucharAnuncios();
         escucharEstadoTransmision();
         fetchConfiguracionGlobal();
     };
 
-    // FUNCIÓN DE RECARGA MODIFICADA PARA DETECTAR EL TIPO DE REPRODUCTOR ACTIVO
     function recargarMonitor() {
         const frame = document.getElementById('monitorFrame');
         const video = document.getElementById('monitorVideo');
@@ -440,8 +442,8 @@
 
     function guardarTiempoGlobal() {
         const tiempo = document.getElementById('globalTimeInp').value.trim();
-        if(!tiempo || tiempo < 3) {
-            alert("Por favor introduce un tiempo válido (mínimo 3 segundos).");
+        if(!tiempo || tiempo < 5) {
+            alert("Por favor introduce un tiempo válido (Recomendado mínimo 5 segundos por las transiciones).");
             return;
         }
         database.ref('configuracion/tiempoPantalla').set(parseInt(tiempo), err => {
@@ -449,25 +451,37 @@
         });
     }
 
-    function fetchCintilloYAnuncios() {
+    function escucharCintillo() {
         database.ref('ticker').on('value', snap => {
-            if(snap.val()) document.getElementById('marqueeInp').value = snap.val();
+            if(snap.val() !== null && document.activeElement !== document.getElementById('marqueeInp')) {
+                document.getElementById('marqueeInp').value = snap.val();
+            }
         });
+    }
 
-        database.ref('anunciosList').once('value', snap => {
+    function escucharAnuncios() {
+        // Usamos .on en vez de .once para ver reflejados cambios remotos si la lista cambia externa o inicialmente
+        database.ref('anunciosList').on('value', snap => {
+            // Evitar redibujar si el usuario está editando activamente inputs en la sección anuncios
+            if (document.activeElement && (document.activeElement.classList.contains('input-ad-url') || document.activeElement.classList.contains('input-ad-time'))) {
+                return;
+            }
+            
             const container = document.getElementById('contenedorAnuncios');
             container.innerHTML = "";
+            anunciosLocales = [];
             let contador = 0;
+            
             snap.forEach(child => {
                 const data = child.val();
                 const isActivo = data.activo !== undefined ? data.activo : true;
+                anunciosLocales.push({ url: data.url, tiempo: data.tiempo, activo: isActivo });
                 inyectarEstructuraAnuncio(contador, data.url, data.tiempo, isActivo);
                 contador++;
             });
         });
     }
 
-    // MANEJADOR INTELEGENTE DEL EN VIVO: Si es MP4 cambia a etiqueta <video>, si es YouTube usa <iframe>
     function escucharEstadoTransmision() {
         database.ref('transmisionVivo').on('value', snap => {
             const data = snap.val();
@@ -480,15 +494,13 @@
             if (data && data.activo === true) {
                 btnStart.innerText = "● EN VIVO EMITIENDO";
                 btnStart.classList.add('live-active');
-                if(!inpUrl.value) inpUrl.value = data.url || "";
+                if(document.activeElement !== inpUrl) inpUrl.value = data.url || "";
                 btnStop.style.display = "inline-flex";
 
-                // Cambiar dinámicamente el reproductor de la vista previa
                 let url = data.url || "";
                 if (esVideoDirecto(url)) {
                     frame.classList.remove('active-player');
                     videoPlayer.classList.add('active-player');
-                    // Pre-cargar y reproducir inmediatamente
                     videoPlayer.src = convertirLinkGitHub(url);
                     videoPlayer.load();
                     videoPlayer.play().catch(e => console.log("Esperando interacción:", e));
@@ -501,9 +513,8 @@
                 btnStart.innerText = "▶ Lanzar En Vivo Now";
                 btnStart.classList.remove('live-active');
                 btnStop.style.display = "none";
-                if(data && data.url) inpUrl.value = data.url;
+                if(data && data.url && document.activeElement !== inpUrl) inpUrl.value = data.url;
 
-                // Retornar a la pizarra por defecto si se apaga el Live
                 videoPlayer.classList.remove('active-player');
                 videoPlayer.src = "";
                 frame.classList.add('active-player');
@@ -530,13 +541,11 @@
         });
     }
 
-    // COMPROBACIÓN REFORZADA PARA FORMATOS DIRECTOS O ENLACES DE GITHUB
     function esVideoDirecto(url) {
         if (!url) return false;
         return url.includes('github.com') || url.includes('raw.githubusercontent') || /\.(mp4|webm|ogg|mov)$/i.test(url);
     }
 
-    // CONVERTIDOR INTERNO PARA ENLACES DE VIDEO DE GITHUB A LINK RAW/DIRECTO
     function convertirLinkGitHub(url) {
         if (url.includes('github.com') && !url.includes('raw.githubusercontent.com') && !url.includes('?raw=true')) {
             if(url.includes('/blob/')) {
@@ -547,7 +556,6 @@
         return url;
     }
 
-    // FORMATEADOR DE LINKS YOUTUBE A EMBED CORECTO
     function obtenerEmbedYouTube(url) {
         const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
         const match = url.match(regExp);
@@ -557,14 +565,9 @@
         return url;
     }
 
-    // FUNCIÓN PARA EXTRAER MINIATURAS (YOUTUBE, IMÁGENES O VIDEOS MP4/GITHUB)
     function obtenerMiniaturaUrl(url) {
         if (!url) return "";
-        
-        // Si es video directo o GitHub, devolvemos la url procesada para cargar el primer frame
-        if (esVideoDirecto(url)) {
-            return convertirLinkGitHub(url);
-        }
+        if (esVideoDirecto(url)) return convertirLinkGitHub(url);
 
         const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
         const match = url.match(regExp);
@@ -574,7 +577,6 @@
         return url;
     }
 
-    // COMPONENTE DE ANUNCIO ADAPTADO A VISTA PREVIA MULTIMEDIA DUAL
     function inyectarEstructuraAnuncio(id, url="", tiempo="15", activo=true) {
         const div = document.createElement('div');
         div.className = "ad-item";
@@ -625,14 +627,12 @@
         document.getElementById('contenedorAnuncios').appendChild(div);
     }
 
-    // ACTUALIZACIÓN DINÁMICA DE LA VISTA PREVIA (Detecta si es video o imagen al instante)
     function actualizarMiniaturaDinamica(id, url) {
         const box = document.getElementById(`preview_img_box_${id}`);
         const noImgLabel = document.getElementById(`no_img_${id}`);
         url = url.trim();
         const src = obtenerMiniaturaUrl(url);
 
-        // Limpiar elementos multimedia previos
         const imgExistente = box.querySelector('img');
         const vidExistente = box.querySelector('video');
         if(imgExistente) imgExistente.remove();
@@ -661,6 +661,7 @@
             }
             noImgLabel.style.display = 'none';
         } else {
+            box.querySelectorAll('img, video').forEach(el => el.remove());
             noImgLabel.style.display = 'block';
         }
     }
@@ -677,16 +678,18 @@
 
     function guardarTodosLosAnuncios() {
         let lista = [];
-        const urls = document.querySelectorAll('.input-ad-url');
-        const tiempos = document.querySelectorAll('.input-ad-time');
-        const estados = document.querySelectorAll('.input-ad-status');
+        const boxes = document.querySelectorAll('.ad-item');
 
-        urls.forEach((el, index) => {
-            if(el.value.trim() !== "") {
+        boxes.forEach((box) => {
+            const urlInput = box.querySelector('.input-ad-url');
+            const timeInput = box.querySelector('.input-ad-time');
+            const statusInput = box.querySelector('.input-ad-status');
+
+            if(urlInput && urlInput.value.trim() !== "") {
                 lista.push({
-                    url: el.value.trim(),
-                    tiempo: tiempos[index].value || "15",
-                    activo: estados[index].checked
+                    url: urlInput.value.trim(),
+                    tiempo: timeInput.value || "15",
+                    activo: statusInput.checked
                 });
             }
         });
@@ -710,8 +713,17 @@
         listado.innerHTML = "<p style='color:#a0aec0;'>Buscando registros...</p>";
         document.getElementById('btnInit').style.display = 'none';
 
+        // Desvincular listeners anteriores para evitar fugas de memoria y duplicados
+        database.ref(`sorteos/${fecha}`).off();
+
         database.ref(`sorteos/${fecha}`).on('value', snapshot => {
             const data = snapshot.val();
+            
+            // Si el usuario está escribiendo números en los bolos, NO re-renderizar la lista completa.
+            if (document.activeElement && document.activeElement.classList.contains('ball-inp')) {
+                return;
+            }
+
             listado.innerHTML = "";
 
             if (data) {
@@ -725,7 +737,7 @@
                                 <input type="number" pattern="[0-9]*" inputmode="numeric" class="ball-inp" id="n_${idx}_1" value="${s.premios?.[1] || ""}" oninput="if(this.value.length > 2) this.value = this.value.slice(0,2)">
                                 <input type="number" pattern="[0-9]*" inputmode="numeric" class="ball-inp" id="n_${idx}_2" value="${s.premios?.[2] || ""}" oninput="if(this.value.length > 2) this.value = this.value.slice(0,2)">
                             </div>
-                            <button class="btn btn-green" style="min-width: 60px; padding: 8px;" onclick="actualizarSorteo(${idx})">Ok</button>
+                            <button class="btn btn-green" id="btn_ok_${idx}" style="min-width: 60px; padding: 8px;" onclick="actualizarSorteo(${idx})">Ok</button>
                         </div>`;
                 });
             } else {
@@ -748,8 +760,16 @@
         const p0 = document.getElementById(`n_${idx}_0`).value;
         const p1 = document.getElementById(`n_${idx}_1`).value;
         const p2 = document.getElementById(`n_${idx}_2`).value;
+        
+        const btn = document.getElementById(`btn_ok_${idx}`);
+        btn.innerText = "⏳";
+        btn.disabled = true;
 
-        database.ref(`sorteos/${fecha}/${idx}/premios`).set([p0, p1, p2]);
+        database.ref(`sorteos/${fecha}/${idx}/premios`).set([p0, p1, p2], (err) => {
+            btn.innerText = "Ok";
+            btn.disabled = false;
+            if(err) alert("Error al guardar bolo.");
+        });
     }
 </script>
 </body>
