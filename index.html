@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 <title>Anguilla Lottery | Sistema Multipantalla Premium</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght=600;700;800;900&display=swap" rel="stylesheet">
 <style>
     :root {
         --anguilla-orange: #ff7900;
@@ -201,7 +201,6 @@
 
     .waiting-text { color: #dc2626; font-size: 26px; font-weight: 900; text-align: center; animation: pulse 1.2s infinite alternate; width: 100%; margin: auto 0; letter-spacing: 0.5px; }
 
-    /* --- NUEVO SELLO EN VIVO --- */
     .live-indicator {
         position: absolute;
         top: 25px; left: 25px;
@@ -216,7 +215,6 @@
         display: inline-flex; align-items: center; gap: 8px;
     }
 
-    /* --- ANIMACIONES --- */
     @keyframes dropIn { 0% { transform: scale(0.6) translateY(50px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
     @keyframes pulse { 0% { opacity: 0.4; } 100% { opacity: 1; } }
     @keyframes floating {
@@ -230,8 +228,8 @@
 
 <div id="splash-screen">
     <img src="logo.png" class="splash-logo" alt="Logo Empresa">
-    <div class="splash-text">INICIANDO SISTEMA</div>
-    <div class="splash-sub">POR FAVOR ESPERE...</div>
+    <div class="splash-text">SISTEMA ANTI-DESCONFIGURACIÓN</div>
+    <div class="splash-sub" id="splash-status">FORZANDO HORA OFICIAL DE RD...</div>
 </div>
 
 <video src="https://assets.mixkit.co/videos/preview/mixkit-blank-video-background-43048-large.mp4" 
@@ -243,7 +241,7 @@
     <div class="topbar">
         <div class="logo-main-area"><img src="logo.png" alt="Logo"></div>
         <div class="header-info">
-            <div class="header-clock" id="liveClock">00:00:00</div>
+            <div class="header-clock" id="liveClock">00:00:00 AM</div>
             <div class="date-header">
                 <div class="main-date" id="currentDay">...</div>
                 <div class="sub-date" id="currentMonth">...</div>
@@ -297,27 +295,62 @@
     let rotationInterval = null;
     let enTransmisionVivo = false;
     let sistemaIniciado = false; 
-    let tiempoRotacionGlobal = 15000; // Por defecto 15s
+    let tiempoRotacionGlobal = 15000; 
+
+    // --- ESCUDO TOTAL CONTRA TV BOX BLOQUEADAS ---
+    let actualRDTime = null; // Guardará el objeto Date exacto calculado internamente
+
+    async function forzarHoraRDDesdeInternet() {
+        try {
+            document.getElementById('splash-status').innerText = "SINCRONIZANDO CON RELOJ ATÓMICO...";
+            
+            // Consultamos la hora universal pura (UTC) para evitar depender de las zonas del sistema de la caja
+            const response = await fetch('https://worldtimeapi.org/api/timezone/Etc/UTC');
+            const data = await response.json();
+            
+            if (data && data.utc_datetime) {
+                const utcMillis = new Date(data.utc_datetime).getTime();
+                // Forzamos manualmente el desfase de República Dominicana (UTC-4) aplicando la matemática pura
+                const desfasamientoRD = 4 * 60 * 60 * 1000; 
+                const milisegundosRD = utcMillis - desfasamientoRD;
+
+                // Guardamos la diferencia exacta con el reloj corrupto del sistema de la TV Box
+                window.globalTimeOffset = milisegundosRD - Date.now();
+                console.log("Calibración matemática forzada completada con éxito.");
+            }
+        } catch (err) {
+            console.error("Fallo al consultar reloj atómico, usando contingencia local:", err);
+            window.globalTimeOffset = 0;
+        }
+    }
+
+    // Devuelve un objeto Date modificado que siempre tiene la hora exacta real de RD
+    function getObjetoFechaRD() {
+        const offset = window.globalTimeOffset || 0;
+        return new Date(Date.now() + offset);
+    }
 
     function dimensionarPantalla() {
-        const baseWidth = 1920;
-        const baseHeight = 1080;
-        const windowWidth = window.innerWidth;
-        const windowHeight = window.innerHeight;
-        
-        const scaleX = windowWidth / baseWidth;
-        const scaleY = windowHeight / baseHeight;
-        const elScale = Math.min(scaleX, scaleY);
-
-        document.getElementById('canvas-master').style.transform = `translate(-50%, -50%) scale(${elScale})`;
+        const baseWidth = 1920; const baseHeight = 1080;
+        const scaleX = window.innerWidth / baseWidth; const scaleY = window.innerHeight / baseHeight;
+        document.getElementById('canvas-master').style.transform = `translate(-50%, -50%) scale(${Math.min(scaleX, scaleY)})`;
     }
-    
     window.addEventListener('resize', dimensionarPantalla);
 
     function getFormatDate(offsetDays = 0) {
-        const d = new Date();
-        d.setDate(d.getDate() - offsetDays);
-        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        const d = getObjetoFechaRD();
+        if (offsetDays > 0) d.setTime(d.getTime() - (offsetDays * 24 * 60 * 60 * 1000));
+        
+        // Formateo manual e independiente de la configuración del navegador interno
+        const year = d.getUTCFullYear();
+        const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(d.getUTCDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    function getRDTime() {
+        const d = getObjetoFechaRD();
+        return { hrs: d.getUTCHours(), mins: d.getUTCMinutes() };
     }
 
     function inicializarDatos() {
@@ -329,87 +362,53 @@
         });
 
         database.ref('configuracion/tiempoPantalla').on('value', snap => {
-            if(snap.val()) {
-                tiempoRotacionGlobal = parseInt(snap.val()) * 1000;
-            }
+            if(snap.val()) tiempoRotacionGlobal = parseInt(snap.val()) * 1000;
         });
 
         database.ref('anunciosList').on('value', snap => {
-            ANUNCIOS = [];
-            snap.forEach(child => { ANUNCIOS.push(child.val()); });
+            ANUNCIOS = []; snap.forEach(child => { ANUNCIOS.push(child.val()); });
         });
 
         database.ref(`sorteos/${hoyStr}`).on('value', snapHoy => {
             const dataHoy = snapHoy.val() || [];
             database.ref(`sorteos/${ayerStr}`).once('value', snapAyer => {
-                const dataAyer = snapAyer.val() || [];
-                procesarSorteos(dataHoy, dataAyer);
+                procesarSorteos(dataHoy, snapAyer.val() || []);
             });
         });
 
         database.ref('transmisionVivo').on('value', snap => {
-            if (!sistemaIniciado) return; 
-            
+            if (!sistemaIniciado) return;
             const live = snap.val();
-            const vGrid = document.getElementById('view-grid');
-            const vFeat = document.getElementById('view-featured');
-            const vAds = document.getElementById('view-ads');
-            const boxAd = document.getElementById('adDisplay');
-            const mainBoxArea = document.getElementById('adMainBox');
-            const sidePanelAds = document.getElementById('sidePanelAds');
+            const vGrid = document.getElementById('view-grid'), vFeat = document.getElementById('view-featured'), vAds = document.getElementById('view-ads');
+            const boxAd = document.getElementById('adDisplay'), mainBoxArea = document.getElementById('adMainBox'), sidePanelAds = document.getElementById('sidePanelAds');
 
             if (live && live.activo === true) {
-                enTransmisionVivo = true;
-                clearInterval(rotationInterval); 
-                
-                vGrid.classList.add('hidden');
-                vFeat.classList.add('hidden');
-                vAds.classList.remove('hidden');
+                enTransmisionVivo = true; clearInterval(rotationInterval); 
+                vGrid.classList.add('hidden'); vFeat.classList.add('hidden'); vAds.classList.remove('hidden');
+                sidePanelAds.style.display = "none"; mainBoxArea.style.width = "100%";
 
-                sidePanelAds.style.display = "none";
-                mainBoxArea.style.width = "100%";
-
-                let rawUrl = live.url || "";
-                let embedUrl = rawUrl.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/");
-                if(embedUrl.includes("?")) { embedUrl = embedUrl.split("?")[0]; }
-
-                boxAd.innerHTML = `
-                    <div class="live-indicator">● EN VIVO</div>
-                    <iframe src="${embedUrl}?autoplay=1&mute=0&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;"></iframe>
-                `;
-            } else {
-                if (enTransmisionVivo) {
-                    enTransmisionVivo = false;
-                    boxAd.innerHTML = "";
-                    gridPage = 0;
-                    currentView = 0;
-                    
-                    sidePanelAds.style.display = "flex";
-                    mainBoxArea.style.width = "1190px";
-
-                    vGrid.classList.remove('hidden');
-                    vFeat.classList.add('hidden');
-                    vAds.classList.add('hidden');
-                    renderGrid();
-
-                    clearInterval(rotationInterval);
-                    rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
-                }
+                let embedUrl = (live.url || "").replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/");
+                if(embedUrl.includes("?")) embedUrl = embedUrl.split("?")[0];
+                boxAd.innerHTML = `<div class="live-indicator">● EN VIVO</div><iframe src="${embedUrl}?autoplay=1&mute=0&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;"></iframe>`;
+            } else if (enTransmisionVivo) {
+                enTransmisionVivo = false; boxAd.innerHTML = ""; gridPage = 0; currentView = 0;
+                sidePanelAds.style.display = "flex"; mainBoxArea.style.width = "1190px";
+                vGrid.classList.remove('hidden'); vFeat.classList.add('hidden'); vAds.classList.add('hidden');
+                renderGrid(); clearInterval(rotationInterval);
+                rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
             }
         });
     }
 
     function procesarSorteos(dataHoy, dataAyer) {
         let finalSorteos = [];
-        const ahora = new Date();
-        const horaAct = { hrs: ahora.getHours(), mins: ahora.getMinutes() };
+        const horaAct = getRDTime();
 
         dataHoy.forEach((sHoy, index) => {
             if(!sHoy) return;
-            
             let [h, mP] = sHoy.hora.split(":");
             let mSor = parseInt(mP.substring(0, 2));
-            let ampm = mP.substring(2).trim();
+            let ampm = mP.substring(2).trim().toUpperCase();
             let hSor = parseInt(h);
             if (ampm === "PM" && hSor !== 12) hSor += 12;
             if (ampm === "AM" && hSor === 12) hSor = 0;
@@ -417,43 +416,30 @@
             const tieneHoy = sHoy.premios && sHoy.premios[0] !== "" && sHoy.premios[0] !== undefined;
             const yaPasoHora = (horaAct.hrs > hSor || (horaAct.hrs === hSor && horaAct.mins >= mSor + 5));
 
-            let sorteoFinal = {
-                hour: sHoy.hora.replace(/(AM|PM)/, ' $1'),
-                key: index
-            };
+            let sorteoFinal = { hour: sHoy.hora.replace(/(AM|PM)/i, ' $1'), key: index };
 
             if (tieneHoy) {
-                sorteoFinal.day = "hoy";
-                sorteoFinal.date = "HOY";
+                sorteoFinal.day = "hoy"; sorteoFinal.date = "HOY";
                 sorteoFinal.nums = [sHoy.premios[0], sHoy.premios[1], sHoy.premios[2]];
                 sorteoFinal.isWaiting = false;
             } else if (yaPasoHora) {
-                sorteoFinal.day = "hoy";
-                sorteoFinal.date = "HOY";
-                sorteoFinal.nums = null;
-                sorteoFinal.isWaiting = true;
+                sorteoFinal.day = "hoy"; sorteoFinal.date = "HOY"; sorteoFinal.nums = null; sorteoFinal.isWaiting = true;
             } else {
                 const sAyer = dataAyer[index];
-                sorteoFinal.day = "ayer";
-                sorteoFinal.date = "AYER";
+                sorteoFinal.day = "ayer"; sorteoFinal.date = "AYER";
                 sorteoFinal.nums = (sAyer && sAyer.premios && sAyer.premios[0] !== "") ? [sAyer.premios[0], sAyer.premios[1], sAyer.premios[2]] : null;
                 sorteoFinal.isWaiting = false;
             }
             finalSorteos.push(sorteoFinal);
         });
-
         SORTEOS = finalSorteos;
-        if (sistemaIniciado && !enTransmisionVivo) {
-            renderGrid();
-        }
+        if (sistemaIniciado && !enTransmisionVivo) renderGrid();
     }
 
     function renderGrid() {
-        const grid = document.getElementById('mainGrid');
-        grid.innerHTML = '';
+        const grid = document.getElementById('mainGrid'); grid.innerHTML = '';
         if (SORTEOS.length === 0) return;
-        const start = gridPage * 8;
-        const pageItems = SORTEOS.slice(start, start + 8);
+        const pageItems = SORTEOS.slice(gridPage * 8, (gridPage * 8) + 8);
 
         pageItems.forEach(s => {
             const card = document.createElement('div');
@@ -472,115 +458,105 @@
     function generarPanelLateral(contenedorId) {
         let jugados = SORTEOS.filter(s => s.nums !== null && s.nums.length > 0);
         const panel = document.getElementById(contenedorId);
-        
         if (jugados.length === 0) {
             panel.innerHTML = '<div class="waiting-text">NO HAY SORTEOS PREVIOS</div>';
             return SORTEOS[0] || { hour: '--:--', date: 'HOY', nums: null };
         }
-        
         jugados.sort((a, b) => (a.day === b.day) ? b.key - a.key : (a.day === 'hoy' ? -1 : 1));
-        let last = jugados[0];
-        const historial = jugados.slice(1, 6); 
-        
-        panel.innerHTML = historial.map(s => `
+        panel.innerHTML = jugados.slice(1, 6).map(s => `
             <div class="side-row">
                 <div class="side-time">${s.hour} <small style="font-size:18px; display:block; color:#64748b; font-weight:700; margin-top:2px;">${s.date}</small></div>
                 <div style="display:flex; gap:10px;">
-                    <div class="ball-small">${s.nums[0]}</div>
-                    <div class="ball-small">${s.nums[1]}</div>
-                    <div class="ball-small">${s.nums[2]}</div>
+                    <div class="ball-small">${s.nums[0]}</div><div class="ball-small">${s.nums[1]}</div><div class="ball-small">${s.nums[2]}</div>
                 </div>
             </div>`).join('');
-        return last;
+        return jugados[0];
     }
 
     function renderFeatured() {
         let last = generarPanelLateral('sidePanelFeatured');
         document.getElementById('fTime').innerText = last.hour;
-        const fBalls = document.getElementById('fBalls');
-        fBalls.innerHTML = last.nums ? last.nums.map((n, i) => `<div class="ball-big" style="animation-delay: ${i * 0.12}s">${n}</div>`).join('') : '<div class="waiting-text">PROXIMO SORTEO</div>';
+        document.getElementById('fBalls').innerHTML = last.nums ? last.nums.map((n, i) => `<div class="ball-big" style="animation-delay: ${i * 0.12}s">${n}</div>`).join('') : '<div class="waiting-text">PROXIMO SORTEO</div>';
     }
 
     function renderMediaAd() {
         generarPanelLateral('sidePanelAds');
-        const box = document.getElementById('adDisplay');
-        box.innerHTML = "";
+        const box = document.getElementById('adDisplay'); box.innerHTML = "";
         if (ANUNCIOS.length === 0) {
-            box.innerHTML = "<div style='color:white; font-size:40px; font-weight:800; letter-spacing:1px;'>ANGUILLA LOTTERY</div>";
+            box.innerHTML = "<div style='color:white; font-size:40px; font-weight:800;'>ANGUILLA LOTTERY</div>";
             return tiempoRotacionGlobal; 
         }
         if (adIndex >= ANUNCIOS.length) adIndex = 0;
         const ad = ANUNCIOS[adIndex];
-        
         if (ad.url.includes('youtube.com') || ad.url.includes('youtu.be')) {
-            let embed = ad.url.replace("watch?v=", "embed/");
-            box.innerHTML = `<iframe src="${embed}?autoplay=1&mute=1&controls=0" allow="autoplay"></iframe>`;
+            box.innerHTML = `<iframe src="${ad.url.replace("watch?v=", "embed/")}?autoplay=1&mute=1&controls=0" allow="autoplay"></iframe>`;
         } else if (ad.url.match(/\.(mp4|webm|ogg|mov)$/i)) {
             box.innerHTML = `<video src="${ad.url}" autoplay muted playsinline></video>`;
         } else {
             box.innerHTML = `<img src="${ad.url}">`;
         }
-        let tiempoAsignado = (parseInt(ad.tiempo) || 15) * 1000;
-        adIndex++;
+        let tiempoAsignado = (parseInt(ad.tiempo) || 15) * 1000; adIndex++;
         return tiempoAsignado;
     }
 
     function rotateDisplay() {
         if (SORTEOS.length === 0 || enTransmisionVivo || !sistemaIniciado) return;
         clearInterval(rotationInterval);
-        const vGrid = document.getElementById('view-grid');
-        const vFeat = document.getElementById('view-featured');
-        const vAds = document.getElementById('view-ads');
+        const vGrid = document.getElementById('view-grid'), vFeat = document.getElementById('view-featured'), vAds = document.getElementById('view-ads');
         const totalPages = Math.ceil(SORTEOS.length / 8);
-
         vGrid.classList.add('hidden'); vFeat.classList.add('hidden'); vAds.classList.add('hidden');
         let nextTime = tiempoRotacionGlobal;
 
         if (currentView < totalPages - 1) {
-            gridPage++; currentView++;
-            vGrid.classList.remove('hidden');
-            renderGrid();
+            gridPage++; currentView++; vGrid.classList.remove('hidden'); renderGrid();
         } else if (currentView === totalPages - 1) {
-            currentView = 88; 
-            vFeat.classList.remove('hidden');
-            renderFeatured();
+            currentView = 88; vFeat.classList.remove('hidden'); renderFeatured();
         } else if (currentView === 88) {
-            currentView = 99; 
-            vAds.classList.remove('hidden');
-            nextTime = renderMediaAd();
+            currentView = 99; vAds.classList.remove('hidden'); nextTime = renderMediaAd();
         } else {
-            gridPage = 0; currentView = 0;
-            vGrid.classList.remove('hidden');
-            renderGrid();
+            gridPage = 0; currentView = 0; vGrid.classList.remove('hidden'); renderGrid();
         }
         rotationInterval = setInterval(rotateDisplay, nextTime);
     }
 
+    // Traduce y renderiza el reloj de forma nativa e inmune a los idiomas internos de la TV Box
     function updateDateTime() {
-        const now = new Date();
-        const hrs = now.getHours() % 12 || 12;
-        const mins = now.getMinutes().toString().padStart(2, '0');
-        const secs = now.getSeconds().toString().padStart(2, '0');
-        const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
-        document.getElementById('liveClock').innerText = `${hrs}:${mins}:${secs} ${ampm}`;
+        const d = getObjetoFechaRD();
+        
+        let hrs = d.getUTCHours();
+        const mins = String(d.getUTCMinutes()).padStart(2, '0');
+        const secs = String(d.getUTCSeconds()).padStart(2, '0');
+        const ampm = hrs >= 12 ? 'PM' : 'AM';
+        hrs = hrs % 12 || 12;
+        const hrsStr = String(hrs).padStart(2, '0');
+        
+        document.getElementById('liveClock').innerText = `${hrsStr}:${mins}:${secs} ${ampm}`;
+
         const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO'];
         const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
-        document.getElementById('currentDay').innerText = `${dias[now.getDay()]} ${now.getDate()}`;
-        document.getElementById('currentMonth').innerText = `${meses[now.getMonth()]} ${now.getFullYear()}`;
+
+        document.getElementById('currentDay').innerText = `${dias[d.getUTCDay()]} ${d.getUTCDate()}`;
+        document.getElementById('currentMonth').innerText = `${meses[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
     }
 
-    window.onload = () => {
+    window.onload = async () => {
         dimensionarPantalla();
+        
+        // Calibración matemática forzada por código
+        await forzarHoraRDDesdeInternet();
+        
         updateDateTime(); 
         setInterval(updateDateTime, 1000);
+        
         inicializarDatos();
         activarMantenerPantallaEncendida();
 
+        // Recalibración en background cada 15 minutos de forma invisible
+        setInterval(forzarHoraRDDesdeInternet, 900000);
+
         setTimeout(() => {
             const splash = document.getElementById('splash-screen');
-            splash.style.opacity = '0';
-            splash.style.visibility = 'hidden';
-            
+            splash.style.opacity = '0'; splash.style.visibility = 'hidden';
             sistemaIniciado = true;
             
             database.ref('transmisionVivo').once('value', snap => {
@@ -592,7 +568,7 @@
                     rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
                 }
             });
-        }, 20000); 
+        }, 4000); 
     };
 
     let wakeLock = null;
@@ -600,11 +576,6 @@
         try {
             if ('wakeLock' in navigator) {
                 wakeLock = await navigator.wakeLock.request('screen');
-                document.addEventListener('visibilitychange', async () => {
-                    if (wakeLock !== null && document.visibilityState === 'visible') {
-                        wakeLock = await navigator.wakeLock.request('screen');
-                    }
-                });
             }
         } catch (err) { console.error("WakeLock Error: ", err); }
     }
