@@ -110,7 +110,7 @@
     }
     @keyframes marquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-    /* --- CONTENEDORES --- */
+    /* --- CONTENEDORES CON TRANSICIÓN SUAVE --- */
     #view-grid, #view-featured, #view-ads {
         height: 875px;
         padding: 25px 30px;
@@ -118,11 +118,22 @@
         width: 100%; 
         top: 205px;
         left: 0;
-        transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 1;
+        opacity: 1;
+        transform: scale(1) translateY(0px);
+        visibility: visible;
+        /* Transición premium para opacidad y leve movimiento vertical */
+        transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), 
+                    transform 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+                    visibility 0.6s;
     }
 
-    .hidden { display: none !important; opacity: 0; transform: scale(0.97) translateY(10px); }
+    /* Modificado para ocultar con suavidad en lugar de corte brusco */
+    .hidden { 
+        opacity: 0 !important; 
+        transform: scale(0.98) translateY(20px) !important; 
+        visibility: hidden !important;
+    }
 
     /* --- TARJETAS --- */
     .grid-container {
@@ -201,7 +212,6 @@
 
     .waiting-text { color: #dc2626; font-size: 26px; font-weight: 900; text-align: center; animation: pulse 1.2s infinite alternate; width: 100%; margin: auto 0; letter-spacing: 0.5px; }
 
-    /* --- NUEVO SELLO EN VIVO --- */
     .live-indicator {
         position: absolute;
         top: 25px; left: 25px;
@@ -216,7 +226,11 @@
         display: inline-flex; align-items: center; gap: 8px;
     }
 
-    /* --- ANIMACIONES --- */
+    /* Contenedor de precarga caché */
+    #preloader-cache {
+        position: absolute; width: 1px; height: 1px; opacity: 0.01; overflow: hidden; bottom: 0; left: 0; pointer-events: none;
+    }
+
     @keyframes dropIn { 0% { transform: scale(0.6) translateY(50px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
     @keyframes pulse { 0% { opacity: 0.4; } 100% { opacity: 1; } }
     @keyframes floating {
@@ -234,10 +248,7 @@
     <div class="splash-sub">POR FAVOR ESPERE...</div>
 </div>
 
-<video src="https://assets.mixkit.co/videos/preview/mixkit-blank-video-background-43048-large.mp4" 
-       autoplay loop muted playsinline 
-       style="position: absolute; width: 1px; height: 1px; opacity: 0.001; z-index: -999; pointer-events: none;">
-</video>
+<div id="preloader-cache"></div>
 
 <div id="canvas-master">
     <div class="topbar">
@@ -297,7 +308,7 @@
     let rotationInterval = null;
     let enTransmisionVivo = false;
     let sistemaIniciado = false; 
-    let tiempoRotacionGlobal = 15000; // Por defecto 15s
+    let tiempoRotacionGlobal = 15000; 
 
     function dimensionarPantalla() {
         const baseWidth = 1920;
@@ -312,7 +323,7 @@
         document.getElementById('canvas-master').style.transform = `translate(-50%, -50%) scale(${elScale})`;
     }
     
-    window.addEventListener('resize', dimensionarPantscale = dimensionarPantalla);
+    window.addEventListener('resize', dimensionarPantalla);
 
     function getFormatDate(offsetDays = 0) {
         const d = new Date();
@@ -320,7 +331,6 @@
         return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     }
 
-    // --- NUEVAS FUNCIONES DE DETECCIÓN Y PARSEO MULTIMEDIA ---
     function esVideoDirecto(url) {
         if (!url) return false;
         return url.includes('github.com') || url.includes('raw.githubusercontent') || /\.(mp4|webm|ogg|mov)$/i.test(url);
@@ -352,12 +362,34 @@
 
         database.ref('anunciosList').on('value', snap => {
             ANUNCIOS = [];
-            snap.forEach(child => { 
-                let item = child.val();
-                if (item && item.activo !== false) { // Filtrar solo anuncios activos
-                    ANUNCIOS.push(item); 
-                }
-            });
+            const cacheContainer = document.getElementById('preloader-cache');
+            cacheContainer.innerHTML = ""; 
+
+            if(snap.exists()) {
+                snap.forEach(child => { 
+                    let item = child.val();
+                    if (item && item.activo !== false && item.url) { 
+                        ANUNCIOS.push(item); 
+
+                        let urlMedia = item.url.trim();
+                        if (esVideoDirecto(urlMedia)) {
+                            let linkVid = convertirLinkGitHub(urlMedia);
+                            let videoPre = document.createElement('video');
+                            videoPre.src = linkVid;
+                            videoPre.preload = "auto";
+                            videoPre.muted = true;
+                            cacheContainer.appendChild(videoPre);
+                        } else if (!urlMedia.includes('youtube.com') && !urlMedia.includes('youtu.be')) {
+                            let imgPre = new Image();
+                            imgPre.src = urlMedia;
+                            cacheContainer.appendChild(imgPre);
+                        }
+                    }
+                });
+            }
+            if (adIndex >= ANUNCIOS.length) {
+                adIndex = 0;
+            }
         });
 
         database.ref(`sorteos/${hoyStr}`).on('value', snapHoy => {
@@ -392,19 +424,18 @@
 
                 let rawUrl = live.url || "";
                 
-                // CONTROL CENTRAL DE TRANSMISIÓN EN VIVO (YouTube vs Video Directo)
                 if (esVideoDirecto(rawUrl)) {
                     let directUrl = convertirLinkGitHub(rawUrl);
                     boxAd.innerHTML = `
                         <div class="live-indicator">● EN VIVO</div>
-                        <video src="${directUrl}" autoplay controls style="width:100%; height:100%; background:#000;"></video>
+                        <video src="${directUrl}" autoplay muted playsinline controls style="width:100%; height:100%; background:#000;"></video>
                     `;
                 } else {
                     let embedUrl = rawUrl.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/");
                     if(embedUrl.includes("?")) { embedUrl = embedUrl.split("?")[0]; }
                     boxAd.innerHTML = `
                         <div class="live-indicator">● EN VIVO</div>
-                        <iframe src="${embedUrl}?autoplay=1&mute=0&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;"></iframe>
+                        <iframe src="${embedUrl}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;"></iframe>
                     `;
                 }
             } else {
@@ -531,7 +562,6 @@
         fBalls.innerHTML = last.nums ? last.nums.map((n, i) => `<div class="ball-big" style="animation-delay: ${i * 0.12}s">${n}</div>`).join('') : '<div class="waiting-text">PROXIMO SORTEO</div>';
     }
 
-    // --- LOGICA RESTRUCTURADA PARA LA ROTACIÓN DE ANUNCIOS MULTIMEDIA DUAL ---
     function renderMediaAd() {
         generarPanelLateral('sidePanelAds');
         const box = document.getElementById('adDisplay');
@@ -547,15 +577,12 @@
         let urlTarget = ad.url ? ad.url.trim() : "";
         
         if (esVideoDirecto(urlTarget)) {
-            // Caso 1: Archivo MP4 / GitHub
             let directVideoUrl = convertirLinkGitHub(urlTarget);
             box.innerHTML = `<video src="${directVideoUrl}" autoplay muted playsinline style="width:100%; height:100%; object-fit:contain;"></video>`;
         } else if (urlTarget.includes('youtube.com') || urlTarget.includes('youtu.be')) {
-            // Caso 2: URL de YouTube standard
             let embed = urlTarget.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/");
-            box.innerHTML = `<iframe src="${embed}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay"></iframe>`;
+            box.innerHTML = `<iframe src="${embed}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media"></iframe>`;
         } else if (urlTarget !== "") {
-            // Caso 3: Imágenes estáticas
             box.innerHTML = `<img src="${urlTarget}" style="width:100%; height:100%; object-fit:contain;">`;
         } else {
             box.innerHTML = "<div style='color:white; font-size:40px; font-weight:800;'>ANGUILLA LOTTERY</div>";
@@ -566,35 +593,46 @@
         return tiempoAsignado;
     }
 
+    /* --- LÓGICA DE ROTACIÓN OPTIMIZADA CON RETARDO PARA TRANSICIÓN FLUIDA --- */
     function rotateDisplay() {
         if (SORTEOS.length === 0 || enTransmisionVivo || !sistemaIniciado) return;
         clearInterval(rotationInterval);
+
         const vGrid = document.getElementById('view-grid');
         const vFeat = document.getElementById('view-featured');
         const vAds = document.getElementById('view-ads');
         const totalPages = Math.ceil(SORTEOS.length / 8);
 
-        vGrid.classList.add('hidden'); vFeat.classList.add('hidden'); vAds.classList.add('hidden');
-        let nextTime = tiempoRotacionGlobal;
+        // Ocultamos todas las pantallas con suavidad (Clase CSS se encarga del Fade-Out)
+        vGrid.classList.add('hidden'); 
+        vFeat.classList.add('hidden'); 
+        vAds.classList.add('hidden');
 
-        if (currentView < totalPages - 1) {
-            gridPage++; currentView++;
-            vGrid.classList.remove('hidden');
-            renderGrid();
-        } else if (currentView === totalPages - 1) {
-            currentView = 88; 
-            vFeat.classList.remove('hidden');
-            renderFeatured();
-        } else if (currentView === 88) {
-            currentView = 99; 
-            vAds.classList.remove('hidden');
-            nextTime = renderMediaAd();
-        } else {
-            gridPage = 0; currentView = 0;
-            vGrid.classList.remove('hidden');
-            renderGrid();
-        }
-        rotationInterval = setInterval(rotateDisplay, nextTime);
+        // Esperamos 450ms a que termine el desvanecimiento para inyectar y mostrar el nuevo contenido
+        setTimeout(() => {
+            let nextTime = tiempoRotacionGlobal;
+
+            if (currentView < totalPages - 1) {
+                gridPage++; currentView++;
+                renderGrid();
+                vGrid.classList.remove('hidden');
+            } else if (currentView === totalPages - 1) {
+                currentView = 88; 
+                renderFeatured();
+                vFeat.classList.remove('hidden');
+            } else if (currentView === 88) {
+                currentView = 99; 
+                nextTime = renderMediaAd();
+                vAds.classList.remove('hidden');
+            } else {
+                gridPage = 0; currentView = 0;
+                renderGrid();
+                vGrid.classList.remove('hidden');
+            }
+            
+            // Re-sincronizamos el intervalo descontando el pequeño delay de la animación
+            rotationInterval = setInterval(rotateDisplay, Math.max(1000, nextTime - 450));
+        }, 450);
     }
 
     function updateDateTime() {
@@ -633,7 +671,7 @@
                     rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
                 }
             });
-        }, 2000); // Reducido a 2 segundos para agilizar el arranque inicial
+        }, 2000); 
     };
 
     let wakeLock = null;
