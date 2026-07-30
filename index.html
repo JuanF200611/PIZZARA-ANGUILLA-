@@ -16,6 +16,8 @@
         --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
         --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+        --green-internet: #00ff88;
+        --red-nointernet: #ff4444;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -29,7 +31,6 @@
         -webkit-tap-highlight-color: transparent;
     }
 
-    /* --- SPLASH SCREEN --- */
     #splash-screen {
         position: fixed;
         top: 0; left: 0; width: 100%; height: 100%;
@@ -54,7 +55,6 @@
         font-weight: 800;
         margin-top: 30px;
         letter-spacing: 2px;
-        text-shadow: 0 4px 10px rgba(0,0,0,0.4);
         background: linear-gradient(135deg, #ffcc00, #ff7900);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -109,7 +109,6 @@
         contain: layout style paint;
     }
 
-    /* --- TOPBAR --- */
     .topbar {
         width: 100%; height: 151px;
         background: linear-gradient(135deg, var(--anguilla-blue) 0%, var(--anguilla-blue-dark) 100%);
@@ -123,18 +122,79 @@
     .logo-main-area img { height: 210px; object-fit: contain; padding-top: 10%; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.25)); }
     
     .header-info { display: flex; align-items: center; gap: 40px; }
+    
+    .header-clock-container {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        background: rgba(0,0,0,0.2);
+        padding: 5px 25px 5px 20px;
+        border-radius: 12px;
+        border-right: 4px solid rgba(255, 204, 0, 0.4);
+    }
     .header-clock { 
-        font-size: 61px; font-weight: 900; color: var(--white); line-height: 1; 
-        border-right: 4px solid rgba(255, 204, 0, 0.4); padding-right: 40px; 
+        font-size: 61px; font-weight: 900; line-height: 1; 
         font-variant-numeric: tabular-nums; text-shadow: 0 4px 12px rgba(0,0,0,0.3);
         font-family: 'Inter', sans-serif;
-        min-width: 260px;
+        letter-spacing: 2px;
+        min-width: 250px;
     }
+    .header-clock.internet-time {
+        color: #00ff88;
+    }
+    .header-clock.local-time {
+        color: #ffcc00;
+    }
+    
+    .internet-indicator {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 14px;
+        border-radius: 20px;
+        font-size: 18px;
+        font-weight: 700;
+        font-family: 'Inter', sans-serif;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+    }
+    .internet-indicator.online {
+        background: rgba(0, 255, 136, 0.15);
+        color: #00ff88;
+        border: 1px solid rgba(0, 255, 136, 0.3);
+    }
+    .internet-indicator.offline {
+        background: rgba(255, 68, 68, 0.15);
+        color: #ff4444;
+        border: 1px solid rgba(255, 68, 68, 0.3);
+        animation: pulseRed 1.5s infinite alternate;
+    }
+    .internet-indicator .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+    .internet-indicator.online .dot {
+        background: #00ff88;
+        box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+        animation: pulse 1.5s infinite alternate;
+    }
+    .internet-indicator.offline .dot {
+        background: #ff4444;
+        box-shadow: 0 0 15px rgba(255, 68, 68, 0.5);
+        animation: pulse 0.8s infinite alternate;
+    }
+    @keyframes pulseRed {
+        0% { opacity: 0.6; }
+        100% { opacity: 1; }
+    }
+
     .date-header { text-align: right; }
     .main-date { font-size: 38px; font-weight: 900; color: var(--anguilla-yellow); text-transform: uppercase; line-height: 1; text-shadow: 0 2px 8px rgba(0,0,0,0.2); }
     .sub-date { font-size: 19px; font-weight: 700; color: var(--white); opacity: 0.95; letter-spacing: 0.5px; margin-top: 2px; }
 
-    /* --- TICKER --- */
     .ticker-bar {
         width: 100%; height: 54px;
         background: linear-gradient(90deg, #0a0a0a, #1a1a1a);
@@ -151,7 +211,6 @@
     }
     @keyframes marquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-    /* --- VISTAS --- */
     #view-grid, #view-featured, #view-ads, #view-stats, #view-logo {
         height: 875px;
         padding: 25px 30px;
@@ -178,7 +237,6 @@
         pointer-events: none !important;
     }
 
-    /* --- VISTA LOGO --- */
     #view-logo .logo-fullscreen {
         width: 100%;
         height: 100%;
@@ -206,8 +264,6 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-top: 30px;
-        text-shadow: none;
-        animation: logoPulse 3s ease-in-out infinite;
     }
     #view-logo .logo-fullscreen .brand-sub {
         font-size: 36px;
@@ -222,7 +278,6 @@
         50% { transform: scale(1.02); }
     }
 
-    /* --- TARJETAS GRID --- */
     .grid-container {
         display: grid; grid-template-columns: repeat(4, 1fr);
         grid-template-rows: repeat(2, 1fr); gap: 25px; height: 100%;
@@ -260,7 +315,6 @@
         will-change: transform;
     }
 
-    /* --- VISTA DESTACADA --- */
     .split-container { display: flex; gap: 25px; height: 100%; width: 100%; }
     .split-main {
         width: 1190px;
@@ -302,7 +356,6 @@
         box-shadow: inset -4px -4px 12px rgba(0,0,0,0.35), inset 3px 3px 8px rgba(255,255,255,0.4), 0 8px 16px rgba(0, 0, 165, 0.25);
     }
 
-    /* --- ESTADÍSTICAS --- */
     #view-stats .split-main {
         background: linear-gradient(145deg, #0a0c1a 0%, #1a1a3a 100%);
         border-color: var(--anguilla-yellow);
@@ -449,7 +502,6 @@
         100% { transform: scale(1) rotate(0deg); opacity: 1; }
     }
 
-    /* --- ANUNCIOS --- */
     .ad-box { 
         width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; 
         background: #000; overflow: hidden; border-radius: 24px; position: relative; 
@@ -531,7 +583,6 @@
         50% { transform: translateY(-15px); }
     }
 
-    /* --- OPTIMIZACIONES PARA TV BOX --- */
     @media (max-width: 1920px) {
         #canvas-master {
             width: 100vw;
@@ -546,34 +597,10 @@
             transition-duration: 0.01ms !important;
         }
     }
-
-    /* --- INDICADOR DE CARGA --- */
-    .loading-spinner {
-        display: none;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 100;
-        width: 60px;
-        height: 60px;
-        border: 4px solid rgba(255,255,255,0.1);
-        border-top: 4px solid var(--anguilla-yellow);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-    .loading-spinner.active {
-        display: block;
-    }
-    @keyframes spin {
-        0% { transform: translate(-50%, -50%) rotate(0deg); }
-        100% { transform: translate(-50%, -50%) rotate(360deg); }
-    }
 </style>
 </head>
 <body>
 
-<!-- SPLASH -->
 <div id="splash-screen">
     <img src="logo.png" class="splash-logo" alt="Logo" loading="eager">
     <div class="splash-text">ANGUILLA LOTTERY</div>
@@ -582,11 +609,16 @@
 </div>
 
 <div id="canvas-master">
-    <!-- TOPBAR -->
     <div class="topbar">
         <div class="logo-main-area"><img src="logo.png" alt="Logo" loading="eager"></div>
         <div class="header-info">
-            <div class="header-clock" id="liveClock">--:--:--</div>
+            <div class="header-clock-container">
+                <div class="header-clock internet-time" id="liveClock">--:-- --</div>
+                <div class="internet-indicator online" id="internetIndicator">
+                    <span class="dot"></span>
+                    <span id="internetStatus">ONLINE</span>
+                </div>
+            </div>
             <div class="date-header">
                 <div class="main-date" id="currentDay">---</div>
                 <div class="sub-date" id="currentMonth">---</div>
@@ -594,15 +626,10 @@
         </div>
     </div>
 
-    <!-- TICKER -->
     <div class="ticker-bar">
         <div class="ticker-text" id="marqueeText">CARGANDO INFORMACIÓN...</div>
     </div>
 
-    <!-- SPINNER DE CARGA -->
-    <div class="loading-spinner" id="loadingSpinner"></div>
-
-    <!-- VISTA LOGO -->
     <div id="view-logo" class="view-hidden">
         <div class="logo-fullscreen">
             <img src="logo.png" alt="Anguilla Lottery" loading="eager">
@@ -611,12 +638,10 @@
         </div>
     </div>
 
-    <!-- VISTA GRID -->
     <div id="view-grid">
         <div class="grid-container" id="mainGrid"></div>
     </div>
 
-    <!-- VISTA DESTACADA -->
     <div id="view-featured" class="view-hidden">
         <div class="split-container">
             <div class="split-main">
@@ -629,7 +654,6 @@
         </div>
     </div>
 
-    <!-- VISTA ESTADÍSTICAS -->
     <div id="view-stats" class="view-hidden">
         <div class="split-container">
             <div class="split-main" style="width:100%; padding:40px 60px;">
@@ -651,7 +675,6 @@
         </div>
     </div>
 
-    <!-- VISTA ANUNCIOS -->
     <div id="view-ads" class="view-hidden">
         <div class="split-container" id="adsContainerStructure">
             <div class="split-main" id="adMainBox" style="background: #000; padding: 0; border: none;">
@@ -697,103 +720,231 @@
     let statsInterval = null;
     let hotNumbers = [];
     let coldNumbers = [];
-    let primeraCarga = true;
     let datosCargados = false;
+    let horaInternet = null;
+    let usandoHoraLocal = false;
+    let tieneInternet = false;
+    let contadorFallosInternet = 0;
 
-    // Cache de medios
     const mediaCache = { videos: {}, images: {} };
 
     // ============================================
-    // FUNCIONES DE FECHA/HORA CON INTERNET
+    // FUNCIÓN: VERIFICAR CONEXIÓN A INTERNET
     // ============================================
-    let horaGlobal = null;
-    let contadorFallos = 0;
-    let usandoHoraLocal = false;
-
-    async function obtenerHoraDesdeInternet() {
+    async function verificarInternet() {
         try {
-            const response = await fetch('https://www.googleapis.com/oauth2/v1/tokeninfo', {
-                method: 'GET',
+            // Intentar cargar un recurso simple de Google
+            const response = await fetch('https://www.google.com', {
+                method: 'HEAD',
+                mode: 'no-cors',
                 cache: 'no-cache'
             });
+            // Si llega aquí, hay internet
+            tieneInternet = true;
+            contadorFallosInternet = 0;
+            actualizarIndicadorInternet(true);
+            return true;
+        } catch (error) {
+            // Intentar con otro servidor
+            try {
+                const response2 = await fetch('https://cdn.jsdelivr.net', {
+                    method: 'HEAD',
+                    mode: 'no-cors',
+                    cache: 'no-cache'
+                });
+                tieneInternet = true;
+                contadorFallosInternet = 0;
+                actualizarIndicadorInternet(true);
+                return true;
+            } catch (error2) {
+                contadorFallosInternet++;
+                if (contadorFallosInternet >= 3) {
+                    tieneInternet = false;
+                    actualizarIndicadorInternet(false);
+                }
+                return false;
+            }
+        }
+    }
+
+    // ============================================
+    // FUNCIÓN: OBTENER HORA DE INTERNET (MEJORADA)
+    // ============================================
+    async function obtenerHoraExacta() {
+        try {
+            // Verificar internet primero
+            await verificarInternet();
             
-            if (response.ok) {
-                const fechaStr = response.headers.get('Date');
-                if (fechaStr) {
-                    const fecha = new Date(fechaStr);
-                    if (!isNaN(fecha.getTime())) {
-                        horaGlobal = fecha;
-                        contadorFallos = 0;
-                        usandoHoraLocal = false;
-                        return fecha;
+            if (!tieneInternet) {
+                usandoHoraLocal = true;
+                if (horaInternet) {
+                    const fecha = new Date(horaInternet.getTime() + 1000);
+                    horaInternet = fecha;
+                    return fecha;
+                }
+                const fechaLocal = new Date();
+                horaInternet = fechaLocal;
+                return fechaLocal;
+            }
+
+            // INTENTO 1: Google (más rápido)
+            try {
+                const response = await fetch('https://www.googleapis.com/oauth2/v1/tokeninfo', {
+                    method: 'GET',
+                    cache: 'no-cache',
+                    headers: { 'Cache-Control': 'no-cache' },
+                    signal: AbortSignal.timeout(3000)
+                });
+                
+                if (response.ok) {
+                    const fechaStr = response.headers.get('Date');
+                    if (fechaStr) {
+                        const fecha = new Date(fechaStr);
+                        if (!isNaN(fecha.getTime())) {
+                            horaInternet = fecha;
+                            usandoHoraLocal = false;
+                            tieneInternet = true;
+                            actualizarIndicadorInternet(true);
+                            return fecha;
+                        }
                     }
                 }
+            } catch (e) {
+                console.log('Google API falló, intentando siguiente...');
             }
-            
-            const response2 = await fetch('https://worldtimeapi.org/api/timezone/America/Santo_Domingo', {
-                method: 'GET',
-                cache: 'no-cache'
-            });
-            
-            if (response2.ok) {
-                const data = await response2.json();
-                if (data && data.datetime) {
-                    const fecha = new Date(data.datetime);
-                    if (!isNaN(fecha.getTime())) {
-                        horaGlobal = fecha;
-                        contadorFallos = 0;
-                        usandoHoraLocal = false;
-                        return fecha;
+
+            // INTENTO 2: WorldTimeAPI
+            try {
+                const response2 = await fetch('https://worldtimeapi.org/api/timezone/America/Santo_Domingo', {
+                    method: 'GET',
+                    cache: 'no-cache',
+                    signal: AbortSignal.timeout(3000)
+                });
+                
+                if (response2.ok) {
+                    const data = await response2.json();
+                    if (data && data.datetime) {
+                        const fecha = new Date(data.datetime);
+                        if (!isNaN(fecha.getTime())) {
+                            horaInternet = fecha;
+                            usandoHoraLocal = false;
+                            tieneInternet = true;
+                            actualizarIndicadorInternet(true);
+                            return fecha;
+                        }
                     }
                 }
+            } catch (e) {
+                console.log('WorldTimeAPI falló, intentando siguiente...');
             }
-            
+
+            // INTENTO 3: TimeAPI
+            try {
+                const response3 = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=America/Santo_Domingo', {
+                    method: 'GET',
+                    cache: 'no-cache',
+                    signal: AbortSignal.timeout(3000)
+                });
+                
+                if (response3.ok) {
+                    const data = await response3.json();
+                    if (data && data.dateTime) {
+                        const fecha = new Date(data.dateTime);
+                        if (!isNaN(fecha.getTime())) {
+                            horaInternet = fecha;
+                            usandoHoraLocal = false;
+                            tieneInternet = true;
+                            actualizarIndicadorInternet(true);
+                            return fecha;
+                        }
+                    }
+                }
+            } catch (e) {
+                console.log('TimeAPI falló');
+            }
+
+            // INTENTO 4: Usar Firebase (ya tenemos conexión)
+            try {
+                const ref = database.ref('.info/connected');
+                const snapshot = await ref.once('value');
+                if (snapshot.val() === true) {
+                    // Si estamos conectados a Firebase, usar hora del servidor
+                    const serverTime = firebase.database.ServerValue.TIMESTAMP;
+                    // Fallback a hora local con corrección
+                    const fecha = new Date();
+                    horaInternet = fecha;
+                    usandoHoraLocal = true;
+                    tieneInternet = true;
+                    actualizarIndicadorInternet(true);
+                    return fecha;
+                }
+            } catch (e) {
+                console.log('Firebase falló para hora');
+            }
+
+            // FALLBACK: Usar caché
             usandoHoraLocal = true;
+            if (horaInternet) {
+                const fecha = new Date(horaInternet.getTime() + 1000);
+                horaInternet = fecha;
+                return fecha;
+            }
+            
             const fechaLocal = new Date();
-            horaGlobal = fechaLocal;
+            horaInternet = fechaLocal;
             return fechaLocal;
             
         } catch (error) {
-            contadorFallos++;
-            if (contadorFallos >= 3) {
-                usandoHoraLocal = true;
-                const fechaLocal = new Date();
-                horaGlobal = fechaLocal;
-                return fechaLocal;
-            }
-            if (horaGlobal) {
-                const horaActualizada = new Date(horaGlobal.getTime() + 1000);
-                horaGlobal = horaActualizada;
-                return horaActualizada;
+            console.error('Error obteniendo hora:', error);
+            usandoHoraLocal = true;
+            if (horaInternet) {
+                const fecha = new Date(horaInternet.getTime() + 1000);
+                horaInternet = fecha;
+                return fecha;
             }
             const fechaLocal = new Date();
-            horaGlobal = fechaLocal;
+            horaInternet = fechaLocal;
             return fechaLocal;
         }
     }
 
+    // ============================================
+    // ACTUALIZAR INDICADOR DE INTERNET
+    // ============================================
+    function actualizarIndicadorInternet(online) {
+        const indicator = document.getElementById('internetIndicator');
+        const statusText = document.getElementById('internetStatus');
+        if (online) {
+            indicator.className = 'internet-indicator online';
+            statusText.textContent = 'ONLINE';
+            // Cambiar color de la hora a verde
+            const clock = document.getElementById('liveClock');
+            if (clock) clock.className = 'header-clock internet-time';
+        } else {
+            indicator.className = 'internet-indicator offline';
+            statusText.textContent = 'OFFLINE';
+            // Cambiar color de la hora a amarillo
+            const clock = document.getElementById('liveClock');
+            if (clock) clock.className = 'header-clock local-time';
+        }
+    }
+
+    // ============================================
+    // ACTUALIZAR RELOJ (FORMATO 12 HORAS)
+    // ============================================
     async function updateDateTime() {
         try {
-            let now = await obtenerHoraDesdeInternet();
+            let now = await obtenerHoraExacta();
             
-            if (!usandoHoraLocal && horaGlobal) {
-                const diferencia = (new Date() - new Date(horaGlobal.getTime()));
-                if (diferencia > 5000) {
-                    now = await obtenerHoraDesdeInternet();
-                } else {
-                    now = new Date(horaGlobal.getTime() + (new Date() - new Date(horaGlobal.getTime())));
-                }
-            }
-            
-            const hrs = now.getHours() % 12 || 12;
+            // Formato 12 horas
+            let hrs = now.getHours();
+            const ampm = hrs >= 12 ? 'PM' : 'AM';
+            hrs = hrs % 12 || 12;
             const mins = now.getMinutes().toString().padStart(2, '0');
-            const secs = now.getSeconds().toString().padStart(2, '0');
-            const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
             
             const clockElement = document.getElementById('liveClock');
             if (clockElement) {
-                clockElement.innerText = `${hrs}:${mins}:${secs} ${ampm}`;
-                clockElement.style.color = usandoHoraLocal ? '#ffcc00' : '#ffffff';
+                clockElement.innerText = `${hrs}:${mins} ${ampm}`;
             }
             
             const dias = ['DOMINGO','LUNES','MARTES','MIÉRCOLES','JUEVES','VIERNES','SÁBADO'];
@@ -806,20 +957,8 @@
             if (monthElement) monthElement.innerText = `${meses[now.getMonth()]} ${now.getFullYear()}`;
             
         } catch (error) {
-            const now = new Date();
-            const hrs = now.getHours() % 12 || 12;
-            const mins = now.getMinutes().toString().padStart(2, '0');
-            const secs = now.getSeconds().toString().padStart(2, '0');
-            const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
-            const clockElement = document.getElementById('liveClock');
-            if (clockElement) clockElement.innerText = `${hrs}:${mins}:${secs} ${ampm}`;
+            console.error('Error actualizando reloj:', error);
         }
-    }
-
-    function iniciarSincronizacionHora() {
-        setInterval(updateDateTime, 1000);
-        setInterval(async () => { await obtenerHoraDesdeInternet(); }, 300000);
-        setInterval(async () => { contadorFallos = 0; usandoHoraLocal = false; await obtenerHoraDesdeInternet(); }, 3600000);
     }
 
     // ============================================
@@ -839,9 +978,9 @@
     window.addEventListener('resize', dimensionarPantalla);
 
     function getFormatDate(offsetDays = 0) {
-        const d = new Date();
-        d.setDate(d.getDate() - offsetDays);
-        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        let baseDate = horaInternet ? new Date(horaInternet) : new Date();
+        baseDate.setDate(baseDate.getDate() - offsetDays);
+        return `${baseDate.getFullYear()}-${String(baseDate.getMonth()+1).padStart(2,'0')}-${String(baseDate.getDate()).padStart(2,'0')}`;
     }
 
     function esVideoDirecto(url) {
@@ -878,7 +1017,7 @@
     }
 
     // ============================================
-    // CACHE INTELIGENTE DE MEDIOS
+    // CACHE DE MEDIOS
     // ============================================
     function preCargarMedio(url) {
         if (!url) return null;
@@ -907,6 +1046,15 @@
             return img;
         }
         return null;
+    }
+
+    function mostrarLogo(container) {
+        container.innerHTML = `
+            <div class="logo-branding">
+                <img src="logo.png" alt="Anguilla">
+                <div class="brand-text">ANGUILLA</div>
+                <div class="brand-sub">LOTTERY</div>
+            </div>`;
     }
 
     function mostrarMedioPrecargado(container, url) {
@@ -985,17 +1133,8 @@
         mostrarLogo(container);
     }
 
-    function mostrarLogo(container) {
-        container.innerHTML = `
-            <div class="logo-branding">
-                <img src="logo.png" alt="Anguilla">
-                <div class="brand-text">ANGUILLA</div>
-                <div class="brand-sub">LOTTERY</div>
-            </div>`;
-    }
-
     // ============================================
-    // ESTADÍSTICAS (SOLO 3 NÚMEROS)
+    // ESTADÍSTICAS
     // ============================================
     function cargarEstadisticas() {
         const hoyStr = getFormatDate(0);
@@ -1085,7 +1224,7 @@
     // ============================================
     function procesarSorteos(dataHoy, dataAyer) {
         let finalSorteos = [];
-        const ahora = new Date();
+        let ahora = horaInternet ? new Date(horaInternet) : new Date();
         const horaAct = { hrs: ahora.getHours(), mins: ahora.getMinutes() };
 
         dataHoy.forEach((sHoy, index) => {
@@ -1276,10 +1415,6 @@
         const ua = navigator.userAgent || '';
         if (ua.includes('AFT') || ua.includes('FireTV') || ua.includes('Android') && ua.includes('TV')) {
             tiempoRotacionGlobal = Math.max(tiempoRotacionGlobal, 20000);
-            document.querySelectorAll('*').forEach(el => {
-                el.style.animationDuration = '0.5s';
-                el.style.transitionDuration = '0.3s';
-            });
         }
     }
 
@@ -1287,121 +1422,118 @@
     // INICIALIZACIÓN PRINCIPAL
     // ============================================
     function inicializarDatos() {
-        const hoyStr = getFormatDate(0);
-        const ayerStr = getFormatDate(1);
+        // Primero verificar internet
+        verificarInternet().then(() => {
+            obtenerHoraExacta().then(() => {
+                const hoyStr = getFormatDate(0);
+                const ayerStr = getFormatDate(1);
 
-        // Ticker - Solo actualiza si hay cambio
-        database.ref('ticker').on('value', snap => {
-            const texto = snap.val() || "BIENVENIDOS A ANGUILLA LOTTERY";
-            document.getElementById('marqueeText').innerText = texto;
-        });
+                database.ref('ticker').on('value', snap => {
+                    const texto = snap.val() || "BIENVENIDOS A ANGUILLA LOTTERY";
+                    document.getElementById('marqueeText').innerText = texto;
+                });
 
-        // Configuración de tiempo
-        database.ref('configuracion/tiempoPantalla').on('value', snap => {
-            if(snap.val()) {
-                tiempoRotacionGlobal = parseInt(snap.val()) * 1000;
-                if (rotationInterval && sistemaIniciado) {
-                    clearInterval(rotationInterval);
-                    rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
-                }
-            }
-        });
-
-        // Anuncios - Solo actualiza si hay cambios
-        database.ref('anunciosList').on('value', snap => {
-            ANUNCIOS = [];
-            if(snap.exists()) {
-                snap.forEach(child => {
-                    let item = child.val();
-                    if (item && item.activo !== false && item.url && item.url.trim() !== '') {
-                        ANUNCIOS.push(item);
-                        preCargarMedio(item.url.trim());
+                database.ref('configuracion/tiempoPantalla').on('value', snap => {
+                    if(snap.val()) {
+                        tiempoRotacionGlobal = parseInt(snap.val()) * 1000;
+                        if (rotationInterval && sistemaIniciado) {
+                            clearInterval(rotationInterval);
+                            rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
+                        }
                     }
                 });
-            }
-            if (adIndex >= ANUNCIOS.length) adIndex = 0;
-        });
 
-        // Sorteos - Solo actualiza si hay cambios
-        database.ref(`sorteos/${hoyStr}`).on('value', snapHoy => {
-            const dataHoy = snapHoy.val() || [];
-            database.ref(`sorteos/${ayerStr}`).once('value', snapAyer => {
-                const dataAyer = snapAyer.val() || [];
-                procesarSorteos(dataHoy, dataAyer);
-                // Marcar que los datos están cargados
-                if (!datosCargados) {
-                    datosCargados = true;
-                    if (sistemaIniciado) {
-                        iniciarRotacion();
+                database.ref('anunciosList').on('value', snap => {
+                    ANUNCIOS = [];
+                    if(snap.exists()) {
+                        snap.forEach(child => {
+                            let item = child.val();
+                            if (item && item.activo !== false && item.url && item.url.trim() !== '') {
+                                ANUNCIOS.push(item);
+                                preCargarMedio(item.url.trim());
+                            }
+                        });
                     }
-                }
+                    if (adIndex >= ANUNCIOS.length) adIndex = 0;
+                });
+
+                database.ref(`sorteos/${hoyStr}`).on('value', snapHoy => {
+                    const dataHoy = snapHoy.val() || [];
+                    database.ref(`sorteos/${ayerStr}`).once('value', snapAyer => {
+                        const dataAyer = snapAyer.val() || [];
+                        procesarSorteos(dataHoy, dataAyer);
+                        if (!datosCargados) {
+                            datosCargados = true;
+                            if (sistemaIniciado) {
+                                iniciarRotacion();
+                            }
+                        }
+                    });
+                });
+
+                if (statsInterval) clearInterval(statsInterval);
+                statsInterval = setInterval(cargarEstadisticas, 3600000);
+
+                database.ref('transmisionVivo').on('value', snap => {
+                    if (!sistemaIniciado) return;
+                    const live = snap.val();
+                    const vGrid = document.getElementById('view-grid');
+                    const vFeat = document.getElementById('view-featured');
+                    const vStats = document.getElementById('view-stats');
+                    const vAds = document.getElementById('view-ads');
+                    const vLogo = document.getElementById('view-logo');
+                    const boxAd = document.getElementById('adDisplay');
+                    const mainBox = document.getElementById('adMainBox');
+                    const sidePanel = document.getElementById('sidePanelAds');
+
+                    if (live && live.activo === true) {
+                        enTransmisionVivo = true;
+                        clearInterval(rotationInterval);
+                        vGrid.classList.add('view-hidden');
+                        vFeat.classList.add('view-hidden');
+                        vStats.classList.add('view-hidden');
+                        vLogo.classList.add('view-hidden');
+                        vAds.classList.remove('view-hidden');
+                        sidePanel.style.display = "none";
+                        mainBox.style.width = "100%";
+
+                        let rawUrl = live.url || "";
+                        if (esVideoDirecto(rawUrl) || esImagen(rawUrl)) {
+                            boxAd.innerHTML = `<div class="live-indicator">● EN VIVO</div>`;
+                            mostrarMedioPrecargado(boxAd, rawUrl);
+                        } else {
+                            let embedUrl = rawUrl.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/");
+                            if(embedUrl.includes("?")) embedUrl = embedUrl.split("?")[0];
+                            boxAd.innerHTML = `
+                                <div class="live-indicator">● EN VIVO</div>
+                                <iframe src="${embedUrl}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;"></iframe>
+                            `;
+                        }
+                    } else {
+                        if (enTransmisionVivo) {
+                            enTransmisionVivo = false;
+                            gridPage = 0; currentView = 0;
+                            sidePanel.style.display = "flex";
+                            mainBox.style.width = "1190px";
+                            vGrid.classList.remove('view-hidden');
+                            vFeat.classList.add('view-hidden');
+                            vStats.classList.add('view-hidden');
+                            vAds.classList.add('view-hidden');
+                            vLogo.classList.add('view-hidden');
+                            renderGrid();
+                            clearInterval(rotationInterval);
+                            iniciarRotacion();
+                        }
+                    }
+                });
+
+                database.ref('stats/update').on('value', snap => {
+                    if (snap.val()) cargarEstadisticas();
+                });
+
+                setTimeout(cargarEstadisticas, 1000);
             });
         });
-
-        // Actualizar estadísticas cada hora
-        if (statsInterval) clearInterval(statsInterval);
-        statsInterval = setInterval(cargarEstadisticas, 3600000);
-
-        // Transmisión en vivo
-        database.ref('transmisionVivo').on('value', snap => {
-            if (!sistemaIniciado) return;
-            const live = snap.val();
-            const vGrid = document.getElementById('view-grid');
-            const vFeat = document.getElementById('view-featured');
-            const vStats = document.getElementById('view-stats');
-            const vAds = document.getElementById('view-ads');
-            const vLogo = document.getElementById('view-logo');
-            const boxAd = document.getElementById('adDisplay');
-            const mainBox = document.getElementById('adMainBox');
-            const sidePanel = document.getElementById('sidePanelAds');
-
-            if (live && live.activo === true) {
-                enTransmisionVivo = true;
-                clearInterval(rotationInterval);
-                vGrid.classList.add('view-hidden');
-                vFeat.classList.add('view-hidden');
-                vStats.classList.add('view-hidden');
-                vLogo.classList.add('view-hidden');
-                vAds.classList.remove('view-hidden');
-                sidePanel.style.display = "none";
-                mainBox.style.width = "100%";
-
-                let rawUrl = live.url || "";
-                if (esVideoDirecto(rawUrl) || esImagen(rawUrl)) {
-                    boxAd.innerHTML = `<div class="live-indicator">● EN VIVO</div>`;
-                    mostrarMedioPrecargado(boxAd, rawUrl);
-                } else {
-                    let embedUrl = rawUrl.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/");
-                    if(embedUrl.includes("?")) embedUrl = embedUrl.split("?")[0];
-                    boxAd.innerHTML = `
-                        <div class="live-indicator">● EN VIVO</div>
-                        <iframe src="${embedUrl}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;"></iframe>
-                    `;
-                }
-            } else {
-                if (enTransmisionVivo) {
-                    enTransmisionVivo = false;
-                    gridPage = 0; currentView = 0;
-                    sidePanel.style.display = "flex";
-                    mainBox.style.width = "1190px";
-                    vGrid.classList.remove('view-hidden');
-                    vFeat.classList.add('view-hidden');
-                    vStats.classList.add('view-hidden');
-                    vAds.classList.add('view-hidden');
-                    vLogo.classList.add('view-hidden');
-                    renderGrid();
-                    clearInterval(rotationInterval);
-                    iniciarRotacion();
-                }
-            }
-        });
-
-        // Estadísticas
-        database.ref('stats/update').on('value', snap => {
-            if (snap.val()) cargarEstadisticas();
-        });
-
-        setTimeout(cargarEstadisticas, 1000);
     }
 
     function iniciarRotacion() {
@@ -1413,7 +1545,7 @@
     }
 
     // ============================================
-    // WAKE LOCK PARA MANTENER PANTALLA ENCENDIDA
+    // WAKE LOCK
     // ============================================
     let wakeLock = null;
     async function activarMantenerPantallaEncendida() {
@@ -1434,12 +1566,25 @@
     // ============================================
     window.onload = () => {
         dimensionarPantalla();
-        iniciarSincronizacionHora();
+        
+        // Actualizar reloj
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+        
+        // Verificar internet cada 10 segundos
+        setInterval(async () => {
+            await verificarInternet();
+        }, 10000);
+        
+        // Sincronizar hora cada 30 segundos
+        setInterval(async () => {
+            await obtenerHoraExacta();
+        }, 30000);
+        
         inicializarDatos();
         activarMantenerPantallaEncendida();
         optimizarParaTVBox();
 
-        // Ocultar splash después de cargar
         setTimeout(() => {
             const splash = document.getElementById('splash-screen');
             splash.style.opacity = '0';
@@ -1456,13 +1601,6 @@
                 }
             });
         }, 2500);
-    };
-
-    // ============================================
-    // EXPONER FUNCIONES GLOBALES
-    // ============================================
-    window.recargarMonitor = function() {
-        location.reload();
     };
 </script>
 </body>
