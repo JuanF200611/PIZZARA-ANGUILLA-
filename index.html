@@ -25,7 +25,6 @@
         height: 100%;
         width: 100%;
         overflow: hidden;
-        /* Optimización para 60fps */
         will-change: transform;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
@@ -105,11 +104,9 @@
         transform: translate(-50%, -50%);
         transform-origin: center center;
         overflow: hidden;
-        /* Optimización 60fps */
         will-change: transform;
         contain: layout style paint;
         backface-visibility: hidden;
-        -webkit-backface-visibility: hidden;
     }
 
     .topbar {
@@ -165,7 +162,7 @@
         transform: scale(1) translateY(0px);
         visibility: visible;
         pointer-events: auto;
-        transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+        transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
         will-change: transform, opacity;
         contain: layout style paint;
         backface-visibility: hidden;
@@ -657,7 +654,7 @@
     let rotationInterval = null;
     let enTransmisionVivo = false;
     let sistemaIniciado = false;
-    let tiempoRotacionGlobal = 15000;
+    let tiempoRotacionGlobal = 15000; // 15 segundos por defecto
     let ultimaActualizacionStats = null;
     let statsInterval = null;
     let hotNumbers = [];
@@ -672,30 +669,23 @@
     // KEEP ALIVE - EVITA QUE EL FIRE TV SE APAGUE
     // ============================================
     function iniciarKeepAlive() {
-        // Mantener la pantalla activa con WakeLock
         mantenerPantallaEncendida();
         
-        // Simular actividad cada 30 segundos para evitar suspensión
         keepAliveInterval = setInterval(() => {
-            // Pequeña animación invisible para mantener el dispositivo activo
             document.body.style.opacity = '0.999';
             setTimeout(() => {
                 document.body.style.opacity = '1';
             }, 10);
-            
-            // Actualizar contador de inactividad
             tiempoInactivo = 0;
         }, 25000);
         
-        // Detectar inactividad del usuario
         document.addEventListener('mousemove', () => { tiempoInactivo = 0; });
         document.addEventListener('keydown', () => { tiempoInactivo = 0; });
         document.addEventListener('touchstart', () => { tiempoInactivo = 0; });
         
-        // Si no hay actividad por 5 minutos, forzar refresco
         setInterval(() => {
             tiempoInactivo += 5;
-            if (tiempoInactivo > 60) { // 5 minutos
+            if (tiempoInactivo > 60) {
                 console.log('🔄 Forzando refresh por inactividad');
                 location.reload();
             }
@@ -750,8 +740,7 @@
         if (!url) return false;
         const u = url.toLowerCase();
         return u.includes('.mp4') || u.includes('.webm') || u.includes('.ogg') || 
-               u.includes('.mov') || u.includes('.avi') || u.includes('.mkv') ||
-               u.includes('github.com') || u.includes('raw.githubusercontent');
+               u.includes('.mov') || u.includes('.avi') || u.includes('.mkv');
     }
 
     function esYouTube(url) {
@@ -769,10 +758,13 @@
 
     function convertirLinkGitHub(url) {
         if (!url) return url;
+        // Si es un enlace de GitHub, convertirlo a raw
         if (url.includes('github.com') && !url.includes('raw.githubusercontent.com')) {
+            // Si tiene /blob/, reemplazar
             if (url.includes('/blob/')) {
                 return url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
             }
+            // Si no tiene /blob/, agregar ?raw=true
             if (!url.includes('?raw=true')) {
                 return url + '?raw=true';
             }
@@ -781,7 +773,36 @@
     }
 
     // ============================================
-    // CACHE DE MEDIOS OPTIMIZADO PARA 1GB RAM
+    // FUNCIÓN MEJORADA PARA MOSTRAR IMÁGENES DE GITHUB
+    // ============================================
+    function mostrarImagen(container, url) {
+        const urlProcesada = convertirLinkGitHub(url);
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = urlProcesada;
+        img.style.cssText = 'width:100%; height:100%; object-fit:contain;';
+        img.alt = 'Anuncio';
+        
+        img.onload = function() {
+            container.innerHTML = '';
+            container.appendChild(img);
+        };
+        
+        img.onerror = function() {
+            console.error('❌ Error cargando imagen:', urlProcesada);
+            mostrarLogo(container);
+        };
+        
+        // Timeout para no esperar demasiado
+        setTimeout(() => {
+            if (!container.querySelector('img')) {
+                mostrarLogo(container);
+            }
+        }, 5000);
+    }
+
+    // ============================================
+    // CACHE DE MEDIOS OPTIMIZADO
     // ============================================
     function preCargarMedio(url) {
         if (!url) return null;
@@ -800,7 +821,6 @@
             video.src = urlProcesada;
             video.load();
             mediaCache.videos[url] = video;
-            // Limpiar caché después de 2 minutos para liberar RAM
             setTimeout(() => { 
                 if(mediaCache.videos[url]) {
                     mediaCache.videos[url].src = '';
@@ -814,7 +834,6 @@
             img.src = urlProcesada;
             img.loading = 'eager';
             mediaCache.images[url] = img;
-            // Limpiar caché después de 2 minutos
             setTimeout(() => { 
                 if(mediaCache.images[url]) {
                     delete mediaCache.images[url];
@@ -873,28 +892,8 @@
         }
         
         if (isImg || url.startsWith('http')) {
-            let img = mediaCache.images[url];
-            if (!img) {
-                img = new Image();
-                img.crossOrigin = 'anonymous';
-                img.src = urlProcesada;
-                mediaCache.images[url] = img;
-                img.onerror = function() { mostrarLogo(container); };
-            } else {
-                img = img.cloneNode(true);
-                img.crossOrigin = 'anonymous';
-            }
-            img.style.cssText = 'width:100%; height:100%; object-fit:contain;';
-            img.alt = 'Anuncio';
-            if (img.complete && img.naturalHeight > 0) {
-                container.appendChild(img);
-            } else {
-                img.onload = function() { container.appendChild(img); };
-                img.onerror = function() { mostrarLogo(container); };
-                setTimeout(() => {
-                    if (!container.querySelector('img')) mostrarLogo(container);
-                }, 3000);
-            }
+            // Usar la función mejorada para imágenes
+            mostrarImagen(container, url);
             return;
         }
         
@@ -1098,6 +1097,7 @@
         generarPanelLateral('sidePanelAds');
         const box = document.getElementById('adDisplay');
         
+        // Filtrar anuncios activos y con URL válida
         const anunciosActivos = ANUNCIOS.filter(ad => ad.activo !== false && ad.url && ad.url.trim() !== '');
         
         if (anunciosActivos.length === 0) {
@@ -1109,6 +1109,7 @@
         const ad = anunciosActivos[adIndex];
         let urlTarget = ad.url ? ad.url.trim() : "";
         
+        // Mostrar el anuncio con la función mejorada
         mostrarMedioPrecargado(box, urlTarget);
         
         let tiempoAsignado = (parseInt(ad.tiempo) || 15) * 1000;
@@ -1126,7 +1127,7 @@
     }
 
     // ============================================
-    // ROTACIÓN DE PANTALLA OPTIMIZADA
+    // ROTACIÓN DE PANTALLA CORREGIDA
     // ============================================
     function rotateDisplay() {
         if (SORTEOS.length === 0 || enTransmisionVivo || !sistemaIniciado) return;
@@ -1147,42 +1148,43 @@
 
         setTimeout(() => {
             let nextTime = tiempoRotacionGlobal;
-            const transitionDuration = 250;
+            const transitionDuration = 300;
 
             if (currentView < totalPages - 1) {
                 gridPage++; currentView++;
                 renderGrid();
                 vGrid.classList.remove('view-hidden');
-                nextTime = tiempoRotacionGlobal - transitionDuration;
+                nextTime = tiempoRotacionGlobal;
             } else if (currentView === totalPages - 1) {
                 currentView = 88;
                 renderFeatured();
                 vFeat.classList.remove('view-hidden');
-                nextTime = tiempoRotacionGlobal - transitionDuration;
+                nextTime = tiempoRotacionGlobal;
             } else if (currentView === 88) {
                 currentView = 99;
                 vStats.classList.remove('view-hidden');
                 cargarEstadisticas();
-                nextTime = tiempoRotacionGlobal - transitionDuration;
+                nextTime = tiempoRotacionGlobal;
             } else if (currentView === 99) {
                 currentView = 100;
                 nextTime = renderMediaAd();
                 vAds.classList.remove('view-hidden');
-                nextTime = Math.max(nextTime - transitionDuration, 3000);
+                // El tiempo del anuncio lo define el anuncio mismo
+                nextTime = Math.max(nextTime, 5000);
             } else if (currentView === 100) {
                 currentView = 101;
                 vLogo.classList.remove('view-hidden');
-                nextTime = 5000;
+                nextTime = 7000; // 7 segundos para el logo
             } else {
                 gridPage = 0; currentView = 0;
                 renderGrid();
                 vGrid.classList.remove('view-hidden');
-                nextTime = tiempoRotacionGlobal - transitionDuration;
+                nextTime = tiempoRotacionGlobal;
             }
             
-            const finalDelay = Math.max(nextTime, 2000);
+            const finalDelay = Math.max(nextTime, 3000);
             rotationInterval = setInterval(rotateDisplay, finalDelay);
-        }, 300);
+        }, 350);
     }
 
     // ============================================
@@ -1332,27 +1334,20 @@
         
         if (esFireTV) {
             console.log('🔥 Fire TV detectado - Aplicando optimizaciones');
-            
-            // Configurar tiempo de rotación para Fire TV
             tiempoRotacionGlobal = Math.max(tiempoRotacionGlobal, 20000);
             
-            // Reducir animaciones para mejor rendimiento
             document.querySelectorAll('*').forEach(el => {
                 el.style.animationDuration = '0.3s';
                 el.style.transitionDuration = '0.2s';
             });
             
-            // Ajustar calidad de video
             document.querySelectorAll('video').forEach(v => {
                 v.preload = 'metadata';
             });
             
-            // Configurar para 60fps
             document.body.style.willChange = 'transform';
             
-            // Optimizar para memoria limitada (1GB)
             setInterval(() => {
-                // Limpiar caché de imágenes no utilizadas
                 const keys = Object.keys(mediaCache.images);
                 if (keys.length > 5) {
                     const toDelete = keys.slice(0, keys.length - 5);
@@ -1373,20 +1368,11 @@
     // INICIO DEL SISTEMA
     // ============================================
     window.onload = () => {
-        // Configurar dimensiones
         dimensionarPantalla();
-        
-        // Iniciar reloj
         updateDateTime();
         setInterval(updateDateTime, 1000);
-        
-        // INICIAR KEEP ALIVE - Evita que el Fire TV se apague
         iniciarKeepAlive();
-        
-        // Optimizar para Fire TV
-        const esFireTV = optimizarParaFireTV();
-        
-        // Inicializar datos
+        optimizarParaFireTV();
         inicializarDatos();
 
         setTimeout(() => {
@@ -1407,9 +1393,6 @@
         }, 2500);
     };
 
-    // ============================================
-    // LIMPIEZA AL CERRAR
-    // ============================================
     window.addEventListener('beforeunload', () => {
         if (keepAliveInterval) {
             clearInterval(keepAliveInterval);
