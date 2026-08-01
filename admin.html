@@ -26,10 +26,10 @@
             background: var(--bg-dark); 
             color: var(--text-light); 
             margin: 0; 
-            padding: 20px;
+            padding: 15px;
             min-height: 100vh;
-            background-image: radial-gradient(circle at 20% 50%, rgba(0, 240, 255, 0.03) 0%, transparent 60%),
-                              radial-gradient(circle at 80% 50%, rgba(255, 121, 0, 0.03) 0%, transparent 60%);
+            will-change: transform;
+            -webkit-font-smoothing: antialiased;
         }
 
         .dashboard { 
@@ -37,12 +37,12 @@
             margin: 0 auto; 
             display: flex; 
             flex-direction: column; 
-            gap: 20px; 
+            gap: 15px; 
         }
         
         header { 
             text-align: center; 
-            padding: 20px 0 25px 0;
+            padding: 15px 0 20px 0;
             border-bottom: 1px solid var(--card-border);
             position: relative;
         }
@@ -52,37 +52,37 @@
             bottom: -1px;
             left: 50%;
             transform: translateX(-50%);
-            width: 200px;
+            width: 150px;
             height: 2px;
             background: linear-gradient(90deg, transparent, var(--neon-orange), var(--neon-blue), transparent);
         }
         header h1 { 
-            font-size: 2.2rem; 
+            font-size: 1.8rem; 
             font-weight: 800; 
             background: linear-gradient(135deg, var(--neon-orange), var(--neon-blue)); 
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent; 
             margin: 0; 
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
         }
         header p {
             color: var(--text-muted);
-            margin: 8px 0 0 0;
-            font-size: 0.95rem;
+            margin: 5px 0 0 0;
+            font-size: 0.85rem;
             letter-spacing: 1px;
         }
 
         .main-layout { 
             display: flex;
             flex-direction: column;
-            gap: 20px; 
+            gap: 15px; 
         }
 
         .grid-2col { 
             display: grid; 
             grid-template-columns: 1fr; 
-            gap: 20px; 
+            gap: 15px; 
         }
         @media (min-width: 1024px) {
             .grid-2col { 
@@ -92,13 +92,15 @@
 
         .panel-card { 
             background: var(--card-bg); 
-            border-radius: 16px; 
-            padding: 24px; 
+            border-radius: 12px; 
+            padding: 18px; 
             border: 1px solid var(--card-border); 
             box-shadow: var(--shadow-glow); 
-            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            will-change: transform;
+            backface-visibility: hidden;
+            contain: layout style paint;
         }
         .panel-card::before {
             content: '';
@@ -106,21 +108,16 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
+            height: 2px;
             background: linear-gradient(90deg, var(--neon-orange), var(--neon-blue));
             opacity: 0.5;
         }
-        .panel-card:hover {
-            border-color: rgba(0, 240, 255, 0.2);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.7);
-        }
         .panel-card h2 { 
             margin-top: 0; 
-            font-size: 1.1rem; 
-            border-left: 4px solid var(--neon-orange); 
-            padding-left: 12px; 
-            margin-bottom: 18px; 
+            font-size: 1rem; 
+            border-left: 3px solid var(--neon-orange); 
+            padding-left: 10px; 
+            margin-bottom: 14px; 
             text-transform: uppercase;
             letter-spacing: 0.5px;
             color: var(--text-light);
@@ -130,7 +127,7 @@
         .flex-row {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
         @media (min-width: 480px) {
             .flex-row { flex-direction: row; align-items: center; }
@@ -138,7 +135,7 @@
         .flex-wrap {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
         }
 
@@ -146,18 +143,18 @@
             background: #090b12; 
             border: 1px solid var(--card-border); 
             color: #fff; 
-            padding: 12px 16px; 
-            border-radius: 10px; 
+            padding: 10px 14px; 
+            border-radius: 8px; 
             font-family: inherit; 
-            font-size: 0.95rem; 
+            font-size: 0.9rem; 
             width: 100%; 
             box-sizing: border-box;
-            transition: all 0.3s ease;
+            transition: border-color 0.2s ease;
+            will-change: transform;
         }
         input:focus { 
             border-color: var(--neon-blue); 
             outline: none; 
-            box-shadow: 0 0 25px rgba(0, 240, 255, 0.1); 
         }
         input::placeholder {
             color: var(--text-muted);
@@ -165,83 +162,65 @@
         }
 
         .btn { 
-            padding: 12px 24px; 
+            padding: 10px 18px; 
             border: none; 
-            border-radius: 10px; 
+            border-radius: 8px; 
             font-weight: 600; 
             cursor: pointer; 
-            transition: all 0.3s ease; 
+            transition: all 0.2s ease; 
             font-family: inherit; 
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            min-height: 44px; 
+            gap: 6px;
+            min-height: 38px; 
             white-space: nowrap;
-            position: relative;
-            overflow: hidden;
-        }
-        .btn::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            transition: all 0.5s ease;
-            transform: translate(-50%, -50%);
-        }
-        .btn:active::after {
-            width: 200%;
-            height: 200%;
+            will-change: transform;
+            backface-visibility: hidden;
         }
         .btn-block { width: 100%; }
-        .btn-primary { background: linear-gradient(135deg, var(--neon-orange), #e06a00); color: white; box-shadow: 0 4px 15px rgba(255, 121, 0, 0.3); }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(255, 121, 0, 0.4); }
-        .btn-success { background: linear-gradient(135deg, var(--neon-green), #2ee610); color: #000; box-shadow: 0 4px 15px rgba(57, 255, 20, 0.2); }
-        .btn-success:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(57, 255, 20, 0.3); }
-        .btn-danger { background: linear-gradient(135deg, var(--neon-red), #bd2c38); color: white; box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3); }
-        .btn-danger:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(230, 57, 70, 0.4); }
-        .btn-info { background: linear-gradient(135deg, var(--neon-blue), #00a8b3); color: #000; box-shadow: 0 4px 15px rgba(0, 240, 255, 0.2); }
-        .btn-info:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(0, 240, 255, 0.3); }
+        .btn-primary { background: linear-gradient(135deg, var(--neon-orange), #e06a00); color: white; }
+        .btn-primary:hover { transform: translateY(-1px); }
+        .btn-success { background: linear-gradient(135deg, var(--neon-green), #2ee610); color: #000; }
+        .btn-success:hover { transform: translateY(-1px); }
+        .btn-danger { background: linear-gradient(135deg, var(--neon-red), #bd2c38); color: white; }
+        .btn-danger:hover { transform: translateY(-1px); }
+        .btn-info { background: linear-gradient(135deg, var(--neon-blue), #00a8b3); color: #000; }
+        .btn-info:hover { transform: translateY(-1px); }
         .btn-outline { background: transparent; border: 2px solid var(--card-border); color: var(--text-light); }
-        .btn-outline:hover { border-color: var(--neon-blue); background: rgba(0, 240, 255, 0.05); }
+        .btn-outline:hover { border-color: var(--neon-blue); }
         
         .live-active { 
             background: linear-gradient(135deg, var(--neon-red), #bd2c38) !important; 
             animation: pulseLive 1.5s infinite alternate; 
             color: white !important; 
-            box-shadow: 0 4px 25px rgba(230, 57, 70, 0.5) !important;
         }
 
         .sorteos-container { 
             display: flex; 
             flex-direction: column; 
-            gap: 12px; 
-            max-height: 60vh; 
+            gap: 10px; 
+            max-height: 55vh; 
             overflow-y: auto; 
-            padding-right: 5px; 
+            padding-right: 3px; 
         }
-        .sorteos-container::-webkit-scrollbar { width: 4px; }
+        .sorteos-container::-webkit-scrollbar { width: 3px; }
         .sorteos-container::-webkit-scrollbar-track { background: var(--bg-dark); border-radius: 10px; }
         .sorteos-container::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 10px; }
 
         .sorteo-item { 
             display: flex; 
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
             background: linear-gradient(135deg, #171c2e, #1a2035);
-            padding: 16px 20px; 
-            border-radius: 12px; 
-            border-left: 4px solid var(--neon-blue);
-            transition: all 0.3s ease;
+            padding: 12px 16px; 
+            border-radius: 10px; 
+            border-left: 3px solid var(--neon-blue);
+            transition: border-color 0.2s ease;
         }
         .sorteo-item:hover {
             border-left-color: var(--neon-orange);
-            background: linear-gradient(135deg, #1c2238, #1f2540);
         }
         @media (min-width: 500px) {
             .sorteo-item {
@@ -252,62 +231,57 @@
         }
         .sorteo-time { 
             font-weight: 700; 
-            font-size: 1rem; 
+            font-size: 0.95rem; 
             color: #cbd5e0; 
-            min-width: 80px;
+            min-width: 70px;
         }
         
         .balls-group { 
             display: flex; 
-            gap: 8px; 
+            gap: 6px; 
             justify-content: center; 
             flex-wrap: wrap;
         }
         .ball-inp { 
-            width: 48px; 
-            height: 48px; 
+            width: 42px; 
+            height: 42px; 
             border-radius: 50% !important; 
             border: 2px solid #2d3554 !important; 
             text-align: center; 
-            font-size: 1.2rem; 
+            font-size: 1.1rem; 
             font-weight: 800; 
             color: var(--neon-blue); 
             background: #0a0c14; 
             padding: 0 !important;
-            transition: all 0.3s ease;
+            transition: border-color 0.2s ease;
         }
         .ball-inp:focus {
             border-color: var(--neon-orange) !important;
-            box-shadow: 0 0 20px rgba(255, 121, 0, 0.2);
-        }
-        .ball-inp:hover {
-            border-color: var(--neon-blue) !important;
         }
 
         .ad-item { 
             background: linear-gradient(135deg, #171c2e, #1a2035);
-            padding: 16px; 
-            border-radius: 12px; 
-            margin-bottom: 12px; 
+            padding: 14px; 
+            border-radius: 10px; 
+            margin-bottom: 10px; 
             border: 1px solid var(--card-border); 
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            transition: all 0.3s ease;
+            gap: 10px;
+            transition: border-color 0.2s ease;
         }
         .ad-item:hover {
             border-color: var(--neon-blue);
-            box-shadow: 0 4px 20px rgba(0, 240, 255, 0.05);
         }
         .ad-row-main {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             align-items: flex-start;
         }
         .ad-preview-box {
-            width: 90px;
-            height: 90px;
-            border-radius: 12px;
+            width: 70px;
+            height: 70px;
+            border-radius: 10px;
             background: #090b12;
             border: 1px solid var(--card-border);
             display: flex;
@@ -324,7 +298,7 @@
             display: block;
         }
         .ad-preview-box .no-img {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: var(--text-muted);
             text-align: center;
             padding: 5px;
@@ -333,22 +307,22 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
         }
         .form-group { margin-bottom: 0; }
-        .form-group label { font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 3px; font-weight: 500; }
+        .form-group label { font-size: 0.7rem; color: var(--text-muted); display: block; margin-bottom: 2px; font-weight: 500; }
 
         .switch-container {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             cursor: pointer;
         }
         .switch {
             position: relative;
             display: inline-block;
-            width: 44px;
-            height: 24px;
+            width: 38px;
+            height: 20px;
         }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider {
@@ -356,44 +330,44 @@
             cursor: pointer;
             top: 0; left: 0; right: 0; bottom: 0;
             background-color: #2d3554;
-            transition: .3s;
-            border-radius: 24px;
+            transition: .2s;
+            border-radius: 20px;
         }
         .slider:before {
             position: absolute;
             content: "";
-            height: 18px;
-            width: 18px;
+            height: 14px;
+            width: 14px;
             left: 3px;
             bottom: 3px;
             background-color: white;
-            transition: .3s;
+            transition: .2s;
             border-radius: 50%;
         }
         input:checked + .slider { background: linear-gradient(135deg, var(--neon-green), #2ee610); }
-        input:checked + .slider:before { transform: translateX(20px); }
+        input:checked + .slider:before { transform: translateX(18px); }
 
         .preview-horizontal { width: 100%; }
         .monitor-header-flex {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
         .iframe-container { 
             width: 100%; 
-            height: 250px; 
+            height: 200px; 
             background: #000; 
-            border-radius: 14px; 
+            border-radius: 10px; 
             overflow: hidden; 
             border: 2px solid var(--card-border); 
             position: relative; 
         }
-        @media (min-width: 580px) { .iframe-container { height: 350px; } }
-        @media (min-width: 900px) { .iframe-container { height: 450px; } }
-        @media (min-width: 1400px) { .iframe-container { height: 520px; } }
+        @media (min-width: 580px) { .iframe-container { height: 280px; } }
+        @media (min-width: 900px) { .iframe-container { height: 350px; } }
+        @media (min-width: 1400px) { .iframe-container { height: 400px; } }
 
         .iframe-container iframe, .iframe-container video { 
             width: 100%; 
@@ -405,63 +379,68 @@
 
         .preview-badge { 
             position: absolute; 
-            top: 12px; 
-            left: 12px; 
+            top: 8px; 
+            left: 8px; 
             background: rgba(0,0,0,0.85); 
-            padding: 6px 16px; 
-            border-radius: 8px; 
-            font-size: 0.75rem; 
+            padding: 4px 12px; 
+            border-radius: 6px; 
+            font-size: 0.65rem; 
             font-weight: 600; 
             color: var(--neon-blue); 
             border: 1px solid var(--neon-blue); 
             pointer-events: none; 
             z-index: 10; 
-            backdrop-filter: blur(5px);
             letter-spacing: 0.5px;
         }
 
         .save-feedback {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 20px;
+            right: 20px;
             background: linear-gradient(135deg, var(--neon-green), #2ee610);
             color: #000;
-            padding: 14px 28px;
-            border-radius: 12px;
+            padding: 10px 20px;
+            border-radius: 10px;
             font-weight: 700;
             opacity: 0;
-            transform: translateY(30px) scale(0.95);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 999;
-            box-shadow: 0 8px 30px rgba(57, 255, 20, 0.3);
-            font-size: 0.95rem;
+            font-size: 0.85rem;
         }
         .save-feedback.show {
             opacity: 1;
             transform: translateY(0) scale(1);
         }
 
-        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: var(--bg-dark); }
         ::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--neon-blue); }
 
         @keyframes pulseLive { 
             0% { box-shadow: 0 0 10px var(--neon-red); } 
-            100% { box-shadow: 0 0 35px var(--neon-red); } 
+            100% { box-shadow: 0 0 25px var(--neon-red); } 
         }
 
         .status-badge {
             display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.7rem;
+            padding: 3px 10px;
+            border-radius: 16px;
+            font-size: 0.6rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         .status-active { background: rgba(57, 255, 20, 0.2); color: var(--neon-green); border: 1px solid rgba(57, 255, 20, 0.3); }
         .status-inactive { background: rgba(230, 57, 70, 0.2); color: var(--neon-red); border: 1px solid rgba(230, 57, 70, 0.3); }
+
+        @media (max-width: 768px) {
+            .panel-card:hover { transform: none !important; }
+            .btn:hover { transform: none !important; }
+            .sorteo-item:hover { border-left-color: var(--neon-blue) !important; }
+            .ad-item:hover { border-color: var(--card-border) !important; }
+        }
     </style>
 </head>
 <body>
@@ -476,9 +455,9 @@
         
         <div class="panel-card preview-horizontal">
             <div class="monitor-header-flex">
-                <h2 style="margin: 0;">📺 Monitor en Tiempo Real</h2>
+                <h2 style="margin: 0; font-size: 0.95rem;">📺 Monitor en Tiempo Real</h2>
                 <div class="flex-wrap">
-                    <button class="btn btn-outline" style="min-height:36px; padding: 6px 18px; font-size:0.85rem;" onclick="recargarMonitor()">🔄 Recargar</button>
+                    <button class="btn btn-outline" style="min-height:30px; padding: 4px 14px; font-size:0.75rem;" onclick="recargarMonitor()">🔄 Recargar</button>
                 </div>
             </div>
             <div class="iframe-container">
@@ -489,59 +468,59 @@
         </div>
 
         <div class="grid-2col">
-            <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div style="display: flex; flex-direction: column; gap: 15px;">
                 
                 <div class="panel-card">
                     <h2>⚙️ Configuración General</h2>
-                    <div class="flex-row" style="margin-bottom: 14px;">
-                        <label style="font-size:0.85rem; color:var(--text-muted); min-width:120px; font-weight:500;">Rotación (seg):</label>
-                        <input type="number" id="globalTimeInp" placeholder="15" min="5" style="max-width: 120px;">
-                        <button class="btn btn-primary" onclick="guardarTiempoGlobal()" style="padding: 10px 20px;">Actualizar</button>
+                    <div class="flex-row" style="margin-bottom: 10px;">
+                        <label style="font-size:0.8rem; color:var(--text-muted); min-width:100px; font-weight:500;">Rotación (seg):</label>
+                        <input type="number" id="globalTimeInp" placeholder="15" min="5" style="max-width: 100px;">
+                        <button class="btn btn-primary" onclick="guardarTiempoGlobal()" style="padding: 8px 16px; font-size:0.8rem;">Actualizar</button>
                     </div>
                     <div class="flex-row">
-                        <label style="font-size:0.85rem; color:var(--text-muted); min-width:120px; font-weight:500;">Cintillo:</label>
+                        <label style="font-size:0.8rem; color:var(--text-muted); min-width:100px; font-weight:500;">Cintillo:</label>
                         <input type="text" id="marqueeInp" placeholder="Escribe avisos aquí...">
-                        <button class="btn btn-success" onclick="guardarCintillo()" style="padding: 10px 20px;">Actualizar</button>
+                        <button class="btn btn-success" onclick="guardarCintillo()" style="padding: 8px 16px; font-size:0.8rem;">Actualizar</button>
                     </div>
                 </div>
 
                 <div class="panel-card" style="border: 1px solid rgba(230, 57, 70, 0.2);">
                     <h2>📡 Transmisión en Vivo</h2>
-                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
                         <input type="url" id="streamingUrlInp" placeholder="https://www.youtube.com/watch?v=... o enlace directo">
-                        <div class="flex-row" style="justify-content: flex-end; gap: 10px;">
-                            <button class="btn btn-danger" id="btnStopLive" onclick="detenerTransmision()" style="display:none;">■ Detener</button>
-                            <button class="btn btn-primary" id="btnStartLive" onclick="iniciarTransmision()">▶ Lanzar En Vivo</button>
+                        <div class="flex-row" style="justify-content: flex-end; gap: 8px;">
+                            <button class="btn btn-danger" id="btnStopLive" onclick="detenerTransmision()" style="display:none; padding: 8px 16px; font-size:0.8rem;">■ Detener</button>
+                            <button class="btn btn-primary" id="btnStartLive" onclick="iniciarTransmision()" style="padding: 8px 16px; font-size:0.8rem;">▶ Lanzar En Vivo</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="panel-card">
                     <h2>🎯 Resultados de Premios</h2>
-                    <div class="flex-row" style="margin-bottom: 14px;">
-                        <input type="date" id="targetDate" onchange="fetchSorteos()" style="max-width: 180px;">
-                        <button class="btn btn-primary" id="btnInit" style="display:none; padding: 10px 20px;" onclick="crearEstructuraBase()">Inicializar Día</button>
+                    <div class="flex-row" style="margin-bottom: 10px;">
+                        <input type="date" id="targetDate" onchange="fetchSorteos()" style="max-width: 160px;">
+                        <button class="btn btn-primary" id="btnInit" style="display:none; padding: 8px 16px; font-size:0.8rem;" onclick="crearEstructuraBase()">Inicializar Día</button>
                     </div>
                     <div class="sorteos-container" id="listado"></div>
                 </div>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div style="display: flex; flex-direction: column; gap: 15px;">
                 
                 <div class="panel-card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 8px;">
-                        <h2 style="margin: 0;">📢 Lista de Anuncios</h2>
-                        <button class="btn btn-primary" style="padding: 8px 16px; font-size: 0.85rem;" onclick="agregarNuevoAnuncioVacio()">+ Añadir</button>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 6px;">
+                        <h2 style="margin: 0; font-size: 0.95rem;">📢 Lista de Anuncios</h2>
+                        <button class="btn btn-primary" style="padding: 6px 14px; font-size: 0.75rem;" onclick="agregarNuevoAnuncioVacio()">+ Añadir</button>
                     </div>
-                    <div id="contenedorAnuncios" style="max-height: 40vh; overflow-y: auto; padding-right: 5px;"></div>
-                    <button class="btn btn-success btn-block" style="margin-top: 16px;" onclick="guardarTodosLosAnuncios()">💾 Guardar Todos</button>
+                    <div id="contenedorAnuncios" style="max-height: 35vh; overflow-y: auto; padding-right: 3px;"></div>
+                    <button class="btn btn-success btn-block" style="margin-top: 12px; padding: 8px; font-size:0.85rem;" onclick="guardarTodosLosAnuncios()">💾 Guardar Todos</button>
                 </div>
 
                 <div class="panel-card" style="border: 1px solid rgba(255, 204, 0, 0.15);">
                     <h2>📊 Estadísticas en Pizarra</h2>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">Los números <span style="color:#ff4500; font-weight:700;">calientes</span> 🔥 y <span style="color:#00bfff; font-weight:700;">fríos</span> ❄️ se muestran automáticamente en la pizarra basados en los últimos sorteos.</p>
-                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 5px;">⏰ Se actualizan automáticamente cada hora</p>
-                    <button class="btn btn-info" onclick="forzarActualizarEstadisticas()" style="background: #1e2538; color: #fff; margin-top: 12px; border: 1px solid var(--card-border);">🔄 Actualizar Stats</button>
+                    <p style="color: var(--text-muted); font-size: 0.8rem; line-height: 1.5;">Los números <span style="color:#ff4500; font-weight:700;">calientes</span> 🔥 y <span style="color:#00bfff; font-weight:700;">fríos</span> ❄️ se muestran automáticamente en la pizarra basados en los últimos sorteos.</p>
+                    <p style="color: var(--text-muted); font-size: 0.7rem; margin-top: 4px;">⏰ Se actualizan automáticamente cada hora</p>
+                    <button class="btn btn-info" onclick="forzarActualizarEstadisticas()" style="background: #1e2538; color: #fff; margin-top: 10px; border: 1px solid var(--card-border); padding: 8px 16px; font-size:0.8rem;">🔄 Actualizar Stats</button>
                 </div>
             </div>
         </div>
@@ -555,6 +534,9 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
 <script>
+    // ============================================
+    // CONFIGURACIÓN FIREBASE
+    // ============================================
     const firebaseConfig = { databaseURL: "https://pizarra-loteria-36ba5-default-rtdb.firebaseio.com/" };
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
@@ -567,6 +549,9 @@
         "06:00PM", "07:00PM", "08:00PM", "09:00PM", "10:00PM"
     ];
 
+    // ============================================
+    // INICIALIZACIÓN
+    // ============================================
     window.onload = () => {
         document.getElementById('targetDate').value = new Date().toISOString().split('T')[0];
         fetchSorteos();
@@ -574,8 +559,18 @@
         escucharAnuncios();
         escucharEstadoTransmision();
         fetchConfiguracionGlobal();
+        
+        if (navigator.userAgent.includes('AFT') || navigator.userAgent.includes('FireTV')) {
+            document.querySelectorAll('*').forEach(el => {
+                el.style.transitionDuration = '0.1s';
+                el.style.animationDuration = '0.2s';
+            });
+        }
     };
 
+    // ============================================
+    // FUNCIONES DE UTILIDAD
+    // ============================================
     function mostrarFeedback(mensaje = '✓ Guardado exitosamente') {
         const fb = document.getElementById('saveFeedback');
         fb.textContent = mensaje;
@@ -583,7 +578,7 @@
         clearTimeout(fb._timeout);
         fb._timeout = setTimeout(() => {
             fb.classList.remove('show');
-        }, 3000);
+        }, 2500);
     }
 
     function recargarMonitor() {
@@ -635,6 +630,9 @@
         });
     }
 
+    // ============================================
+    // TRANSMISIÓN EN VIVO
+    // ============================================
     function escucharEstadoTransmision() {
         database.ref('transmisionVivo').on('value', snap => {
             const data = snap.val();
@@ -671,7 +669,7 @@
                 videoPlayer.classList.remove('active-player');
                 videoPlayer.src = "";
                 frame.classList.add('active-player');
-                if(!frame.src.includes('pizarra.html')) frame.src = "pizarra.html";
+                if(!frame.src.includes('index.html')) frame.src = "index.html";
             }
         });
     }
@@ -694,6 +692,9 @@
         });
     }
 
+    // ============================================
+    // FUNCIONES DE DETECCIÓN DE MEDIOS
+    // ============================================
     function esVideoDirecto(url) {
         if (!url) return false;
         const urlLower = url.toLowerCase();
@@ -752,6 +753,30 @@
         return url;
     }
 
+    // ============================================
+    // FUNCIÓN MEJORADA PARA MOSTRAR IMÁGENES
+    // ============================================
+    function mostrarImagenPreview(container, url) {
+        const urlProcesada = convertirLinkGitHub(url);
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = urlProcesada;
+        img.style.cssText = 'width:100%; height:100%; object-fit:cover;';
+        img.alt = 'Anuncio';
+        
+        img.onload = function() {
+            container.innerHTML = '';
+            container.appendChild(img);
+        };
+        
+        img.onerror = function() {
+            container.innerHTML = '<div class="no-img">Sin preview</div>';
+        };
+    }
+
+    // ============================================
+    // ANUNCIOS
+    // ============================================
     function escucharAnuncios() {
         database.ref('anunciosList').on('value', snap => {
             if (document.activeElement && (document.activeElement.classList.contains('input-ad-url') || document.activeElement.classList.contains('input-ad-time'))) {
@@ -795,8 +820,6 @@
                 <div class="ad-preview-box" id="preview_img_box_${id}">
                     ${hasPreview ? (isVid ? 
                         `<video src="${srcProcessed}" preload="metadata" muted playsinline style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'; document.getElementById('no_img_${id}').style.display='block';">` : 
-                        isImg ? 
-                        `<img src="${srcProcessed}" style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'; document.getElementById('no_img_${id}').style.display='block';">` :
                         `<img src="${srcProcessed}" style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'; document.getElementById('no_img_${id}').style.display='block';">`
                     ) : ''}
                     ${!hasPreview ? `<div class="no-img" id="no_img_${id}">Sin preview</div>` : `<div class="no-img" id="no_img_${id}" style="display:none;">Sin preview</div>`}
@@ -808,11 +831,11 @@
                     </div>
                 </div>
             </div>
-            <div style="display:flex; gap:15px; align-items:center; justify-content: space-between; flex-wrap: wrap;">
+            <div style="display:flex; gap:10px; align-items:center; justify-content: space-between; flex-wrap: wrap;">
                 <div class="flex-wrap">
-                    <div style="width: 80px;">
-                        <label class="form-group"><span style="font-size: 0.8rem; color: var(--text-muted);">Segundos:</span></label>
-                        <input type="number" class="input-ad-time" value="${tiempo}" min="3" style="padding: 6px 10px; width: 70px;">
+                    <div style="width: 70px;">
+                        <label class="form-group"><span style="font-size: 0.7rem; color: var(--text-muted);">Segundos:</span></label>
+                        <input type="number" class="input-ad-time" value="${tiempo}" min="3" style="padding: 4px 8px; width: 60px; font-size:0.8rem;">
                     </div>
                     <div>
                         <label class="switch-container">
@@ -820,12 +843,12 @@
                                 <input type="checkbox" class="input-ad-status" ${activo ? 'checked' : ''}>
                                 <span class="slider"></span>
                             </div>
-                            <span style="font-size: 0.8rem; color: var(--text-muted);">Activo</span>
+                            <span style="font-size: 0.7rem; color: var(--text-muted);">Activo</span>
                         </label>
                     </div>
                     <span class="status-badge ${activo ? 'status-active' : 'status-inactive'}">${activo ? 'Activo' : 'Inactivo'}</span>
                 </div>
-                <button class="btn btn-danger" style="min-height: 36px; padding: 6px 14px;" onclick="eliminarNodoAd(${id})">🗑️</button>
+                <button class="btn btn-danger" style="min-height: 30px; padding: 4px 12px; font-size:0.75rem;" onclick="eliminarNodoAd(${id})">🗑️</button>
             </div>`;
         document.getElementById('contenedorAnuncios').appendChild(div);
     }
@@ -908,10 +931,13 @@
         });
     }
 
+    // ============================================
+    // SORTEOS
+    // ============================================
     function fetchSorteos() {
         const fecha = document.getElementById('targetDate').value;
         const listado = document.getElementById('listado');
-        listado.innerHTML = "<p style='color:#a0aec0;'>Cargando registros...</p>";
+        listado.innerHTML = "<p style='color:#a0aec0; font-size:0.9rem;'>Cargando registros...</p>";
         document.getElementById('btnInit').style.display = 'none';
 
         database.ref(`sorteos/${fecha}`).off();
@@ -937,12 +963,12 @@
                                 <input type="number" pattern="[0-9]*" inputmode="numeric" class="ball-inp" id="n_${idx}_1" value="${s.premios?.[1] || ""}" oninput="if(this.value.length > 2) this.value = this.value.slice(0,2)" placeholder="0">
                                 <input type="number" pattern="[0-9]*" inputmode="numeric" class="ball-inp" id="n_${idx}_2" value="${s.premios?.[2] || ""}" oninput="if(this.value.length > 2) this.value = this.value.slice(0,2)" placeholder="0">
                             </div>
-                            <button class="btn btn-success" id="btn_ok_${idx}" style="min-width: 60px; padding: 8px 16px;" onclick="actualizarSorteo(${idx})">${tienePremios ? '✓' : 'Ok'}</button>
+                            <button class="btn btn-success" id="btn_ok_${idx}" style="min-width: 50px; padding: 6px 12px; font-size:0.8rem;" onclick="actualizarSorteo(${idx})">${tienePremios ? '✓' : 'Ok'}</button>
                         </div>`;
                 });
                 database.ref('stats/update').set({ timestamp: Date.now() });
             } else {
-                listado.innerHTML = "<p style='color:#718096;'>No hay sorteos para esta fecha.</p>";
+                listado.innerHTML = "<p style='color:#718096; font-size:0.9rem;'>No hay sorteos para esta fecha.</p>";
                 document.getElementById('btnInit').style.display = 'block';
             }
         });
@@ -973,7 +999,7 @@
             btn.innerText = "✓";
             btn.disabled = false;
             if(!err) {
-                setTimeout(() => { btn.innerText = "Ok"; }, 1000);
+                setTimeout(() => { btn.innerText = "Ok"; }, 800);
                 mostrarFeedback('✓ Sorteo actualizado');
                 database.ref('stats/update').set({ timestamp: Date.now() });
             } else {
@@ -983,6 +1009,9 @@
         });
     }
 
+    // ============================================
+    // EXPONER FUNCIONES GLOBALES
+    // ============================================
     window.recargarMonitor = recargarMonitor;
     window.guardarTiempoGlobal = guardarTiempoGlobal;
     window.guardarCintillo = guardarCintillo;
