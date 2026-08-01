@@ -16,7 +16,6 @@
         --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
         --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
-        --neon-glow: 0 0 30px rgba(255, 121, 0, 0.3);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -26,9 +25,12 @@
         height: 100%;
         width: 100%;
         overflow: hidden;
+        /* Optimización para 60fps */
+        will-change: transform;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
 
-    /* --- SPLASH SCREEN MEJORADO --- */
     #splash-screen {
         position: fixed;
         top: 0; left: 0; width: 100%; height: 100%;
@@ -38,7 +40,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        transition: opacity 0.8s ease, visibility 0.8s;
+        transition: opacity 0.5s ease, visibility 0.5s;
     }
     .splash-logo {
         height: 320px;
@@ -53,7 +55,6 @@
         font-weight: 800;
         margin-top: 30px;
         letter-spacing: 2px;
-        text-shadow: 0 4px 10px rgba(0,0,0,0.4);
         background: linear-gradient(135deg, #ffcc00, #ff7900);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -104,10 +105,13 @@
         transform: translate(-50%, -50%);
         transform-origin: center center;
         overflow: hidden;
+        /* Optimización 60fps */
         will-change: transform;
+        contain: layout style paint;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
     }
 
-    /* --- TOPBAR MEJORADO --- */
     .topbar {
         width: 100%; height: 151px;
         background: linear-gradient(135deg, var(--anguilla-blue) 0%, var(--anguilla-blue-dark) 100%);
@@ -116,6 +120,8 @@
         box-shadow: 0 8px 32px rgba(0,0,0,0.35);
         position: relative; z-index: 10;
         will-change: transform;
+        contain: layout style paint;
+        backface-visibility: hidden;
     }
     .logo-main-area img { height: 210px; object-fit: contain; padding-top: 10%; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.25)); }
     
@@ -125,27 +131,28 @@
         border-right: 4px solid rgba(255, 204, 0, 0.4); padding-right: 40px; 
         font-variant-numeric: tabular-nums; text-shadow: 0 4px 12px rgba(0,0,0,0.3);
         font-family: 'Inter', sans-serif;
+        min-width: 280px;
     }
     .date-header { text-align: right; }
     .main-date { font-size: 38px; font-weight: 900; color: var(--anguilla-yellow); text-transform: uppercase; line-height: 1; text-shadow: 0 2px 8px rgba(0,0,0,0.2); }
     .sub-date { font-size: 19px; font-weight: 700; color: var(--white); opacity: 0.95; letter-spacing: 0.5px; margin-top: 2px; }
 
-    /* --- TICKER MEJORADO --- */
     .ticker-bar {
         width: 100%; height: 54px;
         background: linear-gradient(90deg, #0a0a0a, #1a1a1a);
         border-bottom: 4px solid var(--anguilla-yellow);
         overflow: hidden; display: flex; align-items: center;
         position: relative; z-index: 10; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        contain: layout style paint;
     }
     .ticker-text {
         white-space: nowrap; font-size: 26px; font-weight: 800; color: #fff;
         animation: marquee 25s linear infinite; padding-left: 100%; letter-spacing: 0.5px;
         text-shadow: 0 0 20px rgba(255, 204, 0, 0.1);
+        will-change: transform;
     }
     @keyframes marquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-    /* --- VISTAS --- */
     #view-grid, #view-featured, #view-ads, #view-stats, #view-logo {
         height: 875px;
         padding: 25px 30px;
@@ -158,20 +165,19 @@
         transform: scale(1) translateY(0px);
         visibility: visible;
         pointer-events: auto;
-        transition: opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
-                    transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                    visibility 0.5s;
+        transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
         will-change: transform, opacity;
+        contain: layout style paint;
+        backface-visibility: hidden;
     }
 
     .view-hidden { 
         opacity: 0 !important; 
-        transform: scale(0.96) translateY(20px) !important; 
+        transform: scale(0.97) translateY(10px) !important; 
         visibility: hidden !important;
         pointer-events: none !important;
     }
 
-    /* --- VISTA LOGO (NUEVA) --- */
     #view-logo .logo-fullscreen {
         width: 100%;
         height: 100%;
@@ -199,8 +205,6 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-top: 30px;
-        text-shadow: none;
-        animation: logoPulse 3s ease-in-out infinite;
     }
     #view-logo .logo-fullscreen .brand-sub {
         font-size: 36px;
@@ -211,12 +215,10 @@
     }
 
     @keyframes logoPulse {
-        0% { transform: scale(1); }
+        0%, 100% { transform: scale(1); }
         50% { transform: scale(1.02); }
-        100% { transform: scale(1); }
     }
 
-    /* --- TARJETAS GRID MEJORADAS --- */
     .grid-container {
         display: grid; grid-template-columns: repeat(4, 1fr);
         grid-template-rows: repeat(2, 1fr); gap: 25px; height: 100%;
@@ -226,12 +228,9 @@
         border-radius: 24px; border: 2px solid rgba(255, 204, 0, 0.6);
         display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--shadow-md);
         position: relative;
-        transition: all 0.3s ease;
         will-change: transform;
-    }
-    .card:hover {
-        transform: translateY(-3px);
-        box-shadow: var(--shadow-lg);
+        contain: layout style paint;
+        backface-visibility: hidden;
     }
     .card::before {
         content: ''; position: absolute; top:0; left:0; right:0; height: 6px; 
@@ -255,14 +254,10 @@
         border: 3px solid rgba(15, 23, 42, 0.85); border-radius: 50%; display: flex; align-items: center; justify-content: center;
         font-size: 56px; font-weight: 900; color: #0f172a;
         box-shadow: inset -6px -6px 14px rgba(0,0,0,0.1), inset 4px 4px 10px rgba(255,255,255,0.8), 0 10px 20px rgba(0,0,0,0.2);
-        transition: all 0.3s ease;
         will-change: transform;
-    }
-    .ball-flat:hover {
-        transform: scale(1.05);
+        backface-visibility: hidden;
     }
 
-    /* --- VISTA DESTACADA MEJORADA --- */
     .split-container { display: flex; gap: 25px; height: 100%; width: 100%; }
     .split-main {
         width: 1190px;
@@ -271,16 +266,7 @@
         border-radius: 32px; display: flex; flex-direction: column; align-items: center; 
         justify-content: center; padding: 30px; box-shadow: var(--shadow-lg); overflow: hidden;
         position: relative;
-    }
-    .split-main::after {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle at 30% 40%, rgba(255, 204, 0, 0.05), transparent 60%);
-        pointer-events: none;
+        contain: layout style paint;
     }
     .side-panel { 
         width: 730px;
@@ -291,12 +277,8 @@
         border-radius: 20px; padding: 0 30px; display: flex;
         justify-content: space-between; align-items: center; border-left: 12px solid var(--anguilla-blue);
         box-shadow: var(--shadow-md); flex: 1;
-        transition: all 0.3s ease;
         will-change: transform;
-    }
-    .side-row:hover {
-        transform: translateX(5px);
-        box-shadow: var(--shadow-lg);
+        backface-visibility: hidden;
     }
     .side-time { color: var(--anguilla-blue); font-size: 34px; font-weight: 900; }
 
@@ -310,20 +292,18 @@
         border: 4px solid rgba(15, 23, 42, 0.9); border-radius: 50%;
         display: flex; align-items: center; justify-content: center; font-size: 100px; font-weight: 900; color: #0f172a;
         box-shadow: inset -10px -10px 25px rgba(0,0,0,0.12), inset 6px 6px 15px rgba(255,255,255,0.9), 0 20px 35px rgba(0,0,0,0.35); 
-        animation: dropIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
+        animation: dropIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
+        will-change: transform;
     }
     .ball-small {
         width: 100px; height: 100px; 
         background: radial-gradient(circle at 35% 35%, #2563eb 0%, #1d4ed8 45%, #0000a5 80%, #000066 100%);
         color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 38px; font-weight: 800;
         box-shadow: inset -4px -4px 12px rgba(0,0,0,0.35), inset 3px 3px 8px rgba(255,255,255,0.4), 0 8px 16px rgba(0, 0, 165, 0.25);
-        transition: all 0.3s ease;
-    }
-    .ball-small:hover {
-        transform: scale(1.1);
+        will-change: transform;
+        backface-visibility: hidden;
     }
 
-    /* --- VISTA DE ESTADÍSTICAS MEJORADA (SOLO 3 NUMEROS) --- */
     #view-stats .split-main {
         background: linear-gradient(145deg, #0a0c1a 0%, #1a1a3a 100%);
         border-color: var(--anguilla-yellow);
@@ -343,7 +323,7 @@
     .stats-title span.cold-text { color: #00bfff; text-shadow: 0 0 30px rgba(0,191,255,0.3); }
     .stats-title .update-time {
         font-size: 18px;
-        color: var(--text-muted);
+        color: #8a99ad;
         display: block;
         margin-top: 5px;
         font-weight: 600;
@@ -378,7 +358,6 @@
         flex-wrap: wrap;
     }
 
-    /* BOLO 3D CON FUEGO MEJORADO - TAMAÑO GRANDE */
     .stat-ball-3d {
         width: 160px;
         height: 160px;
@@ -390,13 +369,10 @@
         font-weight: 900;
         color: white;
         position: relative;
-        animation: ballPop3D 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+        animation: ballPop3D 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
         text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        transition: all 0.3s ease;
         will-change: transform;
-    }
-    .stat-ball-3d:hover {
-        transform: scale(1.1) rotate(5deg);
+        backface-visibility: hidden;
     }
     .stat-ball-3d .count-badge {
         position: absolute;
@@ -462,7 +438,19 @@
         pointer-events: none;
     }
 
-    /* --- ANUNCIOS MEJORADOS PARA IMÁGENES --- */
+    @keyframes fireAnim {
+        0% { transform: scale(1) rotate(-5deg); }
+        100% { transform: scale(1.15) rotate(5deg); }
+    }
+    @keyframes iceAnim {
+        0% { transform: scale(1) rotate(0deg); }
+        100% { transform: scale(1.1) rotate(10deg); }
+    }
+    @keyframes ballPop3D {
+        0% { transform: scale(0) rotate(180deg); opacity: 0; }
+        100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
     .ad-box { 
         width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; 
         background: #000; overflow: hidden; border-radius: 24px; position: relative; 
@@ -472,11 +460,9 @@
         height: 100%;
         object-fit: contain;
         image-rendering: auto;
-        transition: all 0.3s ease;
     }
     .ad-box video { 
         width: 100%; height: 100%; object-fit: contain; 
-        transition: all 0.3s ease;
     } 
     .ad-box iframe { 
         width: 100%; height: 100%; border: none; 
@@ -508,7 +494,6 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-top: 20px;
-        text-shadow: none;
     }
     .logo-branding .brand-sub {
         font-size: 28px;
@@ -542,47 +527,10 @@
     @keyframes dropIn { 0% { transform: scale(0.6) translateY(50px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
     @keyframes pulse { 0% { opacity: 0.4; } 100% { opacity: 1; } }
     @keyframes floating {
-        0% { transform: translateY(0px); }
+        0%, 100% { transform: translateY(0px); }
         50% { transform: translateY(-15px); }
-        100% { transform: translateY(0px); }
-    }
-    @keyframes fireAnim {
-        0% { transform: scale(1) rotate(-5deg); }
-        100% { transform: scale(1.2) rotate(5deg); }
-    }
-    @keyframes iceAnim {
-        0% { transform: scale(1) rotate(0deg); }
-        100% { transform: scale(1.15) rotate(10deg); }
-    }
-    @keyframes ballPop3D {
-        0% { transform: scale(0) rotate(180deg); opacity: 0; }
-        100% { transform: scale(1) rotate(0deg); opacity: 1; }
     }
 
-    .ad-container-content {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #000;
-        border-radius: 24px;
-        overflow: hidden;
-        position: relative;
-    }
-    .ad-container-content img, 
-    .ad-container-content video {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-    }
-    .ad-container-content iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-    }
-
-    /* --- OPTIMIZACIONES PARA FIRE TV --- */
     @media (max-width: 1920px) {
         #canvas-master {
             width: 100vw;
@@ -590,7 +538,6 @@
         }
     }
 
-    /* Reducir animaciones en dispositivos de bajo rendimiento */
     @media (prefers-reduced-motion: reduce) {
         * {
             animation-duration: 0.01ms !important;
@@ -602,52 +549,46 @@
 </head>
 <body>
 
-<!-- SPLASH MEJORADO -->
 <div id="splash-screen">
-    <img src="logo.png" class="splash-logo" alt="Logo">
+    <img src="logo.png" class="splash-logo" alt="Logo" loading="eager">
     <div class="splash-text">ANGUILLA LOTTERY</div>
     <div class="splash-sub">SISTEMA MULTIPANTALLA PREMIUM</div>
     <div class="splash-loader"></div>
 </div>
 
 <div id="canvas-master">
-    <!-- TOPBAR -->
     <div class="topbar">
-        <div class="logo-main-area"><img src="logo.png" alt="Logo"></div>
+        <div class="logo-main-area"><img src="logo.png" alt="Logo" loading="eager"></div>
         <div class="header-info">
-            <div class="header-clock" id="liveClock">00:00:00</div>
+            <div class="header-clock" id="liveClock">--:--:--</div>
             <div class="date-header">
-                <div class="main-date" id="currentDay">...</div>
-                <div class="sub-date" id="currentMonth">...</div>
+                <div class="main-date" id="currentDay">---</div>
+                <div class="sub-date" id="currentMonth">---</div>
             </div>
         </div>
     </div>
 
-    <!-- TICKER -->
     <div class="ticker-bar">
         <div class="ticker-text" id="marqueeText">CARGANDO INFORMACIÓN...</div>
     </div>
 
-    <!-- VISTA LOGO (NUEVA) -->
     <div id="view-logo" class="view-hidden">
         <div class="logo-fullscreen">
-            <img src="logo.png" alt="Anguilla Lottery">
+            <img src="logo.png" alt="Anguilla Lottery" loading="eager">
             <div class="brand-text">ANGUILLA</div>
             <div class="brand-sub">LOTTERY</div>
         </div>
     </div>
 
-    <!-- VISTA GRID -->
     <div id="view-grid">
         <div class="grid-container" id="mainGrid"></div>
     </div>
 
-    <!-- VISTA DESTACADA -->
     <div id="view-featured" class="view-hidden">
         <div class="split-container">
             <div class="split-main">
                 <div class="featured-label">🏆 ÚLTIMO SORTEO REALIZADO</div>
-                <img src="anguilla.png" class="featured-logo-big">
+                <img src="anguilla.png" class="featured-logo-big" loading="eager">
                 <div class="featured-time-box" id="fTime">--:--</div>
                 <div class="balls-container" style="background:transparent; margin-top:20px;" id="fBalls"></div>
             </div>
@@ -655,7 +596,6 @@
         </div>
     </div>
 
-    <!-- VISTA ESTADÍSTICAS (SOLO 3 NUMEROS) -->
     <div id="view-stats" class="view-hidden">
         <div class="split-container">
             <div class="split-main" style="width:100%; padding:40px 60px;">
@@ -677,13 +617,12 @@
         </div>
     </div>
 
-    <!-- VISTA ANUNCIOS -->
     <div id="view-ads" class="view-hidden">
         <div class="split-container" id="adsContainerStructure">
             <div class="split-main" id="adMainBox" style="background: #000; padding: 0; border: none;">
                 <div class="ad-box" id="adDisplay">
                     <div class="logo-branding">
-                        <img src="logo.png" alt="Anguilla">
+                        <img src="logo.png" alt="Anguilla" loading="eager">
                         <div class="brand-text">ANGUILLA</div>
                         <div class="brand-sub">LOTTERY</div>
                     </div>
@@ -694,35 +633,100 @@
     </div>
 </div>
 
-<!-- PRECARGA OCULTA -->
-<div id="preloader-cache" style="position:absolute; width:0; height:0; opacity:0; overflow:hidden; pointer-events:none; visibility:hidden;"></div>
-
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
 <script>
-    const firebaseConfig = { databaseURL: "https://pizarra-loteria-36ba5-default-rtdb.firebaseio.com/" };
+    // ============================================
+    // CONFIGURACIÓN FIREBASE
+    // ============================================
+    const firebaseConfig = { 
+        databaseURL: "https://pizarra-loteria-36ba5-default-rtdb.firebaseio.com/" 
+    };
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
+    // ============================================
+    // VARIABLES GLOBALES
+    // ============================================
     let SORTEOS = [];
     let ANUNCIOS = [];
-    let currentView = 0; 
+    let currentView = 0;
     let gridPage = 0;
     let adIndex = 0;
     let rotationInterval = null;
     let enTransmisionVivo = false;
-    let sistemaIniciado = false; 
-    let tiempoRotacionGlobal = 15000; 
+    let sistemaIniciado = false;
+    let tiempoRotacionGlobal = 15000;
     let ultimaActualizacionStats = null;
     let statsInterval = null;
-    
     let hotNumbers = [];
     let coldNumbers = [];
+    let datosCargados = false;
+    let tiempoInactivo = 0;
+    let keepAliveInterval = null;
 
-    // --- CACHE DE MEDIOS MEJORADO ---
-    let mediaCache = { videos: {}, images: {} };
+    const mediaCache = { videos: {}, images: {} };
 
+    // ============================================
+    // KEEP ALIVE - EVITA QUE EL FIRE TV SE APAGUE
+    // ============================================
+    function iniciarKeepAlive() {
+        // Mantener la pantalla activa con WakeLock
+        mantenerPantallaEncendida();
+        
+        // Simular actividad cada 30 segundos para evitar suspensión
+        keepAliveInterval = setInterval(() => {
+            // Pequeña animación invisible para mantener el dispositivo activo
+            document.body.style.opacity = '0.999';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 10);
+            
+            // Actualizar contador de inactividad
+            tiempoInactivo = 0;
+        }, 25000);
+        
+        // Detectar inactividad del usuario
+        document.addEventListener('mousemove', () => { tiempoInactivo = 0; });
+        document.addEventListener('keydown', () => { tiempoInactivo = 0; });
+        document.addEventListener('touchstart', () => { tiempoInactivo = 0; });
+        
+        // Si no hay actividad por 5 minutos, forzar refresco
+        setInterval(() => {
+            tiempoInactivo += 5;
+            if (tiempoInactivo > 60) { // 5 minutos
+                console.log('🔄 Forzando refresh por inactividad');
+                location.reload();
+            }
+        }, 5000);
+    }
+
+    // ============================================
+    // MANTENER PANTALLA ENCENDIDA
+    // ============================================
+    let wakeLock = null;
+    async function mantenerPantallaEncendida() {
+        try {
+            if ('wakeLock' in navigator) {
+                wakeLock = await navigator.wakeLock.request('screen');
+                console.log('✅ WakeLock activado - pantalla se mantendrá encendida');
+                
+                document.addEventListener('visibilitychange', async () => {
+                    if (wakeLock !== null && document.visibilityState === 'visible') {
+                        wakeLock = await navigator.wakeLock.request('screen');
+                        console.log('✅ WakeLock reactivado');
+                    }
+                });
+            }
+        } catch (err) { 
+            console.warn('⚠️ WakeLock no disponible:', err); 
+        }
+    }
+
+    // ============================================
+    // FUNCIONES DE UTILIDAD
+    // ============================================
     function dimensionarPantalla() {
         const baseWidth = 1920, baseHeight = 1080;
         const scaleX = window.innerWidth / baseWidth;
@@ -735,7 +739,6 @@
         }
     }
     window.addEventListener('resize', dimensionarPantalla);
-    window.addEventListener('orientationchange', () => setTimeout(dimensionarPantalla, 300));
 
     function getFormatDate(offsetDays = 0) {
         const d = new Date();
@@ -747,7 +750,8 @@
         if (!url) return false;
         const u = url.toLowerCase();
         return u.includes('.mp4') || u.includes('.webm') || u.includes('.ogg') || 
-               u.includes('.mov') || u.includes('.avi') || u.includes('.mkv');
+               u.includes('.mov') || u.includes('.avi') || u.includes('.mkv') ||
+               u.includes('github.com') || u.includes('raw.githubusercontent');
     }
 
     function esYouTube(url) {
@@ -765,13 +769,10 @@
 
     function convertirLinkGitHub(url) {
         if (!url) return url;
-        // Si es un enlace de GitHub, convertirlo a raw
         if (url.includes('github.com') && !url.includes('raw.githubusercontent.com')) {
-            // Si tiene /blob/, reemplazar
             if (url.includes('/blob/')) {
                 return url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
             }
-            // Si no tiene /blob/, agregar ?raw=true
             if (!url.includes('?raw=true')) {
                 return url + '?raw=true';
             }
@@ -779,6 +780,9 @@
         return url;
     }
 
+    // ============================================
+    // CACHE DE MEDIOS OPTIMIZADO PARA 1GB RAM
+    // ============================================
     function preCargarMedio(url) {
         if (!url) return null;
         url = url.trim();
@@ -790,25 +794,32 @@
         
         if (esVideoDirecto(url)) {
             const video = document.createElement('video');
-            video.preload = 'auto';
+            video.preload = 'metadata';
             video.muted = true;
             video.playsInline = true;
             video.src = urlProcesada;
             video.load();
             mediaCache.videos[url] = video;
-            setTimeout(() => { if(mediaCache.videos[url]) delete mediaCache.videos[url]; }, 300000);
+            // Limpiar caché después de 2 minutos para liberar RAM
+            setTimeout(() => { 
+                if(mediaCache.videos[url]) {
+                    mediaCache.videos[url].src = '';
+                    delete mediaCache.videos[url];
+                }
+            }, 120000);
             return video;
         } else if (esImagen(url) || url.startsWith('http')) {
             const img = new Image();
             img.crossOrigin = 'anonymous';
             img.src = urlProcesada;
             img.loading = 'eager';
-            // Si la imagen ya está cargada, usarla
-            if (img.complete && img.naturalHeight > 0) {
-                // Ya está cargada
-            }
             mediaCache.images[url] = img;
-            setTimeout(() => { if(mediaCache.images[url]) delete mediaCache.images[url]; }, 300000);
+            // Limpiar caché después de 2 minutos
+            setTimeout(() => { 
+                if(mediaCache.images[url]) {
+                    delete mediaCache.images[url];
+                }
+            }, 120000);
             return img;
         }
         return null;
@@ -842,7 +853,7 @@
             let video = mediaCache.videos[url];
             if (!video) {
                 video = document.createElement('video');
-                video.preload = 'auto';
+                video.preload = 'metadata';
                 video.muted = true;
                 video.playsInline = true;
                 video.src = urlProcesada;
@@ -868,50 +879,40 @@
                 img.crossOrigin = 'anonymous';
                 img.src = urlProcesada;
                 mediaCache.images[url] = img;
-                // Si la imagen tiene errores, mostrar logo
-                img.onerror = function() {
-                    mostrarLogo(container);
-                };
+                img.onerror = function() { mostrarLogo(container); };
             } else {
                 img = img.cloneNode(true);
                 img.crossOrigin = 'anonymous';
             }
             img.style.cssText = 'width:100%; height:100%; object-fit:contain;';
             img.alt = 'Anuncio';
-            // Esperar a que la imagen cargue
             if (img.complete && img.naturalHeight > 0) {
                 container.appendChild(img);
             } else {
-                img.onload = function() {
-                    container.appendChild(img);
-                };
-                img.onerror = function() {
-                    mostrarLogo(container);
-                };
-                // Si la imagen no carga en 5 segundos, mostrar logo
+                img.onload = function() { container.appendChild(img); };
+                img.onerror = function() { mostrarLogo(container); };
                 setTimeout(() => {
-                    if (!container.querySelector('img')) {
-                        mostrarLogo(container);
-                    }
-                }, 5000);
+                    if (!container.querySelector('img')) mostrarLogo(container);
+                }, 3000);
             }
             return;
         }
         
-        // Si no se reconoce el tipo, mostrar logo
         mostrarLogo(container);
     }
 
     function mostrarLogo(container) {
         container.innerHTML = `
             <div class="logo-branding">
-                <img src="logo.png" alt="Anguilla">
+                <img src="logo.png" alt="Anguilla" loading="eager">
                 <div class="brand-text">ANGUILLA</div>
                 <div class="brand-sub">LOTTERY</div>
             </div>`;
     }
 
-    // --- ESTADÍSTICAS (SOLO 3 NUMEROS, ACTUALIZACIÓN CADA HORA) ---
+    // ============================================
+    // ESTADÍSTICAS
+    // ============================================
     function cargarEstadisticas() {
         const hoyStr = getFormatDate(0);
         const ayerStr = getFormatDate(1);
@@ -951,9 +952,7 @@
 
                 const sorted = Object.entries(frecuencia).sort((a, b) => b[1] - a[1]);
                 
-                // SOLO 3 NUMEROS CALIENTES
                 hotNumbers = sorted.slice(0, 3).map(([num, count]) => ({ num: parseInt(num), count }));
-                // SOLO 3 NUMEROS FRIOS
                 coldNumbers = sorted.slice(-3).reverse().map(([num, count]) => ({ num: parseInt(num), count }));
 
                 ultimaActualizacionStats = new Date();
@@ -966,7 +965,6 @@
         const hotContainer = document.getElementById('hotStatsBalls');
         const coldContainer = document.getElementById('coldStatsBalls');
         
-        // Actualizar hora de actualización
         if (ultimaActualizacionStats) {
             const hora = ultimaActualizacionStats.getHours().toString().padStart(2, '0');
             const min = ultimaActualizacionStats.getMinutes().toString().padStart(2, '0');
@@ -977,7 +975,7 @@
             hotContainer.innerHTML = '<div style="color:rgba(255,255,255,0.5); font-size:28px; font-weight:700;">Sin datos</div>';
         } else {
             hotContainer.innerHTML = hotNumbers.map((item, index) => `
-                <div class="stat-ball-3d hot" style="animation-delay: ${index * 0.15}s">
+                <div class="stat-ball-3d hot" style="animation-delay: ${index * 0.08}s">
                     <div class="shine"></div>
                     ${String(item.num).padStart(2, '0')}
                     <span class="count-badge">${item.count}</span>
@@ -989,7 +987,7 @@
             coldContainer.innerHTML = '<div style="color:rgba(255,255,255,0.5); font-size:28px; font-weight:700;">Sin datos</div>';
         } else {
             coldContainer.innerHTML = coldNumbers.map((item, index) => `
-                <div class="stat-ball-3d cold" style="animation-delay: ${index * 0.15}s">
+                <div class="stat-ball-3d cold" style="animation-delay: ${index * 0.08}s">
                     <div class="shine"></div>
                     ${String(item.num).padStart(2, '0')}
                     <span class="count-badge">${item.count}</span>
@@ -998,19 +996,227 @@
         }
     }
 
-    // --- INICIALIZACIÓN DE DATOS ---
+    // ============================================
+    // PROCESAMIENTO DE SORTEOS
+    // ============================================
+    function procesarSorteos(dataHoy, dataAyer) {
+        let finalSorteos = [];
+        const ahora = new Date();
+        const horaAct = { hrs: ahora.getHours(), mins: ahora.getMinutes() };
+
+        dataHoy.forEach((sHoy, index) => {
+            if(!sHoy) return;
+            let [h, mP] = sHoy.hora.split(":");
+            let mSor = parseInt(mP.substring(0, 2));
+            let ampm = mP.substring(2).trim();
+            let hSor = parseInt(h);
+            if (ampm === "PM" && hSor !== 12) hSor += 12;
+            if (ampm === "AM" && hSor === 12) hSor = 0;
+
+            const tieneHoy = sHoy.premios && sHoy.premios[0] !== "" && sHoy.premios[0] !== undefined;
+            const yaPasoHora = (horaAct.hrs > hSor || (horaAct.hrs === hSor && horaAct.mins >= mSor + 5));
+
+            let sorteoFinal = { hour: sHoy.hora.replace(/(AM|PM)/, ' $1'), key: index };
+
+            if (tieneHoy) {
+                sorteoFinal.day = "hoy"; sorteoFinal.date = "HOY";
+                sorteoFinal.nums = [sHoy.premios[0], sHoy.premios[1], sHoy.premios[2]];
+                sorteoFinal.isWaiting = false;
+            } else if (yaPasoHora) {
+                sorteoFinal.day = "hoy"; sorteoFinal.date = "HOY";
+                sorteoFinal.nums = null; sorteoFinal.isWaiting = true;
+            } else {
+                const sAyer = dataAyer[index];
+                sorteoFinal.day = "ayer"; sorteoFinal.date = "AYER";
+                sorteoFinal.nums = (sAyer && sAyer.premios && sAyer.premios[0] !== "") ? [sAyer.premios[0], sAyer.premios[1], sAyer.premios[2]] : null;
+                sorteoFinal.isWaiting = false;
+            }
+            finalSorteos.push(sorteoFinal);
+        });
+
+        SORTEOS = finalSorteos;
+        if (sistemaIniciado && !enTransmisionVivo) {
+            renderGrid();
+        }
+        cargarEstadisticas();
+    }
+
+    // ============================================
+    // RENDERIZADO DE VISTAS
+    // ============================================
+    function renderGrid() {
+        const grid = document.getElementById('mainGrid');
+        grid.innerHTML = '';
+        if (SORTEOS.length === 0) return;
+        const start = gridPage * 8;
+        const pageItems = SORTEOS.slice(start, start + 8);
+
+        pageItems.forEach(s => {
+            const card = document.createElement('div');
+            card.className = `card ${s.day === 'hoy' ? 'card-hoy' : 'card-ayer'}`;
+            let bottom = s.isWaiting ? `<div class="waiting-text">⏳ ESPERANDO RESULTADOS...</div>` : `
+                <div class="balls-container">
+                    <div class="ball-flat">${s.nums ? s.nums[0] : '--'}</div>
+                    <div class="ball-flat">${s.nums ? s.nums[1] : '--'}</div>
+                    <div class="ball-flat">${s.nums ? s.nums[2] : '--'}</div>
+                </div>`;
+            card.innerHTML = `<div class="card-header"><img class="mini-logo" src="anguilla.png" loading="eager"><div class="time-bar">${s.hour}</div><div class="date-tag">${s.date}</div></div>${bottom}`;
+            grid.appendChild(card);
+        });
+    }
+
+    function generarPanelLateral(contenedorId) {
+        let jugados = SORTEOS.filter(s => s.nums !== null && s.nums.length > 0);
+        const panel = document.getElementById(contenedorId);
+        if (jugados.length === 0) {
+            panel.innerHTML = '<div class="waiting-text">NO HAY SORTEOS PREVIOS</div>';
+            return SORTEOS[0] || { hour: '--:--', date: 'HOY', nums: null };
+        }
+        jugados.sort((a, b) => (a.day === b.day) ? b.key - a.key : (a.day === 'hoy' ? -1 : 1));
+        let last = jugados[0];
+        const historial = jugados.slice(1, 6);
+        panel.innerHTML = historial.map(s => `
+            <div class="side-row">
+                <div class="side-time">${s.hour} <small style="font-size:18px; display:block; color:#64748b; font-weight:700; margin-top:2px;">${s.date}</small></div>
+                <div style="display:flex; gap:10px;">
+                    <div class="ball-small">${s.nums[0]}</div>
+                    <div class="ball-small">${s.nums[1]}</div>
+                    <div class="ball-small">${s.nums[2]}</div>
+                </div>
+            </div>`).join('');
+        return last;
+    }
+
+    function renderFeatured() {
+        let last = generarPanelLateral('sidePanelFeatured');
+        document.getElementById('fTime').innerText = last.hour;
+        const fBalls = document.getElementById('fBalls');
+        fBalls.innerHTML = last.nums ? last.nums.map((n, i) => `<div class="ball-big" style="animation-delay: ${i * 0.08}s">${n}</div>`).join('') : '<div class="waiting-text">PROXIMO SORTEO</div>';
+    }
+
+    function renderMediaAd() {
+        generarPanelLateral('sidePanelAds');
+        const box = document.getElementById('adDisplay');
+        
+        const anunciosActivos = ANUNCIOS.filter(ad => ad.activo !== false && ad.url && ad.url.trim() !== '');
+        
+        if (anunciosActivos.length === 0) {
+            mostrarLogo(box);
+            return tiempoRotacionGlobal;
+        }
+        
+        if (adIndex >= anunciosActivos.length) adIndex = 0;
+        const ad = anunciosActivos[adIndex];
+        let urlTarget = ad.url ? ad.url.trim() : "";
+        
+        mostrarMedioPrecargado(box, urlTarget);
+        
+        let tiempoAsignado = (parseInt(ad.tiempo) || 15) * 1000;
+        adIndex++;
+        
+        if (adIndex >= anunciosActivos.length) {
+            setTimeout(() => {
+                if (!enTransmisionVivo) {
+                    mostrarLogo(box);
+                }
+            }, tiempoAsignado + 100);
+        }
+        
+        return tiempoAsignado;
+    }
+
+    // ============================================
+    // ROTACIÓN DE PANTALLA OPTIMIZADA
+    // ============================================
+    function rotateDisplay() {
+        if (SORTEOS.length === 0 || enTransmisionVivo || !sistemaIniciado) return;
+        clearInterval(rotationInterval);
+
+        const vGrid = document.getElementById('view-grid');
+        const vFeat = document.getElementById('view-featured');
+        const vStats = document.getElementById('view-stats');
+        const vAds = document.getElementById('view-ads');
+        const vLogo = document.getElementById('view-logo');
+        const totalPages = Math.ceil(SORTEOS.length / 8);
+
+        vGrid.classList.add('view-hidden');
+        vFeat.classList.add('view-hidden');
+        vStats.classList.add('view-hidden');
+        vAds.classList.add('view-hidden');
+        vLogo.classList.add('view-hidden');
+
+        setTimeout(() => {
+            let nextTime = tiempoRotacionGlobal;
+            const transitionDuration = 250;
+
+            if (currentView < totalPages - 1) {
+                gridPage++; currentView++;
+                renderGrid();
+                vGrid.classList.remove('view-hidden');
+                nextTime = tiempoRotacionGlobal - transitionDuration;
+            } else if (currentView === totalPages - 1) {
+                currentView = 88;
+                renderFeatured();
+                vFeat.classList.remove('view-hidden');
+                nextTime = tiempoRotacionGlobal - transitionDuration;
+            } else if (currentView === 88) {
+                currentView = 99;
+                vStats.classList.remove('view-hidden');
+                cargarEstadisticas();
+                nextTime = tiempoRotacionGlobal - transitionDuration;
+            } else if (currentView === 99) {
+                currentView = 100;
+                nextTime = renderMediaAd();
+                vAds.classList.remove('view-hidden');
+                nextTime = Math.max(nextTime - transitionDuration, 3000);
+            } else if (currentView === 100) {
+                currentView = 101;
+                vLogo.classList.remove('view-hidden');
+                nextTime = 5000;
+            } else {
+                gridPage = 0; currentView = 0;
+                renderGrid();
+                vGrid.classList.remove('view-hidden');
+                nextTime = tiempoRotacionGlobal - transitionDuration;
+            }
+            
+            const finalDelay = Math.max(nextTime, 2000);
+            rotationInterval = setInterval(rotateDisplay, finalDelay);
+        }, 300);
+    }
+
+    // ============================================
+    // ACTUALIZAR RELOJ
+    // ============================================
+    function updateDateTime() {
+        const now = new Date();
+        let hrs = now.getHours();
+        const ampm = hrs >= 12 ? 'PM' : 'AM';
+        hrs = hrs % 12 || 12;
+        const mins = now.getMinutes().toString().padStart(2, '0');
+        const secs = now.getSeconds().toString().padStart(2, '0');
+        document.getElementById('liveClock').innerText = `${hrs}:${mins}:${secs} ${ampm}`;
+        const dias = ['DOMINGO','LUNES','MARTES','MIÉRCOLES','JUEVES','VIERNES','SÁBADO'];
+        const meses = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
+        document.getElementById('currentDay').innerText = `${dias[now.getDay()]} ${now.getDate()}`;
+        document.getElementById('currentMonth').innerText = `${meses[now.getMonth()]} ${now.getFullYear()}`;
+    }
+
+    // ============================================
+    // INICIALIZACIÓN PRINCIPAL
+    // ============================================
     function inicializarDatos() {
         const hoyStr = getFormatDate(0);
         const ayerStr = getFormatDate(1);
 
         database.ref('ticker').on('value', snap => {
-            document.getElementById('marqueeText').innerText = snap.val() || "BIENVENIDOS A ANGUILLA LOTTERY";
+            const texto = snap.val() || "BIENVENIDOS A ANGUILLA LOTTERY";
+            document.getElementById('marqueeText').innerText = texto;
         });
 
         database.ref('configuracion/tiempoPantalla').on('value', snap => {
             if(snap.val()) {
                 tiempoRotacionGlobal = parseInt(snap.val()) * 1000;
-                // Reiniciar rotación si está activa
                 if (rotationInterval && sistemaIniciado) {
                     clearInterval(rotationInterval);
                     rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
@@ -1020,18 +1226,12 @@
 
         database.ref('anunciosList').on('value', snap => {
             ANUNCIOS = [];
-            const cache = document.getElementById('preloader-cache');
-            cache.innerHTML = "";
             if(snap.exists()) {
-                snap.forEach(child => { 
+                snap.forEach(child => {
                     let item = child.val();
-                    if (item && item.activo !== false && item.url && item.url.trim() !== '') { 
-                        ANUNCIOS.push(item); 
-                        // Pre-cargar el medio
-                        const url = item.url.trim();
-                        if (esImagen(url) || esVideoDirecto(url)) {
-                            preCargarMedio(url);
-                        }
+                    if (item && item.activo !== false && item.url && item.url.trim() !== '') {
+                        ANUNCIOS.push(item);
+                        preCargarMedio(item.url.trim());
                     }
                 });
             }
@@ -1043,20 +1243,17 @@
             database.ref(`sorteos/${ayerStr}`).once('value', snapAyer => {
                 const dataAyer = snapAyer.val() || [];
                 procesarSorteos(dataHoy, dataAyer);
+                if (!datosCargados) {
+                    datosCargados = true;
+                    if (sistemaIniciado) {
+                        iniciarRotacion();
+                    }
+                }
             });
         });
 
-        database.ref('stats/update').on('value', snap => {
-            if (snap.val()) {
-                cargarEstadisticas();
-            }
-        });
-
-        // Actualizar estadísticas cada hora
         if (statsInterval) clearInterval(statsInterval);
-        statsInterval = setInterval(() => {
-            cargarEstadisticas();
-        }, 3600000); // Cada 1 hora
+        statsInterval = setInterval(cargarEstadisticas, 3600000);
 
         database.ref('transmisionVivo').on('value', snap => {
             if (!sistemaIniciado) return;
@@ -1106,247 +1303,91 @@
                     vLogo.classList.add('view-hidden');
                     renderGrid();
                     clearInterval(rotationInterval);
-                    rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
+                    iniciarRotacion();
                 }
             }
         });
 
-        // Cargar estadísticas iniciales
-        setTimeout(() => {
-            cargarEstadisticas();
-        }, 1000);
-    }
-
-    function procesarSorteos(dataHoy, dataAyer) {
-        let finalSorteos = [];
-        const ahora = new Date();
-        const horaAct = { hrs: ahora.getHours(), mins: ahora.getMinutes() };
-
-        dataHoy.forEach((sHoy, index) => {
-            if(!sHoy) return;
-            let [h, mP] = sHoy.hora.split(":");
-            let mSor = parseInt(mP.substring(0, 2));
-            let ampm = mP.substring(2).trim();
-            let hSor = parseInt(h);
-            if (ampm === "PM" && hSor !== 12) hSor += 12;
-            if (ampm === "AM" && hSor === 12) hSor = 0;
-
-            const tieneHoy = sHoy.premios && sHoy.premios[0] !== "" && sHoy.premios[0] !== undefined;
-            const yaPasoHora = (horaAct.hrs > hSor || (horaAct.hrs === hSor && horaAct.mins >= mSor + 5));
-
-            let sorteoFinal = { hour: sHoy.hora.replace(/(AM|PM)/, ' $1'), key: index };
-
-            if (tieneHoy) {
-                sorteoFinal.day = "hoy"; sorteoFinal.date = "HOY";
-                sorteoFinal.nums = [sHoy.premios[0], sHoy.premios[1], sHoy.premios[2]];
-                sorteoFinal.isWaiting = false;
-            } else if (yaPasoHora) {
-                sorteoFinal.day = "hoy"; sorteoFinal.date = "HOY";
-                sorteoFinal.nums = null; sorteoFinal.isWaiting = true;
-            } else {
-                const sAyer = dataAyer[index];
-                sorteoFinal.day = "ayer"; sorteoFinal.date = "AYER";
-                sorteoFinal.nums = (sAyer && sAyer.premios && sAyer.premios[0] !== "") ? [sAyer.premios[0], sAyer.premios[1], sAyer.premios[2]] : null;
-                sorteoFinal.isWaiting = false;
-            }
-            finalSorteos.push(sorteoFinal);
+        database.ref('stats/update').on('value', snap => {
+            if (snap.val()) cargarEstadisticas();
         });
 
-        SORTEOS = finalSorteos;
-        if (sistemaIniciado && !enTransmisionVivo) renderGrid();
-        cargarEstadisticas();
+        setTimeout(cargarEstadisticas, 1000);
     }
 
-    function renderGrid() {
-        const grid = document.getElementById('mainGrid');
-        grid.innerHTML = '';
-        if (SORTEOS.length === 0) return;
-        const start = gridPage * 8;
-        const pageItems = SORTEOS.slice(start, start + 8);
-
-        pageItems.forEach(s => {
-            const card = document.createElement('div');
-            card.className = `card ${s.day === 'hoy' ? 'card-hoy' : 'card-ayer'}`;
-            let bottom = s.isWaiting ? `<div class="waiting-text">⏳ ESPERANDO RESULTADOS...</div>` : `
-                <div class="balls-container">
-                    <div class="ball-flat">${s.nums ? s.nums[0] : '--'}</div>
-                    <div class="ball-flat">${s.nums ? s.nums[1] : '--'}</div>
-                    <div class="ball-flat">${s.nums ? s.nums[2] : '--'}</div>
-                </div>`;
-            card.innerHTML = `<div class="card-header"><img class="mini-logo" src="anguilla.png"><div class="time-bar">${s.hour}</div><div class="date-tag">${s.date}</div></div>${bottom}`;
-            grid.appendChild(card);
-        });
-    }
-
-    function generarPanelLateral(contenedorId) {
-        let jugados = SORTEOS.filter(s => s.nums !== null && s.nums.length > 0);
-        const panel = document.getElementById(contenedorId);
-        if (jugados.length === 0) {
-            panel.innerHTML = '<div class="waiting-text">NO HAY SORTEOS PREVIOS</div>';
-            return SORTEOS[0] || { hour: '--:--', date: 'HOY', nums: null };
+    function iniciarRotacion() {
+        if (rotationInterval) clearInterval(rotationInterval);
+        if (SORTEOS.length > 0 && !enTransmisionVivo) {
+            renderGrid();
+            rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
         }
-        jugados.sort((a, b) => (a.day === b.day) ? b.key - a.key : (a.day === 'hoy' ? -1 : 1));
-        let last = jugados[0];
-        const historial = jugados.slice(1, 6);
-        panel.innerHTML = historial.map(s => `
-            <div class="side-row">
-                <div class="side-time">${s.hour} <small style="font-size:18px; display:block; color:#64748b; font-weight:700; margin-top:2px;">${s.date}</small></div>
-                <div style="display:flex; gap:10px;">
-                    <div class="ball-small">${s.nums[0]}</div>
-                    <div class="ball-small">${s.nums[1]}</div>
-                    <div class="ball-small">${s.nums[2]}</div>
-                </div>
-            </div>`).join('');
-        return last;
     }
 
-    function renderFeatured() {
-        let last = generarPanelLateral('sidePanelFeatured');
-        document.getElementById('fTime').innerText = last.hour;
-        const fBalls = document.getElementById('fBalls');
-        fBalls.innerHTML = last.nums ? last.nums.map((n, i) => `<div class="ball-big" style="animation-delay: ${i * 0.12}s">${n}</div>`).join('') : '<div class="waiting-text">PROXIMO SORTEO</div>';
-    }
-
-    function renderMediaAd() {
-        generarPanelLateral('sidePanelAds');
-        const box = document.getElementById('adDisplay');
-        
-        // Filtrar anuncios activos
-        const anunciosActivos = ANUNCIOS.filter(ad => ad.activo !== false && ad.url && ad.url.trim() !== '');
-        
-        if (anunciosActivos.length === 0) {
-            mostrarLogo(box);
-            return tiempoRotacionGlobal;
-        }
-        
-        if (adIndex >= anunciosActivos.length) adIndex = 0;
-        const ad = anunciosActivos[adIndex];
-        let urlTarget = ad.url ? ad.url.trim() : "";
-        
-        mostrarMedioPrecargado(box, urlTarget);
-        
-        let tiempoAsignado = (parseInt(ad.tiempo) || 15) * 1000;
-        adIndex++;
-        
-        if (adIndex >= anunciosActivos.length) {
-            setTimeout(() => {
-                if (!enTransmisionVivo) {
-                    mostrarLogo(box);
-                }
-            }, tiempoAsignado + 100);
-        }
-        
-        return tiempoAsignado;
-    }
-
-    // --- ROTACIÓN OPTIMIZADA CON LOGO ---
-    function rotateDisplay() {
-        if (SORTEOS.length === 0 || enTransmisionVivo || !sistemaIniciado) return;
-        clearInterval(rotationInterval);
-
-        const vGrid = document.getElementById('view-grid');
-        const vFeat = document.getElementById('view-featured');
-        const vStats = document.getElementById('view-stats');
-        const vAds = document.getElementById('view-ads');
-        const vLogo = document.getElementById('view-logo');
-        const totalPages = Math.ceil(SORTEOS.length / 8);
-
-        vGrid.classList.add('view-hidden');
-        vFeat.classList.add('view-hidden');
-        vStats.classList.add('view-hidden');
-        vAds.classList.add('view-hidden');
-        vLogo.classList.add('view-hidden');
-
-        setTimeout(() => {
-            let nextTime = tiempoRotacionGlobal;
-            const transitionDuration = 500;
-
-            if (currentView < totalPages - 1) {
-                gridPage++; currentView++;
-                renderGrid();
-                vGrid.classList.remove('view-hidden');
-                nextTime = tiempoRotacionGlobal - transitionDuration;
-            } else if (currentView === totalPages - 1) {
-                currentView = 88; 
-                renderFeatured();
-                vFeat.classList.remove('view-hidden');
-                nextTime = tiempoRotacionGlobal - transitionDuration;
-            } else if (currentView === 88) {
-                currentView = 99; 
-                vStats.classList.remove('view-hidden');
-                cargarEstadisticas();
-                nextTime = tiempoRotacionGlobal - transitionDuration;
-            } else if (currentView === 99) {
-                currentView = 100; 
-                nextTime = renderMediaAd();
-                vAds.classList.remove('view-hidden');
-                nextTime = Math.max(nextTime - transitionDuration, 3000);
-            } else if (currentView === 100) {
-                currentView = 101;
-                vLogo.classList.remove('view-hidden');
-                nextTime = 8000; // 8 segundos mostrando el logo
-            } else {
-                gridPage = 0; currentView = 0;
-                renderGrid();
-                vGrid.classList.remove('view-hidden');
-                nextTime = tiempoRotacionGlobal - transitionDuration;
-            }
-            
-            const finalDelay = Math.max(nextTime, 3000);
-            rotationInterval = setInterval(rotateDisplay, finalDelay);
-        }, 550);
-    }
-
-    function updateDateTime() {
-        const now = new Date();
-        const hrs = now.getHours() % 12 || 12;
-        const mins = now.getMinutes().toString().padStart(2, '0');
-        const secs = now.getSeconds().toString().padStart(2, '0');
-        const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
-        document.getElementById('liveClock').innerText = `${hrs}:${mins}:${secs} ${ampm}`;
-        const dias = ['DOMINGO','LUNES','MARTES','MIÉRCOLES','JUEVES','VIERNES','SÁBADO'];
-        const meses = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
-        document.getElementById('currentDay').innerText = `${dias[now.getDay()]} ${now.getDate()}`;
-        document.getElementById('currentMonth').innerText = `${meses[now.getMonth()]} ${now.getFullYear()}`;
-    }
-
-    let wakeLock = null;
-    async function activarMantenerPantallaEncendida() {
-        try {
-            if ('wakeLock' in navigator) {
-                wakeLock = await navigator.wakeLock.request('screen');
-                document.addEventListener('visibilitychange', async () => {
-                    if (wakeLock !== null && document.visibilityState === 'visible') {
-                        wakeLock = await navigator.wakeLock.request('screen');
-                    }
-                });
-            }
-        } catch (err) { console.error("WakeLock Error: ", err); }
-    }
-
-    // --- OPTIMIZACIÓN PARA FIRE TV ---
+    // ============================================
+    // OPTIMIZACIÓN PARA FIRE TV
+    // ============================================
     function optimizarParaFireTV() {
-        // Detectar Fire TV por user agent
         const ua = navigator.userAgent || '';
-        if (ua.includes('AFT') || ua.includes('FireTV') || ua.includes('Android') && ua.includes('TV')) {
-            // Reducir calidad de animaciones
-            document.querySelectorAll('*').forEach(el => {
-                el.style.animationDuration = '0.5s';
-                el.style.transitionDuration = '0.3s';
-            });
-            // Aumentar el tiempo entre rotaciones para reducir carga
+        const esFireTV = ua.includes('AFT') || ua.includes('FireTV') || (ua.includes('Android') && ua.includes('TV'));
+        
+        if (esFireTV) {
+            console.log('🔥 Fire TV detectado - Aplicando optimizaciones');
+            
+            // Configurar tiempo de rotación para Fire TV
             tiempoRotacionGlobal = Math.max(tiempoRotacionGlobal, 20000);
+            
+            // Reducir animaciones para mejor rendimiento
+            document.querySelectorAll('*').forEach(el => {
+                el.style.animationDuration = '0.3s';
+                el.style.transitionDuration = '0.2s';
+            });
+            
+            // Ajustar calidad de video
+            document.querySelectorAll('video').forEach(v => {
+                v.preload = 'metadata';
+            });
+            
+            // Configurar para 60fps
+            document.body.style.willChange = 'transform';
+            
+            // Optimizar para memoria limitada (1GB)
+            setInterval(() => {
+                // Limpiar caché de imágenes no utilizadas
+                const keys = Object.keys(mediaCache.images);
+                if (keys.length > 5) {
+                    const toDelete = keys.slice(0, keys.length - 5);
+                    toDelete.forEach(key => {
+                        if (mediaCache.images[key]) {
+                            delete mediaCache.images[key];
+                        }
+                    });
+                }
+            }, 60000);
+            
+            return true;
         }
+        return false;
     }
 
-    // --- INICIO ---
+    // ============================================
+    // INICIO DEL SISTEMA
+    // ============================================
     window.onload = () => {
+        // Configurar dimensiones
         dimensionarPantalla();
-        updateDateTime(); 
+        
+        // Iniciar reloj
+        updateDateTime();
         setInterval(updateDateTime, 1000);
+        
+        // INICIAR KEEP ALIVE - Evita que el Fire TV se apague
+        iniciarKeepAlive();
+        
+        // Optimizar para Fire TV
+        const esFireTV = optimizarParaFireTV();
+        
+        // Inicializar datos
         inicializarDatos();
-        activarMantenerPantallaEncendida();
-        optimizarParaFireTV();
 
         setTimeout(() => {
             const splash = document.getElementById('splash-screen');
@@ -1358,14 +1399,25 @@
             database.ref('transmisionVivo').once('value', snap => {
                 const live = snap.val();
                 if(live && live.activo === true) {
-                    database.ref('transmisionVivo').getRef().set(live); 
+                    database.ref('transmisionVivo').getRef().set(live);
                 } else {
-                    renderGrid();
-                    rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
+                    iniciarRotacion();
                 }
             });
         }, 2500);
     };
+
+    // ============================================
+    // LIMPIEZA AL CERRAR
+    // ============================================
+    window.addEventListener('beforeunload', () => {
+        if (keepAliveInterval) {
+            clearInterval(keepAliveInterval);
+        }
+        if (wakeLock) {
+            wakeLock.release().catch(() => {});
+        }
+    });
 </script>
 </body>
 </html>
