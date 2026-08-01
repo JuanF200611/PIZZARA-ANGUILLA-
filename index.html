@@ -13,8 +13,8 @@
         --anguilla-yellow: #ffcc00;
         --white: #ffffff;
         --gray-text: #475569;
-        --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+        --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
         --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
     }
 
@@ -25,21 +25,19 @@
         height: 100%;
         width: 100%;
         overflow: hidden;
-        will-change: transform;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
     }
 
+    /* --- PANTALLA DE INICIO (SPLASH SCREEN) --- */
     #splash-screen {
         position: fixed;
         top: 0; left: 0; width: 100%; height: 100%;
-        background: radial-gradient(circle at 50% 50%, #0000a5 0%, #000033 100%);
+        background: radial-gradient(circle at 50% 50%, var(--anguilla-blue) 0%, var(--anguilla-blue-dark) 100%);
         z-index: 99999;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        transition: opacity 0.5s ease, visibility 0.5s;
+        transition: opacity 1s ease-in-out, visibility 1s;
     }
     .splash-logo {
         height: 320px;
@@ -52,46 +50,18 @@
         font-family: 'Inter', sans-serif;
         font-size: 42px;
         font-weight: 800;
-        margin-top: 30px;
+        margin-top: 40px;
         letter-spacing: 2px;
-        background: linear-gradient(135deg, #ffcc00, #ff7900);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        text-shadow: 0 4px 10px rgba(0,0,0,0.4);
     }
     .splash-sub {
-        color: var(--white);
+        color: var(--anguilla-yellow);
         font-family: 'Inter', sans-serif;
         font-size: 24px;
         font-weight: 700;
         margin-top: 10px;
         letter-spacing: 4px;
         animation: pulse 1.5s infinite alternate;
-        opacity: 0.8;
-    }
-    .splash-loader {
-        margin-top: 40px;
-        width: 200px;
-        height: 4px;
-        background: rgba(255,255,255,0.1);
-        border-radius: 4px;
-        overflow: hidden;
-        position: relative;
-    }
-    .splash-loader::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, #ffcc00, #ff7900);
-        animation: loadingBar 1.8s ease-in-out infinite;
-        border-radius: 4px;
-    }
-    @keyframes loadingBar {
-        0% { left: -100%; width: 30%; }
-        50% { left: 0%; width: 70%; }
-        100% { left: 100%; width: 30%; }
     }
 
     #canvas-master {
@@ -104,11 +74,9 @@
         transform: translate(-50%, -50%);
         transform-origin: center center;
         overflow: hidden;
-        will-change: transform;
-        contain: layout style paint;
-        backface-visibility: hidden;
     }
 
+    /* --- TOPBAR --- */
     .topbar {
         width: 100%; height: 151px;
         background: linear-gradient(135deg, var(--anguilla-blue) 0%, var(--anguilla-blue-dark) 100%);
@@ -116,9 +84,6 @@
         padding: 0 50px; border-bottom: 5px solid var(--anguilla-yellow);
         box-shadow: 0 8px 32px rgba(0,0,0,0.35);
         position: relative; z-index: 10;
-        will-change: transform;
-        contain: layout style paint;
-        backface-visibility: hidden;
     }
     .logo-main-area img { height: 210px; object-fit: contain; padding-top: 10%; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.25)); }
     
@@ -127,30 +92,26 @@
         font-size: 61px; font-weight: 900; color: var(--white); line-height: 1; 
         border-right: 4px solid rgba(255, 204, 0, 0.4); padding-right: 40px; 
         font-variant-numeric: tabular-nums; text-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        font-family: 'Inter', sans-serif;
-        min-width: 280px;
     }
     .date-header { text-align: right; }
     .main-date { font-size: 38px; font-weight: 900; color: var(--anguilla-yellow); text-transform: uppercase; line-height: 1; text-shadow: 0 2px 8px rgba(0,0,0,0.2); }
     .sub-date { font-size: 19px; font-weight: 700; color: var(--white); opacity: 0.95; letter-spacing: 0.5px; margin-top: 2px; }
 
+    /* --- TICKER BAR --- */
     .ticker-bar {
         width: 100%; height: 54px;
-        background: linear-gradient(90deg, #0a0a0a, #1a1a1a);
-        border-bottom: 4px solid var(--anguilla-yellow);
+        background: #090909; border-bottom: 4px solid var(--anguilla-yellow);
         overflow: hidden; display: flex; align-items: center;
         position: relative; z-index: 10; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-        contain: layout style paint;
     }
     .ticker-text {
         white-space: nowrap; font-size: 26px; font-weight: 800; color: #fff;
         animation: marquee 25s linear infinite; padding-left: 100%; letter-spacing: 0.5px;
-        text-shadow: 0 0 20px rgba(255, 204, 0, 0.1);
-        will-change: transform;
     }
     @keyframes marquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-    #view-grid, #view-featured, #view-ads, #view-stats, #view-logo {
+    /* --- CONTENEDORES CON TRANSICIÓN SUAVE --- */
+    #view-grid, #view-featured, #view-ads {
         height: 875px;
         padding: 25px 30px;
         position: absolute; 
@@ -161,100 +122,40 @@
         opacity: 1;
         transform: scale(1) translateY(0px);
         visibility: visible;
-        pointer-events: auto;
-        transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
-        will-change: transform, opacity;
-        contain: layout style paint;
-        backface-visibility: hidden;
+        /* Transición premium para opacidad y leve movimiento vertical */
+        transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), 
+                    transform 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+                    visibility 0.6s;
     }
 
-    .view-hidden { 
+    /* Modificado para ocultar con suavidad en lugar de corte brusco */
+    .hidden { 
         opacity: 0 !important; 
-        transform: scale(0.97) translateY(10px) !important; 
+        transform: scale(0.98) translateY(20px) !important; 
         visibility: hidden !important;
-        pointer-events: none !important;
     }
 
-    #view-logo .logo-fullscreen {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: radial-gradient(circle at 50% 50%, var(--anguilla-blue) 0%, var(--anguilla-blue-dark) 100%);
-        border-radius: 32px;
-        border: 5px solid var(--anguilla-yellow);
-        box-shadow: var(--shadow-lg);
-        animation: logoPulse 3s ease-in-out infinite;
-    }
-    #view-logo .logo-fullscreen img {
-        height: 500px;
-        object-fit: contain;
-        filter: drop-shadow(0 20px 60px rgba(0,0,0,0.5));
-        animation: floating 3s ease-in-out infinite;
-    }
-    #view-logo .logo-fullscreen .brand-text {
-        font-size: 100px;
-        font-weight: 900;
-        letter-spacing: 12px;
-        background: linear-gradient(135deg, #ffcc00, #ff7900);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-top: 30px;
-    }
-    #view-logo .logo-fullscreen .brand-sub {
-        font-size: 36px;
-        color: rgba(255,255,255,0.5);
-        letter-spacing: 15px;
-        margin-top: 10px;
-        font-weight: 300;
-    }
-
-    @keyframes logoPulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.02); }
-    }
-
+    /* --- TARJETAS --- */
     .grid-container {
         display: grid; grid-template-columns: repeat(4, 1fr);
         grid-template-rows: repeat(2, 1fr); gap: 25px; height: 100%;
     }
     .card {
-        background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-        border-radius: 24px; border: 2px solid rgba(255, 204, 0, 0.6);
+        background: var(--white); border-radius: 24px; border: 1px solid rgba(255, 204, 0, 0.7);
         display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--shadow-md);
         position: relative;
-        will-change: transform;
-        contain: layout style paint;
-        backface-visibility: hidden;
     }
     .card::before {
-        content: ''; position: absolute; top:0; left:0; right:0; height: 6px; 
-        background: linear-gradient(90deg, var(--anguilla-yellow), var(--anguilla-orange));
+        content: ''; position: absolute; top:0; left:0; right:0; height: 6px; background: var(--anguilla-yellow);
     }
     
     .card-header { padding: 15px 0 10px 0; display: flex; flex-direction: column; align-items: center; background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); }
     .mini-logo { height: 135px; margin-bottom: 10px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05)); }
     .time-bar { width: 85%; text-align: center; padding: 5px 0; font-size: 35px; font-weight: 900; border-radius: 50px; background: #1e293b; color: #ffcc00; box-shadow: var(--shadow-sm); }
-    .card-hoy .time-bar { background: linear-gradient(135deg, #13a705, #0d7a04); color: white; box-shadow: 0 4px 15px rgba(19, 167, 5, 0.3); }
+    .card-hoy .time-bar { background: #13a705; color: white; }
     .date-tag { font-size: 16px; font-weight: 800; color: var(--gray-text); text-transform: uppercase; margin-top: 6px; letter-spacing: 0.5px; }
 
-    .waiting-text { color: #dc2626; font-size: 26px; font-weight: 900; text-align: center; animation: pulse 1.2s infinite alternate; width: 100%; margin: auto 0; letter-spacing: 0.5px; }
-
-    .balls-container { 
-        display: flex; justify-content: center; align-items: center; gap: 18px; padding: 15px; background: transparent; border-radius: 20px; flex-grow: 1; width: 100%; 
-    }
-    .ball-flat {
-        width: 125px; height: 125px; 
-        background: radial-gradient(circle at 35% 35%, #ffffff 0%, #f1f5f9 40%, #cbd5e1 75%, #94a3b8 100%);
-        border: 3px solid rgba(15, 23, 42, 0.85); border-radius: 50%; display: flex; align-items: center; justify-content: center;
-        font-size: 56px; font-weight: 900; color: #0f172a;
-        box-shadow: inset -6px -6px 14px rgba(0,0,0,0.1), inset 4px 4px 10px rgba(255,255,255,0.8), 0 10px 20px rgba(0,0,0,0.2);
-        will-change: transform;
-        backface-visibility: hidden;
-    }
-
+    /* --- DIVISIONES --- */
     .split-container { display: flex; gap: 25px; height: 100%; width: 100%; }
     .split-main {
         width: 1190px;
@@ -263,241 +164,53 @@
         border-radius: 32px; display: flex; flex-direction: column; align-items: center; 
         justify-content: center; padding: 30px; box-shadow: var(--shadow-lg); overflow: hidden;
         position: relative;
-        contain: layout style paint;
     }
     .side-panel { 
         width: 730px;
         display: flex; flex-direction: column; gap: 15px; 
     }
     .side-row {
-        background: linear-gradient(135deg, #ffffff, #f8fafc);
-        border-radius: 20px; padding: 0 30px; display: flex;
+        background: white; border-radius: 20px; padding: 0 30px; display: flex;
         justify-content: space-between; align-items: center; border-left: 12px solid var(--anguilla-blue);
         box-shadow: var(--shadow-md); flex: 1;
-        will-change: transform;
-        backface-visibility: hidden;
     }
     .side-time { color: var(--anguilla-blue); font-size: 34px; font-weight: 900; }
 
-    .featured-label { font-size: 26px; background: rgba(255,255,255,0.12); padding: 6px 30px; border-radius: 50px; margin-bottom: 20px; font-weight: 800; color: #fff; letter-spacing: 1px; backdrop-filter: blur(10px); }
+    .featured-label { font-size: 26px; background: rgba(255,255,255,0.12); padding: 6px 30px; border-radius: 50px; margin-bottom: 20px; font-weight: 800; color: #fff; letter-spacing: 1px; }
     .featured-logo-big { height: 275px; margin-bottom: 20px; filter: drop-shadow(0 12px 20px rgba(0,0,0,0.4)); }
     .featured-time-box { font-size: 100px; background: var(--anguilla-yellow); color: var(--anguilla-blue); padding: 4px 70px; border-radius: 24px; font-weight: 900; box-shadow: var(--shadow-md); }
     
+    .balls-container { 
+        display: flex; justify-content: center; align-items: center; gap: 18px; padding: 15px; background: transparent; border-radius: 20px; flex-grow: 1; width: 100%; 
+    }
+    
+    .ball-flat {
+        width: 125px; height: 125px; 
+        background: radial-gradient(circle at 35% 35%, #ffffff 0%, #f1f5f9 40%, #cbd5e1 75%, #94a3b8 100%);
+        border: 3px solid rgba(15, 23, 42, 0.85); border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        font-size: 56px; font-weight: 900; color: #0f172a;
+        box-shadow: inset -6px -6px 14px rgba(0,0,0,0.1), inset 4px 4px 10px rgba(255,255,255,0.8), 0 10px 20px rgba(0,0,0,0.2);
+    }
     .ball-big {
         width: 205px; height: 205px; 
         background: radial-gradient(circle at 35% 35%, #ffffff 0%, #f8fafc 35%, #e2e8f0 70%, #cbd5e1 100%);
         border: 4px solid rgba(15, 23, 42, 0.9); border-radius: 50%;
         display: flex; align-items: center; justify-content: center; font-size: 100px; font-weight: 900; color: #0f172a;
         box-shadow: inset -10px -10px 25px rgba(0,0,0,0.12), inset 6px 6px 15px rgba(255,255,255,0.9), 0 20px 35px rgba(0,0,0,0.35); 
-        animation: dropIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
-        will-change: transform;
+        animation: dropIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
     }
     .ball-small {
         width: 100px; height: 100px; 
         background: radial-gradient(circle at 35% 35%, #2563eb 0%, #1d4ed8 45%, #0000a5 80%, #000066 100%);
         color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 38px; font-weight: 800;
         box-shadow: inset -4px -4px 12px rgba(0,0,0,0.35), inset 3px 3px 8px rgba(255,255,255,0.4), 0 8px 16px rgba(0, 0, 165, 0.25);
-        will-change: transform;
-        backface-visibility: hidden;
     }
 
-    #view-stats .split-main {
-        background: linear-gradient(145deg, #0a0c1a 0%, #1a1a3a 100%);
-        border-color: var(--anguilla-yellow);
-    }
-    .stats-title {
-        font-size: 42px;
-        font-weight: 900;
-        color: var(--white);
-        text-align: center;
-        margin-bottom: 30px;
-        letter-spacing: 3px;
-        text-shadow: 0 4px 20px rgba(0,0,0,0.5);
-        position: relative;
-        z-index: 1;
-    }
-    .stats-title span.hot-text { color: #ff4500; text-shadow: 0 0 30px rgba(255,69,0,0.3); }
-    .stats-title span.cold-text { color: #00bfff; text-shadow: 0 0 30px rgba(0,191,255,0.3); }
-    .stats-title .update-time {
-        font-size: 18px;
-        color: #8a99ad;
-        display: block;
-        margin-top: 5px;
-        font-weight: 600;
-        letter-spacing: 1px;
-    }
+    .ad-box { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #000; overflow: hidden; border-radius: 24px; position: relative; }
+    .ad-box img, .ad-box video { width: 100%; height: 100%; object-fit: contain; } 
+    .ad-box iframe { width: 100%; height: 100%; border: none; }
 
-    .stats-balls-container {
-        display: flex;
-        justify-content: center;
-        gap: 150px;
-        width: 100%;
-        padding: 20px;
-        position: relative;
-        z-index: 1;
-    }
-    .stats-group {
-        text-align: center;
-    }
-    .stats-group-label {
-        font-size: 32px;
-        font-weight: 800;
-        margin-bottom: 25px;
-        letter-spacing: 2px;
-    }
-    .stats-group-label.hot-label { color: #ff4500; text-shadow: 0 0 30px rgba(255,69,0,0.2); }
-    .stats-group-label.cold-label { color: #00bfff; text-shadow: 0 0 30px rgba(0,191,255,0.2); }
-
-    .stats-balls {
-        display: flex;
-        gap: 25px;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .stat-ball-3d {
-        width: 160px;
-        height: 160px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 56px;
-        font-weight: 900;
-        color: white;
-        position: relative;
-        animation: ballPop3D 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        will-change: transform;
-        backface-visibility: hidden;
-    }
-    .stat-ball-3d .count-badge {
-        position: absolute;
-        bottom: -5px;
-        right: -5px;
-        background: rgba(0,0,0,0.85);
-        color: #fff;
-        font-size: 18px;
-        font-weight: 700;
-        padding: 5px 12px;
-        border-radius: 20px;
-        border: 2px solid rgba(255,255,255,0.3);
-        min-width: 35px;
-        text-align: center;
-    }
-
-    .stat-ball-3d.hot {
-        background: radial-gradient(circle at 30% 30%, #ff6b35 0%, #ff4500 40%, #cc3700 70%, #8b1a00 100%);
-        box-shadow: 
-            inset -8px -8px 20px rgba(0,0,0,0.4),
-            inset 5px 5px 15px rgba(255,200,100,0.3),
-            0 0 40px rgba(255,69,0,0.5),
-            0 0 80px rgba(255,69,0,0.2);
-        border: 3px solid rgba(255,200,100,0.4);
-    }
-    .stat-ball-3d.hot::before {
-        content: '🔥';
-        position: absolute;
-        top: -25px;
-        right: -25px;
-        font-size: 42px;
-        filter: drop-shadow(0 0 20px rgba(255,69,0,0.8));
-        animation: fireAnim 0.8s infinite alternate;
-    }
-
-    .stat-ball-3d.cold {
-        background: radial-gradient(circle at 30% 30%, #87ceeb 0%, #4fc3f7 25%, #0288d1 60%, #01579b 100%);
-        box-shadow: 
-            inset -8px -8px 20px rgba(0,0,0,0.4),
-            inset 5px 5px 15px rgba(200,240,255,0.5),
-            0 0 40px rgba(0,191,255,0.5),
-            0 0 80px rgba(0,191,255,0.2);
-        border: 3px solid rgba(200,240,255,0.4);
-    }
-    .stat-ball-3d.cold::before {
-        content: '❄️';
-        position: absolute;
-        top: -25px;
-        right: -25px;
-        font-size: 42px;
-        filter: drop-shadow(0 0 20px rgba(0,191,255,0.8));
-        animation: iceAnim 1.2s infinite alternate;
-    }
-
-    .stat-ball-3d .shine {
-        position: absolute;
-        top: 10%;
-        left: 15%;
-        width: 35%;
-        height: 25%;
-        background: radial-gradient(ellipse at center, rgba(255,255,255,0.4) 0%, transparent 70%);
-        border-radius: 50%;
-        pointer-events: none;
-    }
-
-    @keyframes fireAnim {
-        0% { transform: scale(1) rotate(-5deg); }
-        100% { transform: scale(1.15) rotate(5deg); }
-    }
-    @keyframes iceAnim {
-        0% { transform: scale(1) rotate(0deg); }
-        100% { transform: scale(1.1) rotate(10deg); }
-    }
-    @keyframes ballPop3D {
-        0% { transform: scale(0) rotate(180deg); opacity: 0; }
-        100% { transform: scale(1) rotate(0deg); opacity: 1; }
-    }
-
-    .ad-box { 
-        width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; 
-        background: #000; overflow: hidden; border-radius: 24px; position: relative; 
-    }
-    .ad-box img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        image-rendering: auto;
-    }
-    .ad-box video { 
-        width: 100%; height: 100%; object-fit: contain; 
-    } 
-    .ad-box iframe { 
-        width: 100%; height: 100%; border: none; 
-    }
-
-    .logo-branding {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-family: 'Inter', sans-serif;
-        background: radial-gradient(circle at 50% 50%, var(--anguilla-blue) 0%, var(--anguilla-blue-dark) 100%);
-        width: 100%;
-        height: 100%;
-        padding: 40px;
-    }
-    .logo-branding img {
-        height: 350px;
-        object-fit: contain;
-        filter: drop-shadow(0 10px 40px rgba(0,0,0,0.5));
-        animation: floating 3s ease-in-out infinite;
-    }
-    .logo-branding .brand-text {
-        font-size: 72px;
-        font-weight: 900;
-        letter-spacing: 8px;
-        background: linear-gradient(135deg, #ffcc00, #ff7900);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-top: 20px;
-    }
-    .logo-branding .brand-sub {
-        font-size: 28px;
-        color: rgba(255,255,255,0.6);
-        letter-spacing: 10px;
-        margin-top: 5px;
-    }
+    .waiting-text { color: #dc2626; font-size: 26px; font-weight: 900; text-align: center; animation: pulse 1.2s infinite alternate; width: 100%; margin: auto 0; letter-spacing: 0.5px; }
 
     .live-indicator {
         position: absolute;
@@ -512,55 +225,39 @@
         animation: pulse 0.8s infinite alternate;
         display: inline-flex; align-items: center; gap: 8px;
     }
-    .live-indicator::before {
-        content: '';
-        width: 12px;
-        height: 12px;
-        background: #fff;
-        border-radius: 50%;
-        animation: pulse 0.8s infinite alternate;
+
+    /* Contenedor de precarga caché */
+    #preloader-cache {
+        position: absolute; width: 1px; height: 1px; opacity: 0.01; overflow: hidden; bottom: 0; left: 0; pointer-events: none;
     }
 
     @keyframes dropIn { 0% { transform: scale(0.6) translateY(50px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
     @keyframes pulse { 0% { opacity: 0.4; } 100% { opacity: 1; } }
     @keyframes floating {
-        0%, 100% { transform: translateY(0px); }
+        0% { transform: translateY(0px); }
         50% { transform: translateY(-15px); }
-    }
-
-    @media (max-width: 1920px) {
-        #canvas-master {
-            width: 100vw;
-            height: 100vh;
-        }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        * {
-            animation-duration: 0.01ms !important;
-            animation-iteration-count: 1 !important;
-            transition-duration: 0.01ms !important;
-        }
+        100% { transform: translateY(0px); }
     }
 </style>
 </head>
 <body>
 
 <div id="splash-screen">
-    <img src="logo.png" class="splash-logo" alt="Logo" loading="eager">
-    <div class="splash-text">ANGUILLA LOTTERY</div>
-    <div class="splash-sub">SISTEMA MULTIPANTALLA PREMIUM</div>
-    <div class="splash-loader"></div>
+    <img src="logo.png" class="splash-logo" alt="Logo Empresa">
+    <div class="splash-text">INICIANDO SISTEMA</div>
+    <div class="splash-sub">POR FAVOR ESPERE...</div>
 </div>
+
+<div id="preloader-cache"></div>
 
 <div id="canvas-master">
     <div class="topbar">
-        <div class="logo-main-area"><img src="logo.png" alt="Logo" loading="eager"></div>
+        <div class="logo-main-area"><img src="logo.png" alt="Logo"></div>
         <div class="header-info">
-            <div class="header-clock" id="liveClock">--:--:--</div>
+            <div class="header-clock" id="liveClock">00:00:00</div>
             <div class="date-header">
-                <div class="main-date" id="currentDay">---</div>
-                <div class="sub-date" id="currentMonth">---</div>
+                <div class="main-date" id="currentDay">...</div>
+                <div class="sub-date" id="currentMonth">...</div>
             </div>
         </div>
     </div>
@@ -569,23 +266,15 @@
         <div class="ticker-text" id="marqueeText">CARGANDO INFORMACIÓN...</div>
     </div>
 
-    <div id="view-logo" class="view-hidden">
-        <div class="logo-fullscreen">
-            <img src="logo.png" alt="Anguilla Lottery" loading="eager">
-            <div class="brand-text">ANGUILLA</div>
-            <div class="brand-sub">LOTTERY</div>
-        </div>
-    </div>
-
     <div id="view-grid">
         <div class="grid-container" id="mainGrid"></div>
     </div>
 
-    <div id="view-featured" class="view-hidden">
+    <div id="view-featured" class="hidden">
         <div class="split-container">
             <div class="split-main">
-                <div class="featured-label">🏆 ÚLTIMO SORTEO REALIZADO</div>
-                <img src="anguilla.png" class="featured-logo-big" loading="eager">
+                <div class="featured-label">ÚLTIMO SORTEO REALIZADO</div>
+                <img src="anguilla.png" class="featured-logo-big">
                 <div class="featured-time-box" id="fTime">--:--</div>
                 <div class="balls-container" style="background:transparent; margin-top:20px;" id="fBalls"></div>
             </div>
@@ -593,37 +282,10 @@
         </div>
     </div>
 
-    <div id="view-stats" class="view-hidden">
-        <div class="split-container">
-            <div class="split-main" style="width:100%; padding:40px 60px;">
-                <div class="stats-title">
-                    📊 <span class="hot-text">NÚMEROS CALIENTES</span> 🔥 &nbsp;|&nbsp; <span class="cold-text">NÚMEROS FRÍOS</span> ❄️
-                    <span class="update-time" id="statsUpdateTime">Actualizado: --:--</span>
-                </div>
-                <div class="stats-balls-container">
-                    <div class="stats-group">
-                        <div class="stats-group-label hot-label">🔥 CALIENTES</div>
-                        <div class="stats-balls" id="hotStatsBalls"></div>
-                    </div>
-                    <div class="stats-group">
-                        <div class="stats-group-label cold-label">❄️ FRÍOS</div>
-                        <div class="stats-balls" id="coldStatsBalls"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="view-ads" class="view-hidden">
+    <div id="view-ads" class="hidden">
         <div class="split-container" id="adsContainerStructure">
             <div class="split-main" id="adMainBox" style="background: #000; padding: 0; border: none;">
-                <div class="ad-box" id="adDisplay">
-                    <div class="logo-branding">
-                        <img src="logo.png" alt="Anguilla" loading="eager">
-                        <div class="brand-text">ANGUILLA</div>
-                        <div class="brand-sub">LOTTERY</div>
-                    </div>
-                </div>
+                <div class="ad-box" id="adDisplay"></div>
             </div>
             <div class="side-panel" id="sidePanelAds"></div>
         </div>
@@ -634,370 +296,170 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
 <script>
-    // ============================================
-    // CONFIGURACIÓN FIREBASE
-    // ============================================
-    const firebaseConfig = { 
-        databaseURL: "https://pizarra-loteria-36ba5-default-rtdb.firebaseio.com/" 
-    };
+    const firebaseConfig = { databaseURL: "https://pizarra-loteria-36ba5-default-rtdb.firebaseio.com/" };
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // ============================================
-    // VARIABLES GLOBALES
-    // ============================================
     let SORTEOS = [];
     let ANUNCIOS = [];
-    let currentView = 0;
+    let currentView = 0; 
     let gridPage = 0;
     let adIndex = 0;
     let rotationInterval = null;
     let enTransmisionVivo = false;
-    let sistemaIniciado = false;
-    let tiempoRotacionGlobal = 15000; // 15 segundos por defecto
-    let ultimaActualizacionStats = null;
-    let statsInterval = null;
-    let hotNumbers = [];
-    let coldNumbers = [];
-    let datosCargados = false;
-    let tiempoInactivo = 0;
-    let keepAliveInterval = null;
+    let sistemaIniciado = false; 
+    let tiempoRotacionGlobal = 15000; 
 
-    const mediaCache = { videos: {}, images: {} };
-
-    // ============================================
-    // KEEP ALIVE - EVITA QUE EL FIRE TV SE APAGUE
-    // ============================================
-    function iniciarKeepAlive() {
-        mantenerPantallaEncendida();
-        
-        keepAliveInterval = setInterval(() => {
-            document.body.style.opacity = '0.999';
-            setTimeout(() => {
-                document.body.style.opacity = '1';
-            }, 10);
-            tiempoInactivo = 0;
-        }, 25000);
-        
-        document.addEventListener('mousemove', () => { tiempoInactivo = 0; });
-        document.addEventListener('keydown', () => { tiempoInactivo = 0; });
-        document.addEventListener('touchstart', () => { tiempoInactivo = 0; });
-        
-        setInterval(() => {
-            tiempoInactivo += 5;
-            if (tiempoInactivo > 60) {
-                console.log('🔄 Forzando refresh por inactividad');
-                location.reload();
-            }
-        }, 5000);
-    }
-
-    // ============================================
-    // MANTENER PANTALLA ENCENDIDA
-    // ============================================
-    let wakeLock = null;
-    async function mantenerPantallaEncendida() {
-        try {
-            if ('wakeLock' in navigator) {
-                wakeLock = await navigator.wakeLock.request('screen');
-                console.log('✅ WakeLock activado - pantalla se mantendrá encendida');
-                
-                document.addEventListener('visibilitychange', async () => {
-                    if (wakeLock !== null && document.visibilityState === 'visible') {
-                        wakeLock = await navigator.wakeLock.request('screen');
-                        console.log('✅ WakeLock reactivado');
-                    }
-                });
-            }
-        } catch (err) { 
-            console.warn('⚠️ WakeLock no disponible:', err); 
-        }
-    }
-
-    // ============================================
-    // FUNCIONES DE UTILIDAD
-    // ============================================
     function dimensionarPantalla() {
-        const baseWidth = 1920, baseHeight = 1080;
-        const scaleX = window.innerWidth / baseWidth;
-        const scaleY = window.innerHeight / baseHeight;
-        const canvas = document.getElementById('canvas-master');
-        if(canvas) {
-            canvas.style.transform = `translate(-50%, -50%) scale(${Math.min(scaleX, scaleY)})`;
-            canvas.style.width = baseWidth + 'px';
-            canvas.style.height = baseHeight + 'px';
-        }
+        const baseWidth = 1920;
+        const baseHeight = 1080;
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+        
+        const scaleX = windowWidth / baseWidth;
+        const scaleY = windowHeight / baseHeight;
+        const elScale = Math.min(scaleX, scaleY);
+
+        document.getElementById('canvas-master').style.transform = `translate(-50%, -50%) scale(${elScale})`;
     }
+    
     window.addEventListener('resize', dimensionarPantalla);
 
     function getFormatDate(offsetDays = 0) {
         const d = new Date();
         d.setDate(d.getDate() - offsetDays);
-        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     }
 
     function esVideoDirecto(url) {
         if (!url) return false;
-        const u = url.toLowerCase();
-        return u.includes('.mp4') || u.includes('.webm') || u.includes('.ogg') || 
-               u.includes('.mov') || u.includes('.avi') || u.includes('.mkv');
-    }
-
-    function esYouTube(url) {
-        if (!url) return false;
-        return url.includes('youtube.com') || url.includes('youtu.be');
-    }
-
-    function esImagen(url) {
-        if (!url) return false;
-        const u = url.toLowerCase();
-        return u.includes('.jpg') || u.includes('.jpeg') || u.includes('.png') || 
-               u.includes('.gif') || u.includes('.webp') || u.includes('.bmp') || 
-               u.includes('.svg') || u.includes('.ico');
+        return url.includes('github.com') || url.includes('raw.githubusercontent') || /\.(mp4|webm|ogg|mov)$/i.test(url);
     }
 
     function convertirLinkGitHub(url) {
-        if (!url) return url;
-        // Si es un enlace de GitHub, convertirlo a raw
-        if (url.includes('github.com') && !url.includes('raw.githubusercontent.com')) {
-            // Si tiene /blob/, reemplazar
-            if (url.includes('/blob/')) {
+        if (url.includes('github.com') && !url.includes('raw.githubusercontent.com') && !url.includes('?raw=true')) {
+            if(url.includes('/blob/')) {
                 return url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
             }
-            // Si no tiene /blob/, agregar ?raw=true
-            if (!url.includes('?raw=true')) {
-                return url + '?raw=true';
-            }
+            return url + "?raw=true";
         }
         return url;
     }
 
-    // ============================================
-    // FUNCIÓN MEJORADA PARA MOSTRAR IMÁGENES DE GITHUB
-    // ============================================
-    function mostrarImagen(container, url) {
-        const urlProcesada = convertirLinkGitHub(url);
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.src = urlProcesada;
-        img.style.cssText = 'width:100%; height:100%; object-fit:contain;';
-        img.alt = 'Anuncio';
-        
-        img.onload = function() {
-            container.innerHTML = '';
-            container.appendChild(img);
-        };
-        
-        img.onerror = function() {
-            console.error('❌ Error cargando imagen:', urlProcesada);
-            mostrarLogo(container);
-        };
-        
-        // Timeout para no esperar demasiado
-        setTimeout(() => {
-            if (!container.querySelector('img')) {
-                mostrarLogo(container);
-            }
-        }, 5000);
-    }
-
-    // ============================================
-    // CACHE DE MEDIOS OPTIMIZADO
-    // ============================================
-    function preCargarMedio(url) {
-        if (!url) return null;
-        url = url.trim();
-        const urlProcesada = convertirLinkGitHub(url);
-        
-        if (mediaCache.videos[url]) return mediaCache.videos[url];
-        if (mediaCache.images[url]) return mediaCache.images[url];
-        if (esYouTube(url)) return null;
-        
-        if (esVideoDirecto(url)) {
-            const video = document.createElement('video');
-            video.preload = 'metadata';
-            video.muted = true;
-            video.playsInline = true;
-            video.src = urlProcesada;
-            video.load();
-            mediaCache.videos[url] = video;
-            setTimeout(() => { 
-                if(mediaCache.videos[url]) {
-                    mediaCache.videos[url].src = '';
-                    delete mediaCache.videos[url];
-                }
-            }, 120000);
-            return video;
-        } else if (esImagen(url) || url.startsWith('http')) {
-            const img = new Image();
-            img.crossOrigin = 'anonymous';
-            img.src = urlProcesada;
-            img.loading = 'eager';
-            mediaCache.images[url] = img;
-            setTimeout(() => { 
-                if(mediaCache.images[url]) {
-                    delete mediaCache.images[url];
-                }
-            }, 120000);
-            return img;
-        }
-        return null;
-    }
-
-    function mostrarMedioPrecargado(container, url) {
-        container.innerHTML = '';
-        if (!url || url.trim() === '') {
-            mostrarLogo(container);
-            return;
-        }
-        
-        url = url.trim();
-        const urlProcesada = convertirLinkGitHub(url);
-        const isVideo = esVideoDirecto(url);
-        const isYT = esYouTube(url);
-        const isImg = esImagen(url);
-        
-        if (isYT) {
-            let embed = url.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/");
-            if(embed.includes("?")) embed = embed.split("?")[0];
-            const iframe = document.createElement('iframe');
-            iframe.src = `${embed}?autoplay=1&mute=1&controls=0&rel=0&loop=1`;
-            iframe.allow = "autoplay; encrypted-media";
-            iframe.style.cssText = 'width:100%; height:100%; border:none;';
-            container.appendChild(iframe);
-            return;
-        }
-        
-        if (isVideo) {
-            let video = mediaCache.videos[url];
-            if (!video) {
-                video = document.createElement('video');
-                video.preload = 'metadata';
-                video.muted = true;
-                video.playsInline = true;
-                video.src = urlProcesada;
-                video.load();
-                mediaCache.videos[url] = video;
-            } else {
-                video = video.cloneNode(true);
-            }
-            video.style.cssText = 'width:100%; height:100%; object-fit:contain;';
-            video.autoplay = true;
-            video.muted = true;
-            video.playsInline = true;
-            video.setAttribute('playsinline', '');
-            video.play().catch(() => {});
-            container.appendChild(video);
-            return;
-        }
-        
-        if (isImg || url.startsWith('http')) {
-            // Usar la función mejorada para imágenes
-            mostrarImagen(container, url);
-            return;
-        }
-        
-        mostrarLogo(container);
-    }
-
-    function mostrarLogo(container) {
-        container.innerHTML = `
-            <div class="logo-branding">
-                <img src="logo.png" alt="Anguilla" loading="eager">
-                <div class="brand-text">ANGUILLA</div>
-                <div class="brand-sub">LOTTERY</div>
-            </div>`;
-    }
-
-    // ============================================
-    // ESTADÍSTICAS
-    // ============================================
-    function cargarEstadisticas() {
+    function inicializarDatos() {
         const hoyStr = getFormatDate(0);
         const ayerStr = getFormatDate(1);
 
-        database.ref(`sorteos/${hoyStr}`).once('value', snapHoy => {
+        database.ref('ticker').on('value', snap => {
+            document.getElementById('marqueeText').innerText = snap.val() || "BIENVENIDOS A ANGUILLA LOTTERY";
+        });
+
+        database.ref('configuracion/tiempoPantalla').on('value', snap => {
+            if(snap.val()) {
+                tiempoRotacionGlobal = parseInt(snap.val()) * 1000;
+            }
+        });
+
+        database.ref('anunciosList').on('value', snap => {
+            ANUNCIOS = [];
+            const cacheContainer = document.getElementById('preloader-cache');
+            cacheContainer.innerHTML = ""; 
+
+            if(snap.exists()) {
+                snap.forEach(child => { 
+                    let item = child.val();
+                    if (item && item.activo !== false && item.url) { 
+                        ANUNCIOS.push(item); 
+
+                        let urlMedia = item.url.trim();
+                        if (esVideoDirecto(urlMedia)) {
+                            let linkVid = convertirLinkGitHub(urlMedia);
+                            let videoPre = document.createElement('video');
+                            videoPre.src = linkVid;
+                            videoPre.preload = "auto";
+                            videoPre.muted = true;
+                            cacheContainer.appendChild(videoPre);
+                        } else if (!urlMedia.includes('youtube.com') && !urlMedia.includes('youtu.be')) {
+                            let imgPre = new Image();
+                            imgPre.src = urlMedia;
+                            cacheContainer.appendChild(imgPre);
+                        }
+                    }
+                });
+            }
+            if (adIndex >= ANUNCIOS.length) {
+                adIndex = 0;
+            }
+        });
+
+        database.ref(`sorteos/${hoyStr}`).on('value', snapHoy => {
             const dataHoy = snapHoy.val() || [];
             database.ref(`sorteos/${ayerStr}`).once('value', snapAyer => {
                 const dataAyer = snapAyer.val() || [];
-                
-                const todosLosDatos = [...dataHoy, ...dataAyer];
-                const numeros = [];
-                
-                todosLosDatos.forEach(s => {
-                    if (s && s.premios && Array.isArray(s.premios)) {
-                        s.premios.forEach(n => {
-                            if (n && n.trim() !== '' && !isNaN(n)) {
-                                const num = parseInt(n);
-                                if (!isNaN(num) && num >= 0 && num <= 99) {
-                                    numeros.push(num);
-                                }
-                            }
-                        });
-                    }
-                });
-
-                if (numeros.length === 0) {
-                    hotNumbers = [];
-                    coldNumbers = [];
-                    renderStats();
-                    return;
-                }
-
-                const frecuencia = {};
-                numeros.forEach(n => {
-                    frecuencia[n] = (frecuencia[n] || 0) + 1;
-                });
-
-                const sorted = Object.entries(frecuencia).sort((a, b) => b[1] - a[1]);
-                
-                hotNumbers = sorted.slice(0, 3).map(([num, count]) => ({ num: parseInt(num), count }));
-                coldNumbers = sorted.slice(-3).reverse().map(([num, count]) => ({ num: parseInt(num), count }));
-
-                ultimaActualizacionStats = new Date();
-                renderStats();
+                procesarSorteos(dataHoy, dataAyer);
             });
+        });
+
+        database.ref('transmisionVivo').on('value', snap => {
+            if (!sistemaIniciado) return; 
+            
+            const live = snap.val();
+            const vGrid = document.getElementById('view-grid');
+            const vFeat = document.getElementById('view-featured');
+            const vAds = document.getElementById('view-ads');
+            const boxAd = document.getElementById('adDisplay');
+            const mainBoxArea = document.getElementById('adMainBox');
+            const sidePanelAds = document.getElementById('sidePanelAds');
+
+            if (live && live.activo === true) {
+                enTransmisionVivo = true;
+                clearInterval(rotationInterval); 
+                
+                vGrid.classList.add('hidden');
+                vFeat.classList.add('hidden');
+                vAds.classList.remove('hidden');
+
+                sidePanelAds.style.display = "none";
+                mainBoxArea.style.width = "100%";
+
+                let rawUrl = live.url || "";
+                
+                if (esVideoDirecto(rawUrl)) {
+                    let directUrl = convertirLinkGitHub(rawUrl);
+                    boxAd.innerHTML = `
+                        <div class="live-indicator">● EN VIVO</div>
+                        <video src="${directUrl}" autoplay muted playsinline controls style="width:100%; height:100%; background:#000;"></video>
+                    `;
+                } else {
+                    let embedUrl = rawUrl.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/");
+                    if(embedUrl.includes("?")) { embedUrl = embedUrl.split("?")[0]; }
+                    boxAd.innerHTML = `
+                        <div class="live-indicator">● EN VIVO</div>
+                        <iframe src="${embedUrl}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;"></iframe>
+                    `;
+                }
+            } else {
+                if (enTransmisionVivo) {
+                    enTransmisionVivo = false;
+                    boxAd.innerHTML = "";
+                    gridPage = 0;
+                    currentView = 0;
+                    
+                    sidePanelAds.style.display = "flex";
+                    mainBoxArea.style.width = "1190px";
+
+                    vGrid.classList.remove('hidden');
+                    vFeat.classList.add('hidden');
+                    vAds.classList.add('hidden');
+                    renderGrid();
+
+                    clearInterval(rotationInterval);
+                    rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
+                }
+            }
         });
     }
 
-    function renderStats() {
-        const hotContainer = document.getElementById('hotStatsBalls');
-        const coldContainer = document.getElementById('coldStatsBalls');
-        
-        if (ultimaActualizacionStats) {
-            const hora = ultimaActualizacionStats.getHours().toString().padStart(2, '0');
-            const min = ultimaActualizacionStats.getMinutes().toString().padStart(2, '0');
-            document.getElementById('statsUpdateTime').textContent = `Actualizado: ${hora}:${min}`;
-        }
-        
-        if (hotNumbers.length === 0) {
-            hotContainer.innerHTML = '<div style="color:rgba(255,255,255,0.5); font-size:28px; font-weight:700;">Sin datos</div>';
-        } else {
-            hotContainer.innerHTML = hotNumbers.map((item, index) => `
-                <div class="stat-ball-3d hot" style="animation-delay: ${index * 0.08}s">
-                    <div class="shine"></div>
-                    ${String(item.num).padStart(2, '0')}
-                    <span class="count-badge">${item.count}</span>
-                </div>
-            `).join('');
-        }
-
-        if (coldNumbers.length === 0) {
-            coldContainer.innerHTML = '<div style="color:rgba(255,255,255,0.5); font-size:28px; font-weight:700;">Sin datos</div>';
-        } else {
-            coldContainer.innerHTML = coldNumbers.map((item, index) => `
-                <div class="stat-ball-3d cold" style="animation-delay: ${index * 0.08}s">
-                    <div class="shine"></div>
-                    ${String(item.num).padStart(2, '0')}
-                    <span class="count-badge">${item.count}</span>
-                </div>
-            `).join('');
-        }
-    }
-
-    // ============================================
-    // PROCESAMIENTO DE SORTEOS
-    // ============================================
     function procesarSorteos(dataHoy, dataAyer) {
         let finalSorteos = [];
         const ahora = new Date();
@@ -1005,6 +467,7 @@
 
         dataHoy.forEach((sHoy, index) => {
             if(!sHoy) return;
+            
             let [h, mP] = sHoy.hora.split(":");
             let mSor = parseInt(mP.substring(0, 2));
             let ampm = mP.substring(2).trim();
@@ -1015,18 +478,25 @@
             const tieneHoy = sHoy.premios && sHoy.premios[0] !== "" && sHoy.premios[0] !== undefined;
             const yaPasoHora = (horaAct.hrs > hSor || (horaAct.hrs === hSor && horaAct.mins >= mSor + 5));
 
-            let sorteoFinal = { hour: sHoy.hora.replace(/(AM|PM)/, ' $1'), key: index };
+            let sorteoFinal = {
+                hour: sHoy.hora.replace(/(AM|PM)/, ' $1'),
+                key: index
+            };
 
             if (tieneHoy) {
-                sorteoFinal.day = "hoy"; sorteoFinal.date = "HOY";
+                sorteoFinal.day = "hoy";
+                sorteoFinal.date = "HOY";
                 sorteoFinal.nums = [sHoy.premios[0], sHoy.premios[1], sHoy.premios[2]];
                 sorteoFinal.isWaiting = false;
             } else if (yaPasoHora) {
-                sorteoFinal.day = "hoy"; sorteoFinal.date = "HOY";
-                sorteoFinal.nums = null; sorteoFinal.isWaiting = true;
+                sorteoFinal.day = "hoy";
+                sorteoFinal.date = "HOY";
+                sorteoFinal.nums = null;
+                sorteoFinal.isWaiting = true;
             } else {
                 const sAyer = dataAyer[index];
-                sorteoFinal.day = "ayer"; sorteoFinal.date = "AYER";
+                sorteoFinal.day = "ayer";
+                sorteoFinal.date = "AYER";
                 sorteoFinal.nums = (sAyer && sAyer.premios && sAyer.premios[0] !== "") ? [sAyer.premios[0], sAyer.premios[1], sAyer.premios[2]] : null;
                 sorteoFinal.isWaiting = false;
             }
@@ -1037,12 +507,8 @@
         if (sistemaIniciado && !enTransmisionVivo) {
             renderGrid();
         }
-        cargarEstadisticas();
     }
 
-    // ============================================
-    // RENDERIZADO DE VISTAS
-    // ============================================
     function renderGrid() {
         const grid = document.getElementById('mainGrid');
         grid.innerHTML = '';
@@ -1053,13 +519,13 @@
         pageItems.forEach(s => {
             const card = document.createElement('div');
             card.className = `card ${s.day === 'hoy' ? 'card-hoy' : 'card-ayer'}`;
-            let bottom = s.isWaiting ? `<div class="waiting-text">⏳ ESPERANDO RESULTADOS...</div>` : `
+            let bottom = s.isWaiting ? `<div class="waiting-text">ESPERANDO RESULTADOS...</div>` : `
                 <div class="balls-container">
                     <div class="ball-flat">${s.nums ? s.nums[0] : '--'}</div>
                     <div class="ball-flat">${s.nums ? s.nums[1] : '--'}</div>
                     <div class="ball-flat">${s.nums ? s.nums[2] : '--'}</div>
                 </div>`;
-            card.innerHTML = `<div class="card-header"><img class="mini-logo" src="anguilla.png" loading="eager"><div class="time-bar">${s.hour}</div><div class="date-tag">${s.date}</div></div>${bottom}`;
+            card.innerHTML = `<div class="card-header"><img class="mini-logo" src="anguilla.png"><div class="time-bar">${s.hour}</div><div class="date-tag">${s.date}</div></div>${bottom}`;
             grid.appendChild(card);
         });
     }
@@ -1067,13 +533,16 @@
     function generarPanelLateral(contenedorId) {
         let jugados = SORTEOS.filter(s => s.nums !== null && s.nums.length > 0);
         const panel = document.getElementById(contenedorId);
+        
         if (jugados.length === 0) {
             panel.innerHTML = '<div class="waiting-text">NO HAY SORTEOS PREVIOS</div>';
             return SORTEOS[0] || { hour: '--:--', date: 'HOY', nums: null };
         }
+        
         jugados.sort((a, b) => (a.day === b.day) ? b.key - a.key : (a.day === 'hoy' ? -1 : 1));
         let last = jugados[0];
-        const historial = jugados.slice(1, 6);
+        const historial = jugados.slice(1, 6); 
+        
         panel.innerHTML = historial.map(s => `
             <div class="side-row">
                 <div class="side-time">${s.hour} <small style="font-size:18px; display:block; color:#64748b; font-weight:700; margin-top:2px;">${s.date}</small></div>
@@ -1090,290 +559,101 @@
         let last = generarPanelLateral('sidePanelFeatured');
         document.getElementById('fTime').innerText = last.hour;
         const fBalls = document.getElementById('fBalls');
-        fBalls.innerHTML = last.nums ? last.nums.map((n, i) => `<div class="ball-big" style="animation-delay: ${i * 0.08}s">${n}</div>`).join('') : '<div class="waiting-text">PROXIMO SORTEO</div>';
+        fBalls.innerHTML = last.nums ? last.nums.map((n, i) => `<div class="ball-big" style="animation-delay: ${i * 0.12}s">${n}</div>`).join('') : '<div class="waiting-text">PROXIMO SORTEO</div>';
     }
 
     function renderMediaAd() {
         generarPanelLateral('sidePanelAds');
         const box = document.getElementById('adDisplay');
+        box.innerHTML = "";
         
-        // Filtrar anuncios activos y con URL válida
-        const anunciosActivos = ANUNCIOS.filter(ad => ad.activo !== false && ad.url && ad.url.trim() !== '');
-        
-        if (anunciosActivos.length === 0) {
-            mostrarLogo(box);
-            return tiempoRotacionGlobal;
+        if (ANUNCIOS.length === 0) {
+            box.innerHTML = "<div style='color:white; font-size:40px; font-weight:800; letter-spacing:1px;'>ANGUILLA LOTTERY</div>";
+            return tiempoRotacionGlobal; 
         }
         
-        if (adIndex >= anunciosActivos.length) adIndex = 0;
-        const ad = anunciosActivos[adIndex];
+        if (adIndex >= ANUNCIOS.length) adIndex = 0;
+        const ad = ANUNCIOS[adIndex];
         let urlTarget = ad.url ? ad.url.trim() : "";
         
-        // Mostrar el anuncio con la función mejorada
-        mostrarMedioPrecargado(box, urlTarget);
+        if (esVideoDirecto(urlTarget)) {
+            let directVideoUrl = convertirLinkGitHub(urlTarget);
+            box.innerHTML = `<video src="${directVideoUrl}" autoplay muted playsinline style="width:100%; height:100%; object-fit:contain;"></video>`;
+        } else if (urlTarget.includes('youtube.com') || urlTarget.includes('youtu.be')) {
+            let embed = urlTarget.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/");
+            box.innerHTML = `<iframe src="${embed}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media"></iframe>`;
+        } else if (urlTarget !== "") {
+            box.innerHTML = `<img src="${urlTarget}" style="width:100%; height:100%; object-fit:contain;">`;
+        } else {
+            box.innerHTML = "<div style='color:white; font-size:40px; font-weight:800;'>ANGUILLA LOTTERY</div>";
+        }
         
         let tiempoAsignado = (parseInt(ad.tiempo) || 15) * 1000;
         adIndex++;
-        
-        if (adIndex >= anunciosActivos.length) {
-            setTimeout(() => {
-                if (!enTransmisionVivo) {
-                    mostrarLogo(box);
-                }
-            }, tiempoAsignado + 100);
-        }
-        
         return tiempoAsignado;
     }
 
-    // ============================================
-    // ROTACIÓN DE PANTALLA CORREGIDA
-    // ============================================
+    /* --- LÓGICA DE ROTACIÓN OPTIMIZADA CON RETARDO PARA TRANSICIÓN FLUIDA --- */
     function rotateDisplay() {
         if (SORTEOS.length === 0 || enTransmisionVivo || !sistemaIniciado) return;
         clearInterval(rotationInterval);
 
         const vGrid = document.getElementById('view-grid');
         const vFeat = document.getElementById('view-featured');
-        const vStats = document.getElementById('view-stats');
         const vAds = document.getElementById('view-ads');
-        const vLogo = document.getElementById('view-logo');
         const totalPages = Math.ceil(SORTEOS.length / 8);
 
-        vGrid.classList.add('view-hidden');
-        vFeat.classList.add('view-hidden');
-        vStats.classList.add('view-hidden');
-        vAds.classList.add('view-hidden');
-        vLogo.classList.add('view-hidden');
+        // Ocultamos todas las pantallas con suavidad (Clase CSS se encarga del Fade-Out)
+        vGrid.classList.add('hidden'); 
+        vFeat.classList.add('hidden'); 
+        vAds.classList.add('hidden');
 
+        // Esperamos 450ms a que termine el desvanecimiento para inyectar y mostrar el nuevo contenido
         setTimeout(() => {
             let nextTime = tiempoRotacionGlobal;
-            const transitionDuration = 300;
 
             if (currentView < totalPages - 1) {
                 gridPage++; currentView++;
                 renderGrid();
-                vGrid.classList.remove('view-hidden');
-                nextTime = tiempoRotacionGlobal;
+                vGrid.classList.remove('hidden');
             } else if (currentView === totalPages - 1) {
-                currentView = 88;
+                currentView = 88; 
                 renderFeatured();
-                vFeat.classList.remove('view-hidden');
-                nextTime = tiempoRotacionGlobal;
+                vFeat.classList.remove('hidden');
             } else if (currentView === 88) {
-                currentView = 99;
-                vStats.classList.remove('view-hidden');
-                cargarEstadisticas();
-                nextTime = tiempoRotacionGlobal;
-            } else if (currentView === 99) {
-                currentView = 100;
+                currentView = 99; 
                 nextTime = renderMediaAd();
-                vAds.classList.remove('view-hidden');
-                // El tiempo del anuncio lo define el anuncio mismo
-                nextTime = Math.max(nextTime, 5000);
-            } else if (currentView === 100) {
-                currentView = 101;
-                vLogo.classList.remove('view-hidden');
-                nextTime = 7000; // 7 segundos para el logo
+                vAds.classList.remove('hidden');
             } else {
                 gridPage = 0; currentView = 0;
                 renderGrid();
-                vGrid.classList.remove('view-hidden');
-                nextTime = tiempoRotacionGlobal;
+                vGrid.classList.remove('hidden');
             }
             
-            const finalDelay = Math.max(nextTime, 3000);
-            rotationInterval = setInterval(rotateDisplay, finalDelay);
-        }, 350);
+            // Re-sincronizamos el intervalo descontando el pequeño delay de la animación
+            rotationInterval = setInterval(rotateDisplay, Math.max(1000, nextTime - 450));
+        }, 450);
     }
 
-    // ============================================
-    // ACTUALIZAR RELOJ
-    // ============================================
     function updateDateTime() {
         const now = new Date();
-        let hrs = now.getHours();
-        const ampm = hrs >= 12 ? 'PM' : 'AM';
-        hrs = hrs % 12 || 12;
+        const hrs = now.getHours() % 12 || 12;
         const mins = now.getMinutes().toString().padStart(2, '0');
         const secs = now.getSeconds().toString().padStart(2, '0');
+        const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
         document.getElementById('liveClock').innerText = `${hrs}:${mins}:${secs} ${ampm}`;
-        const dias = ['DOMINGO','LUNES','MARTES','MIÉRCOLES','JUEVES','VIERNES','SÁBADO'];
-        const meses = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
+        const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO'];
+        const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
         document.getElementById('currentDay').innerText = `${dias[now.getDay()]} ${now.getDate()}`;
         document.getElementById('currentMonth').innerText = `${meses[now.getMonth()]} ${now.getFullYear()}`;
     }
 
-    // ============================================
-    // INICIALIZACIÓN PRINCIPAL
-    // ============================================
-    function inicializarDatos() {
-        const hoyStr = getFormatDate(0);
-        const ayerStr = getFormatDate(1);
-
-        database.ref('ticker').on('value', snap => {
-            const texto = snap.val() || "BIENVENIDOS A ANGUILLA LOTTERY";
-            document.getElementById('marqueeText').innerText = texto;
-        });
-
-        database.ref('configuracion/tiempoPantalla').on('value', snap => {
-            if(snap.val()) {
-                tiempoRotacionGlobal = parseInt(snap.val()) * 1000;
-                if (rotationInterval && sistemaIniciado) {
-                    clearInterval(rotationInterval);
-                    rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
-                }
-            }
-        });
-
-        database.ref('anunciosList').on('value', snap => {
-            ANUNCIOS = [];
-            if(snap.exists()) {
-                snap.forEach(child => {
-                    let item = child.val();
-                    if (item && item.activo !== false && item.url && item.url.trim() !== '') {
-                        ANUNCIOS.push(item);
-                        preCargarMedio(item.url.trim());
-                    }
-                });
-            }
-            if (adIndex >= ANUNCIOS.length) adIndex = 0;
-        });
-
-        database.ref(`sorteos/${hoyStr}`).on('value', snapHoy => {
-            const dataHoy = snapHoy.val() || [];
-            database.ref(`sorteos/${ayerStr}`).once('value', snapAyer => {
-                const dataAyer = snapAyer.val() || [];
-                procesarSorteos(dataHoy, dataAyer);
-                if (!datosCargados) {
-                    datosCargados = true;
-                    if (sistemaIniciado) {
-                        iniciarRotacion();
-                    }
-                }
-            });
-        });
-
-        if (statsInterval) clearInterval(statsInterval);
-        statsInterval = setInterval(cargarEstadisticas, 3600000);
-
-        database.ref('transmisionVivo').on('value', snap => {
-            if (!sistemaIniciado) return;
-            const live = snap.val();
-            const vGrid = document.getElementById('view-grid');
-            const vFeat = document.getElementById('view-featured');
-            const vStats = document.getElementById('view-stats');
-            const vAds = document.getElementById('view-ads');
-            const vLogo = document.getElementById('view-logo');
-            const boxAd = document.getElementById('adDisplay');
-            const mainBox = document.getElementById('adMainBox');
-            const sidePanel = document.getElementById('sidePanelAds');
-
-            if (live && live.activo === true) {
-                enTransmisionVivo = true;
-                clearInterval(rotationInterval);
-                vGrid.classList.add('view-hidden');
-                vFeat.classList.add('view-hidden');
-                vStats.classList.add('view-hidden');
-                vLogo.classList.add('view-hidden');
-                vAds.classList.remove('view-hidden');
-                sidePanel.style.display = "none";
-                mainBox.style.width = "100%";
-
-                let rawUrl = live.url || "";
-                if (esVideoDirecto(rawUrl) || esImagen(rawUrl)) {
-                    boxAd.innerHTML = `<div class="live-indicator">● EN VIVO</div>`;
-                    mostrarMedioPrecargado(boxAd, rawUrl);
-                } else {
-                    let embedUrl = rawUrl.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/");
-                    if(embedUrl.includes("?")) embedUrl = embedUrl.split("?")[0];
-                    boxAd.innerHTML = `
-                        <div class="live-indicator">● EN VIVO</div>
-                        <iframe src="${embedUrl}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;"></iframe>
-                    `;
-                }
-            } else {
-                if (enTransmisionVivo) {
-                    enTransmisionVivo = false;
-                    gridPage = 0; currentView = 0;
-                    sidePanel.style.display = "flex";
-                    mainBox.style.width = "1190px";
-                    vGrid.classList.remove('view-hidden');
-                    vFeat.classList.add('view-hidden');
-                    vStats.classList.add('view-hidden');
-                    vAds.classList.add('view-hidden');
-                    vLogo.classList.add('view-hidden');
-                    renderGrid();
-                    clearInterval(rotationInterval);
-                    iniciarRotacion();
-                }
-            }
-        });
-
-        database.ref('stats/update').on('value', snap => {
-            if (snap.val()) cargarEstadisticas();
-        });
-
-        setTimeout(cargarEstadisticas, 1000);
-    }
-
-    function iniciarRotacion() {
-        if (rotationInterval) clearInterval(rotationInterval);
-        if (SORTEOS.length > 0 && !enTransmisionVivo) {
-            renderGrid();
-            rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
-        }
-    }
-
-    // ============================================
-    // OPTIMIZACIÓN PARA FIRE TV
-    // ============================================
-    function optimizarParaFireTV() {
-        const ua = navigator.userAgent || '';
-        const esFireTV = ua.includes('AFT') || ua.includes('FireTV') || (ua.includes('Android') && ua.includes('TV'));
-        
-        if (esFireTV) {
-            console.log('🔥 Fire TV detectado - Aplicando optimizaciones');
-            tiempoRotacionGlobal = Math.max(tiempoRotacionGlobal, 20000);
-            
-            document.querySelectorAll('*').forEach(el => {
-                el.style.animationDuration = '0.3s';
-                el.style.transitionDuration = '0.2s';
-            });
-            
-            document.querySelectorAll('video').forEach(v => {
-                v.preload = 'metadata';
-            });
-            
-            document.body.style.willChange = 'transform';
-            
-            setInterval(() => {
-                const keys = Object.keys(mediaCache.images);
-                if (keys.length > 5) {
-                    const toDelete = keys.slice(0, keys.length - 5);
-                    toDelete.forEach(key => {
-                        if (mediaCache.images[key]) {
-                            delete mediaCache.images[key];
-                        }
-                    });
-                }
-            }, 60000);
-            
-            return true;
-        }
-        return false;
-    }
-
-    // ============================================
-    // INICIO DEL SISTEMA
-    // ============================================
     window.onload = () => {
         dimensionarPantalla();
-        updateDateTime();
+        updateDateTime(); 
         setInterval(updateDateTime, 1000);
-        iniciarKeepAlive();
-        optimizarParaFireTV();
         inicializarDatos();
+        activarMantenerPantallaEncendida();
 
         setTimeout(() => {
             const splash = document.getElementById('splash-screen');
@@ -1385,22 +665,28 @@
             database.ref('transmisionVivo').once('value', snap => {
                 const live = snap.val();
                 if(live && live.activo === true) {
-                    database.ref('transmisionVivo').getRef().set(live);
+                    database.ref('transmisionVivo').getRef().set(live); 
                 } else {
-                    iniciarRotacion();
+                    renderGrid();
+                    rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
                 }
             });
-        }, 2500);
+        }, 2000); 
     };
 
-    window.addEventListener('beforeunload', () => {
-        if (keepAliveInterval) {
-            clearInterval(keepAliveInterval);
-        }
-        if (wakeLock) {
-            wakeLock.release().catch(() => {});
-        }
-    });
+    let wakeLock = null;
+    async function activarMantenerPantallaEncendida() {
+        try {
+            if ('wakeLock' in navigator) {
+                wakeLock = await navigator.wakeLock.request('screen');
+                document.addEventListener('visibilitychange', async () => {
+                    if (wakeLock !== null && document.visibilityState === 'visible') {
+                        wakeLock = await navigator.wakeLock.request('screen');
+                    }
+                });
+            }
+        } catch (err) { console.error("WakeLock Error: ", err); }
+    }
 </script>
 </body>
 </html>
