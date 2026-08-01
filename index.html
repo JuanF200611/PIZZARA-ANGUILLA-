@@ -122,13 +122,11 @@
         opacity: 1;
         transform: scale(1) translateY(0px);
         visibility: visible;
-        /* Transición premium para opacidad y leve movimiento vertical */
         transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), 
                     transform 0.6s cubic-bezier(0.25, 1, 0.5, 1),
                     visibility 0.6s;
     }
 
-    /* Modificado para ocultar con suavidad en lugar de corte brusco */
     .hidden { 
         opacity: 0 !important; 
         transform: scale(0.98) translateY(20px) !important; 
@@ -226,7 +224,6 @@
         display: inline-flex; align-items: center; gap: 8px;
     }
 
-    /* Contenedor de precarga caché */
     #preloader-cache {
         position: absolute; width: 1px; height: 1px; opacity: 0.01; overflow: hidden; bottom: 0; left: 0; pointer-events: none;
     }
@@ -337,12 +334,31 @@
     }
 
     function convertirLinkGitHub(url) {
-        if (url.includes('github.com') && !url.includes('raw.githubusercontent.com') && !url.includes('?raw=true')) {
-            if(url.includes('/blob/')) {
-                return url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
-            }
-            return url + "?raw=true";
+        if (!url) return url;
+        url = url.trim();
+        
+        // Si ya es un raw URL de GitHub, devolverlo tal cual
+        if (url.includes('raw.githubusercontent.com')) return url;
+        
+        // Si es un enlace de GitHub con /blob/, convertirlo a raw
+        if (url.includes('github.com') && url.includes('/blob/')) {
+            return url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
         }
+        
+        // Si es un enlace de GitHub sin /blob/ pero con ?raw=true
+        if (url.includes('github.com') && url.includes('?raw=true')) {
+            return url.replace('github.com', 'raw.githubusercontent.com');
+        }
+        
+        // Para otros casos, intentar convertir a raw si es un archivo
+        if (url.includes('github.com') && !url.includes('raw.githubusercontent.com')) {
+            // Extraer el path del repositorio
+            const match = url.match(/github\.com\/([^\/]+\/[^\/]+\/blob\/[^?]+)/);
+            if (match) {
+                return 'https://raw.githubusercontent.com/' + match[1].replace('/blob/', '/');
+            }
+        }
+        
         return url;
     }
 
@@ -372,18 +388,12 @@
                         ANUNCIOS.push(item); 
 
                         let urlMedia = item.url.trim();
-                        if (esVideoDirecto(urlMedia)) {
-                            let linkVid = convertirLinkGitHub(urlMedia);
-                            let videoPre = document.createElement('video');
-                            videoPre.src = linkVid;
-                            videoPre.preload = "auto";
-                            videoPre.muted = true;
-                            cacheContainer.appendChild(videoPre);
-                        } else if (!urlMedia.includes('youtube.com') && !urlMedia.includes('youtu.be')) {
-                            let imgPre = new Image();
-                            imgPre.src = urlMedia;
-                            cacheContainer.appendChild(imgPre);
-                        }
+                        
+                        // Precargar imagen
+                        let imgPre = new Image();
+                        let urlParaCargar = convertirLinkGitHub(urlMedia);
+                        imgPre.src = urlParaCargar;
+                        cacheContainer.appendChild(imgPre);
                     }
                 });
             }
@@ -576,16 +586,28 @@
         const ad = ANUNCIOS[adIndex];
         let urlTarget = ad.url ? ad.url.trim() : "";
         
-        if (esVideoDirecto(urlTarget)) {
-            let directVideoUrl = convertirLinkGitHub(urlTarget);
-            box.innerHTML = `<video src="${directVideoUrl}" autoplay muted playsinline style="width:100%; height:100%; object-fit:contain;"></video>`;
+        // Convertir URL de GitHub a raw
+        let urlProcesada = convertirLinkGitHub(urlTarget);
+        
+        if (esVideoDirecto(urlTarget) && (urlTarget.includes('.mp4') || urlTarget.includes('.webm') || urlTarget.includes('.ogg') || urlTarget.includes('.mov') || urlTarget.includes('raw.githubusercontent'))) {
+            // Si es un video directo
+            box.innerHTML = `<video src="${urlProcesada}" autoplay muted playsinline style="width:100%; height:100%; object-fit:contain;"></video>`;
         } else if (urlTarget.includes('youtube.com') || urlTarget.includes('youtu.be')) {
+            // Si es YouTube
             let embed = urlTarget.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/");
-            box.innerHTML = `<iframe src="${embed}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media"></iframe>`;
+            if(embed.includes("?")) { embed = embed.split("?")[0]; }
+            box.innerHTML = `<iframe src="${embed}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;"></iframe>`;
         } else if (urlTarget !== "") {
-            box.innerHTML = `<img src="${urlTarget}" style="width:100%; height:100%; object-fit:contain;">`;
+            // Si es una imagen o cualquier otro tipo de archivo (incluyendo PDF, etc.)
+            // Verificar si la URL tiene extensión de imagen o es de GitHub
+            if (urlProcesada.match(/\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)$/i) || urlProcesada.includes('raw.githubusercontent.com')) {
+                box.innerHTML = `<img src="${urlProcesada}" style="width:100%; height:100%; object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'color:white; font-size:40px; font-weight:800; letter-spacing:1px;\\'>ANGUILLA LOTTERY</div>';">`;
+            } else {
+                // Si no se reconoce, mostrar imagen o mensaje
+                box.innerHTML = `<img src="${urlProcesada}" style="width:100%; height:100%; object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'color:white; font-size:40px; font-weight:800; letter-spacing:1px;\\'>ANGUILLA LOTTERY</div>';">`;
+            }
         } else {
-            box.innerHTML = "<div style='color:white; font-size:40px; font-weight:800;'>ANGUILLA LOTTERY</div>";
+            box.innerHTML = "<div style='color:white; font-size:40px; font-weight:800; letter-spacing:1px;'>ANGUILLA LOTTERY</div>";
         }
         
         let tiempoAsignado = (parseInt(ad.tiempo) || 15) * 1000;
@@ -593,7 +615,6 @@
         return tiempoAsignado;
     }
 
-    /* --- LÓGICA DE ROTACIÓN OPTIMIZADA CON RETARDO PARA TRANSICIÓN FLUIDA --- */
     function rotateDisplay() {
         if (SORTEOS.length === 0 || enTransmisionVivo || !sistemaIniciado) return;
         clearInterval(rotationInterval);
@@ -603,12 +624,10 @@
         const vAds = document.getElementById('view-ads');
         const totalPages = Math.ceil(SORTEOS.length / 8);
 
-        // Ocultamos todas las pantallas con suavidad (Clase CSS se encarga del Fade-Out)
         vGrid.classList.add('hidden'); 
         vFeat.classList.add('hidden'); 
         vAds.classList.add('hidden');
 
-        // Esperamos 450ms a que termine el desvanecimiento para inyectar y mostrar el nuevo contenido
         setTimeout(() => {
             let nextTime = tiempoRotacionGlobal;
 
@@ -630,7 +649,6 @@
                 vGrid.classList.remove('hidden');
             }
             
-            // Re-sincronizamos el intervalo descontando el pequeño delay de la animación
             rotationInterval = setInterval(rotateDisplay, Math.max(1000, nextTime - 450));
         }, 450);
     }
