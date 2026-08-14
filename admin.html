@@ -28,8 +28,6 @@
             margin: 0; 
             padding: 15px;
             min-height: 100vh;
-            will-change: transform;
-            -webkit-font-smoothing: antialiased;
         }
 
         .dashboard { 
@@ -98,9 +96,6 @@
             box-shadow: var(--shadow-glow); 
             position: relative;
             overflow: hidden;
-            will-change: transform;
-            backface-visibility: hidden;
-            contain: layout style paint;
         }
         .panel-card::before {
             content: '';
@@ -150,7 +145,6 @@
             width: 100%; 
             box-sizing: border-box;
             transition: border-color 0.2s ease;
-            will-change: transform;
         }
         input:focus { 
             border-color: var(--neon-blue); 
@@ -176,8 +170,6 @@
             gap: 6px;
             min-height: 38px; 
             white-space: nowrap;
-            will-change: transform;
-            backface-visibility: hidden;
         }
         .btn-block { width: 100%; }
         .btn-primary { background: linear-gradient(135deg, var(--neon-orange), #e06a00); color: white; }
@@ -358,16 +350,16 @@
         }
         .iframe-container { 
             width: 100%; 
-            height: 200px; 
+            height: 180px; 
             background: #000; 
             border-radius: 10px; 
             overflow: hidden; 
             border: 2px solid var(--card-border); 
             position: relative; 
         }
-        @media (min-width: 580px) { .iframe-container { height: 280px; } }
-        @media (min-width: 900px) { .iframe-container { height: 350px; } }
-        @media (min-width: 1400px) { .iframe-container { height: 400px; } }
+        @media (min-width: 580px) { .iframe-container { height: 200px; } }
+        @media (min-width: 900px) { .iframe-container { height: 220px; } }
+        @media (min-width: 1400px) { .iframe-container { height: 250px; } }
 
         .iframe-container iframe, .iframe-container video { 
             width: 100%; 
@@ -434,13 +426,6 @@
         }
         .status-active { background: rgba(57, 255, 20, 0.2); color: var(--neon-green); border: 1px solid rgba(57, 255, 20, 0.3); }
         .status-inactive { background: rgba(230, 57, 70, 0.2); color: var(--neon-red); border: 1px solid rgba(230, 57, 70, 0.3); }
-
-        @media (max-width: 768px) {
-            .panel-card:hover { transform: none !important; }
-            .btn:hover { transform: none !important; }
-            .sorteo-item:hover { border-left-color: var(--neon-blue) !important; }
-            .ad-item:hover { border-color: var(--card-border) !important; }
-        }
     </style>
 </head>
 <body>
@@ -534,9 +519,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
 <script>
-    // ============================================
-    // CONFIGURACIÓN FIREBASE
-    // ============================================
     const firebaseConfig = { databaseURL: "https://pizarra-loteria-36ba5-default-rtdb.firebaseio.com/" };
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
@@ -549,9 +531,6 @@
         "06:00PM", "07:00PM", "08:00PM", "09:00PM", "10:00PM"
     ];
 
-    // ============================================
-    // INICIALIZACIÓN
-    // ============================================
     window.onload = () => {
         document.getElementById('targetDate').value = new Date().toISOString().split('T')[0];
         fetchSorteos();
@@ -559,18 +538,8 @@
         escucharAnuncios();
         escucharEstadoTransmision();
         fetchConfiguracionGlobal();
-        
-        if (navigator.userAgent.includes('AFT') || navigator.userAgent.includes('FireTV')) {
-            document.querySelectorAll('*').forEach(el => {
-                el.style.transitionDuration = '0.1s';
-                el.style.animationDuration = '0.2s';
-            });
-        }
     };
 
-    // ============================================
-    // FUNCIONES DE UTILIDAD
-    // ============================================
     function mostrarFeedback(mensaje = '✓ Guardado exitosamente') {
         const fb = document.getElementById('saveFeedback');
         fb.textContent = mensaje;
@@ -630,9 +599,6 @@
         });
     }
 
-    // ============================================
-    // TRANSMISIÓN EN VIVO
-    // ============================================
     function escucharEstadoTransmision() {
         database.ref('transmisionVivo').on('value', snap => {
             const data = snap.val();
@@ -692,9 +658,6 @@
         });
     }
 
-    // ============================================
-    // FUNCIONES DE DETECCIÓN DE MEDIOS
-    // ============================================
     function esVideoDirecto(url) {
         if (!url) return false;
         const urlLower = url.toLowerCase();
@@ -753,36 +716,8 @@
         return url;
     }
 
-    // ============================================
-    // FUNCIÓN MEJORADA PARA MOSTRAR IMÁGENES
-    // ============================================
-    function mostrarImagenPreview(container, url) {
-        const urlProcesada = convertirLinkGitHub(url);
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.src = urlProcesada;
-        img.style.cssText = 'width:100%; height:100%; object-fit:cover;';
-        img.alt = 'Anuncio';
-        
-        img.onload = function() {
-            container.innerHTML = '';
-            container.appendChild(img);
-        };
-        
-        img.onerror = function() {
-            container.innerHTML = '<div class="no-img">Sin preview</div>';
-        };
-    }
-
-    // ============================================
-    // ANUNCIOS
-    // ============================================
     function escucharAnuncios() {
         database.ref('anunciosList').on('value', snap => {
-            if (document.activeElement && (document.activeElement.classList.contains('input-ad-url') || document.activeElement.classList.contains('input-ad-time'))) {
-                return;
-            }
-            
             const container = document.getElementById('contenedorAnuncios');
             container.innerHTML = "";
             anunciosLocales = [];
@@ -791,8 +726,12 @@
             snap.forEach(child => {
                 const data = child.val();
                 const isActivo = data.activo !== undefined ? data.activo : true;
-                anunciosLocales.push({ url: data.url, tiempo: data.tiempo, activo: isActivo });
-                inyectarEstructuraAnuncio(contador, data.url, data.tiempo, isActivo);
+                anunciosLocales.push({ 
+                    url: data.url || "", 
+                    tiempo: data.tiempo || 15, 
+                    activo: isActivo 
+                });
+                inyectarEstructuraAnuncio(contador, data.url || "", data.tiempo || 15, isActivo);
                 contador++;
             });
         });
@@ -805,13 +744,11 @@
         
         let srcProcessed = "";
         let isVid = false;
-        let isImg = false;
         let hasPreview = false;
         
         if (url && url.trim() !== "") {
             srcProcessed = obtenerMiniaturaUrl(url.trim());
             isVid = esVideoDirecto(url);
-            isImg = esImagen(url);
             hasPreview = srcProcessed !== "" && srcProcessed !== url;
         }
 
@@ -931,9 +868,6 @@
         });
     }
 
-    // ============================================
-    // SORTEOS
-    // ============================================
     function fetchSorteos() {
         const fecha = document.getElementById('targetDate').value;
         const listado = document.getElementById('listado');
@@ -1009,9 +943,6 @@
         });
     }
 
-    // ============================================
-    // EXPONER FUNCIONES GLOBALES
-    // ============================================
     window.recargarMonitor = recargarMonitor;
     window.guardarTiempoGlobal = guardarTiempoGlobal;
     window.guardarCintillo = guardarCintillo;
@@ -1025,10 +956,6 @@
     window.actualizarSorteo = actualizarSorteo;
     window.fetchSorteos = fetchSorteos;
     window.forzarActualizarEstadisticas = forzarActualizarEstadisticas;
-    window.obtenerMiniaturaUrl = obtenerMiniaturaUrl;
-    window.esVideoDirecto = esVideoDirecto;
-    window.esImagen = esImagen;
-    window.convertirLinkGitHub = convertirLinkGitHub;
 </script>
 </body>
 </html>
