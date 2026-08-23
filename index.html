@@ -254,6 +254,157 @@
         z-index: 5;
     }
 
+    /* ============================================
+       BOLOS 3D CON ANIMACIÓN DE ENTRADA (SIN FLOTACIÓN)
+    ============================================ */
+    .ball-base {
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        position: relative;
+        transition: transform 0.2s ease;
+        animation: dropIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
+        animation-fill-mode: both;
+    }
+    .ball-base:hover {
+        transform: scale(1.03);
+    }
+
+    /* BOLO AZUL (HOY) - 3D */
+    .ball-blue {
+        background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #3b82f6 30%, #2563eb 60%, #1d4ed8 85%, #1e40af 100%);
+        color: #ffffff;
+        box-shadow: 
+            inset -8px -8px 20px rgba(0,0,0,0.4),
+            inset 4px 4px 12px rgba(255,255,255,0.5),
+            0 12px 25px rgba(0,0,0,0.3),
+            0 0 0 2px rgba(255,255,255,0.1);
+        border: 2px solid rgba(255,255,255,0.15);
+        text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+    /* BOLO GRIS (AYER) - 3D */
+    .ball-gray {
+        background: radial-gradient(circle at 30% 30%, #f1f5f9 0%, #e2e8f0 30%, #cbd5e1 60%, #94a3b8 85%, #64748b 100%);
+        color: #1e293b;
+        box-shadow: 
+            inset -8px -8px 20px rgba(0,0,0,0.2),
+            inset 4px 4px 12px rgba(255,255,255,0.7),
+            0 12px 25px rgba(0,0,0,0.2);
+        border: 2px solid rgba(255,255,255,0.3);
+        text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+    }
+    /* BOLO PEQUEÑO (siempre azul) */
+    .ball-small {
+        width: 100px; height: 100px; 
+        background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #3b82f6 30%, #2563eb 60%, #1d4ed8 85%, #1e40af 100%);
+        color: white;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 38px;
+        font-weight: 800;
+        box-shadow: 
+            inset -6px -6px 16px rgba(0,0,0,0.4),
+            inset 4px 4px 10px rgba(255,255,255,0.5),
+            0 8px 20px rgba(0,0,0,0.25);
+        border: 2px solid rgba(255,255,255,0.15);
+        text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        animation: dropIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
+        animation-fill-mode: both;
+    }
+
+    /* BOLO PLANO (tarjetas) */
+    .ball-flat {
+        width: 125px; height: 125px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 56px;
+        font-weight: 900;
+        border: 2px solid rgba(255,255,255,0.15);
+        animation: dropIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
+        animation-fill-mode: both;
+        transition: transform 0.2s;
+    }
+    .ball-flat:hover {
+        transform: scale(1.05);
+    }
+    .card-hoy .ball-flat {
+        background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #3b82f6 30%, #2563eb 60%, #1d4ed8 85%, #1e40af 100%);
+        color: #ffffff;
+        box-shadow: 
+            inset -8px -8px 20px rgba(0,0,0,0.4),
+            inset 4px 4px 12px rgba(255,255,255,0.5),
+            0 12px 25px rgba(0,0,0,0.3);
+        text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+    .card-ayer .ball-flat {
+        background: radial-gradient(circle at 30% 30%, #f1f5f9 0%, #e2e8f0 30%, #cbd5e1 60%, #94a3b8 85%, #64748b 100%);
+        color: #1e293b;
+        box-shadow: 
+            inset -8px -8px 20px rgba(0,0,0,0.2),
+            inset 4px 4px 12px rgba(255,255,255,0.7),
+            0 12px 25px rgba(0,0,0,0.2);
+        text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+    }
+
+    /* BOLO GRANDE (destacado) */
+    .ball-big {
+        width: 205px; height: 205px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 100px;
+        font-weight: 900;
+        border: 3px solid rgba(255,255,255,0.15);
+        animation: dropIn 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
+        animation-fill-mode: both;
+        transition: transform 0.2s;
+        position: relative;
+    }
+    .ball-big:hover {
+        transform: scale(1.03);
+    }
+    .ball-big.blue {
+        background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #3b82f6 30%, #2563eb 60%, #1d4ed8 85%, #1e40af 100%);
+        color: #ffffff;
+        box-shadow: 
+            inset -12px -12px 30px rgba(0,0,0,0.5),
+            inset 6px 6px 18px rgba(255,255,255,0.6),
+            0 20px 40px rgba(0,0,0,0.4);
+        text-shadow: 0 3px 10px rgba(0,0,0,0.5);
+    }
+    .ball-big.gray {
+        background: radial-gradient(circle at 30% 30%, #f1f5f9 0%, #e2e8f0 30%, #cbd5e1 60%, #94a3b8 85%, #64748b 100%);
+        color: #1e293b;
+        box-shadow: 
+            inset -12px -12px 30px rgba(0,0,0,0.2),
+            inset 6px 6px 18px rgba(255,255,255,0.8),
+            0 20px 40px rgba(0,0,0,0.25);
+        text-shadow: 0 1px 3px rgba(255,255,255,0.6);
+    }
+
+    /* ANIMACIÓN DE ENTRADA (SIN FLOTACIÓN) */
+    @keyframes dropIn {
+        0% {
+            opacity: 0;
+            transform: scale(0.4) translateY(-60px) rotate(-10deg);
+        }
+        60% {
+            transform: scale(1.05) translateY(8px) rotate(2deg);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1) translateY(0) rotate(0deg);
+        }
+    }
+
     /* --- DIVISIONES --- */
     .split-container { display: flex; gap: 25px; height: 100%; width: 100%; }
     .split-main {
@@ -282,28 +433,6 @@
     .balls-container { 
         display: flex; justify-content: center; align-items: center; gap: 18px; padding: 15px; background: transparent; border-radius: 20px; flex-grow: 1; width: 100%; 
     }
-    
-    .ball-flat {
-        width: 125px; height: 125px; 
-        background: radial-gradient(circle at 35% 35%, #ffffff 0%, #f1f5f9 40%, #cbd5e1 75%, #94a3b8 100%);
-        border: 3px solid rgba(15, 23, 42, 0.85); border-radius: 50%; display: flex; align-items: center; justify-content: center;
-        font-size: 56px; font-weight: 900; color: #0f172a;
-        box-shadow: inset -6px -6px 14px rgba(0,0,0,0.1), inset 4px 4px 10px rgba(255,255,255,0.8), 0 10px 20px rgba(0,0,0,0.2);
-    }
-    .ball-big {
-        width: 205px; height: 205px; 
-        background: radial-gradient(circle at 35% 35%, #ffffff 0%, #f8fafc 35%, #e2e8f0 70%, #cbd5e1 100%);
-        border: 4px solid rgba(15, 23, 42, 0.9); border-radius: 50%;
-        display: flex; align-items: center; justify-content: center; font-size: 100px; font-weight: 900; color: #0f172a;
-        box-shadow: inset -10px -10px 25px rgba(0,0,0,0.12), inset 6px 6px 15px rgba(255,255,255,0.9), 0 20px 35px rgba(0,0,0,0.35); 
-        animation: dropIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
-    }
-    .ball-small {
-        width: 100px; height: 100px; 
-        background: radial-gradient(circle at 35% 35%, #2563eb 0%, #1d4ed8 45%, #0000a5 80%, #000066 100%);
-        color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 38px; font-weight: 800;
-        box-shadow: inset -4px -4px 12px rgba(0,0,0,0.35), inset 3px 3px 8px rgba(255,255,255,0.4), 0 8px 16px rgba(0, 0, 165, 0.25);
-    }
 
     .ad-box { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #000; overflow: hidden; border-radius: 24px; position: relative; }
     .ad-box img, .ad-box video { width: 100%; height: 100%; object-fit: contain; } 
@@ -329,7 +458,6 @@
         position: absolute; width: 1px; height: 1px; opacity: 0.01; overflow: hidden; bottom: 0; left: 0; pointer-events: none;
     }
 
-    @keyframes dropIn { 0% { transform: scale(0.6) translateY(50px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
     @keyframes pulse { 0% { opacity: 0.4; } 100% { opacity: 1; } }
     @keyframes floating {
         0% { transform: translateY(0px); }
@@ -440,13 +568,6 @@
         }
     }
 
-    function hayCacheValido(clave, maxEdadMs = 3600000) {
-        const cached = obtenerDeCache(clave);
-        if (!cached) return false;
-        const edad = Date.now() - cached.timestamp;
-        return edad < maxEdadMs;
-    }
-
     function cargarDesdeCache() {
         console.log('📦 Cargando datos desde caché...');
         usandoCache = true;
@@ -511,7 +632,7 @@
             tooltip.textContent = mensaje || '❌ Sin conexión';
             badge.classList.add('show');
             isOnline = false;
-            usarCache = true;
+            usandoCache = true;
         } else {
             dot.classList.add('checking');
             tooltip.textContent = mensaje || '⏳ Verificando...';
@@ -574,6 +695,31 @@
     }
 
     // ============================================
+    // FUNCIÓN PARA ORDENAR SORTEOS CRONOLÓGICAMENTE
+    // ============================================
+    function ordenarSorteosCronologicamente(sorteos) {
+        const hoy = sorteos.filter(s => s.day === 'hoy');
+        const ayer = sorteos.filter(s => s.day === 'ayer');
+        
+        const ordenarPorHora = (arr) => {
+            return arr.sort((a, b) => convertirHoraAminutos(a.hour) - convertirHoraAminutos(b.hour));
+        };
+        
+        return [...ordenarPorHora(hoy), ...ordenarPorHora(ayer)];
+    }
+
+    function convertirHoraAminutos(horaStr) {
+        const match = horaStr.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/);
+        if (!match) return 0;
+        let h = parseInt(match[1]);
+        const m = parseInt(match[2]);
+        const ampm = match[3];
+        if (ampm === 'PM' && h !== 12) h += 12;
+        if (ampm === 'AM' && h === 12) h = 0;
+        return h * 60 + m;
+    }
+
+    // ============================================
     // CARGAR DATOS DESDE FIREBASE
     // ============================================
     function cargarDatosFirebase() {
@@ -593,7 +739,7 @@
                 const dataAyer = snapAyer.val() || [];
                 const procesados = procesarSorteosData(dataHoy, dataAyer);
                 if (procesados && procesados.length > 0) {
-                    SORTEOS = procesados;
+                    SORTEOS = ordenarSorteosCronologicamente(procesados);
                     guardarEnCache('sorteos', SORTEOS);
                     console.log('✅ Sorteos actualizados desde Firebase:', SORTEOS.length);
                     if (sistemaIniciado && !enTransmisionVivo) {
@@ -804,11 +950,12 @@
                 const dataAyer = snapAyer.val() || [];
                 const procesados = procesarSorteosData(dataHoy, dataAyer);
                 if (procesados.length > 0) {
-                    SORTEOS = procesados;
+                    SORTEOS = ordenarSorteosCronologicamente(procesados);
                     guardarEnCache('sorteos', SORTEOS);
                 }
                 if (sistemaIniciado && !enTransmisionVivo) {
                     renderGrid();
+                    if (currentView === 88) renderFeatured();
                 }
             });
         });
@@ -891,14 +1038,14 @@
         const start = gridPage * 8;
         const pageItems = SORTEOS.slice(start, start + 8);
 
-        pageItems.forEach(s => {
+        pageItems.forEach((s, idx) => {
             const card = document.createElement('div');
             card.className = `card ${s.day === 'hoy' ? 'card-hoy' : 'card-ayer'}`;
             let bottom = s.isWaiting ? `<div class="waiting-text">ESPERANDO RESULTADOS...</div>` : `
                 <div class="balls-container">
-                    <div class="ball-flat">${s.nums ? s.nums[0] : '--'}</div>
-                    <div class="ball-flat">${s.nums ? s.nums[1] : '--'}</div>
-                    <div class="ball-flat">${s.nums ? s.nums[2] : '--'}</div>
+                    <div class="ball-flat" style="animation-delay: ${(idx * 0.1)}s">${s.nums ? s.nums[0] : '--'}</div>
+                    <div class="ball-flat" style="animation-delay: ${(idx * 0.1 + 0.15)}s">${s.nums ? s.nums[1] : '--'}</div>
+                    <div class="ball-flat" style="animation-delay: ${(idx * 0.1 + 0.30)}s">${s.nums ? s.nums[2] : '--'}</div>
                 </div>`;
             const cacheBadge = usandoCache ? `<div class="cached-badge">📦 CACHÉ</div>` : '';
             card.innerHTML = `<div class="card-header"><img class="mini-logo" src="anguilla.png"><div class="time-bar">${s.hour}</div><div class="date-tag">${s.date}</div></div>${bottom}${cacheBadge}`;
@@ -915,17 +1062,22 @@
             return SORTEOS[0] || { hour: '--:--', date: 'HOY', nums: null };
         }
         
-        jugados.sort((a, b) => (a.day === b.day) ? b.key - a.key : (a.day === 'hoy' ? -1 : 1));
+        jugados.sort((a, b) => {
+            if (a.day === b.day) {
+                return convertirHoraAminutos(b.hour) - convertirHoraAminutos(a.hour);
+            }
+            return a.day === 'hoy' ? -1 : 1;
+        });
         let last = jugados[0];
         const historial = jugados.slice(1, 6); 
         
-        panel.innerHTML = historial.map(s => `
+        panel.innerHTML = historial.map((s, idx) => `
             <div class="side-row">
                 <div class="side-time">${s.hour} <small style="font-size:18px; display:block; color:#64748b; font-weight:700; margin-top:2px;">${s.date}</small></div>
                 <div style="display:flex; gap:10px;">
-                    <div class="ball-small">${s.nums[0]}</div>
-                    <div class="ball-small">${s.nums[1]}</div>
-                    <div class="ball-small">${s.nums[2]}</div>
+                    <div class="ball-small" style="animation-delay: ${idx * 0.1}s">${s.nums[0]}</div>
+                    <div class="ball-small" style="animation-delay: ${idx * 0.1 + 0.15}s">${s.nums[1]}</div>
+                    <div class="ball-small" style="animation-delay: ${idx * 0.1 + 0.30}s">${s.nums[2]}</div>
                 </div>
             </div>`).join('');
         return last;
@@ -935,7 +1087,14 @@
         let last = generarPanelLateral('sidePanelFeatured');
         document.getElementById('fTime').innerText = last.hour;
         const fBalls = document.getElementById('fBalls');
-        fBalls.innerHTML = last.nums ? last.nums.map((n, i) => `<div class="ball-big" style="animation-delay: ${i * 0.12}s">${n}</div>`).join('') : '<div class="waiting-text">PROXIMO SORTEO</div>';
+        if (last.nums) {
+            const esHoy = last.day === 'hoy';
+            fBalls.innerHTML = last.nums.map((n, i) => `
+                <div class="ball-big ${esHoy ? 'blue' : 'gray'}" style="animation-delay: ${i * 0.2}s">${n}</div>
+            `).join('');
+        } else {
+            fBalls.innerHTML = '<div class="waiting-text">PROXIMO SORTEO</div>';
+        }
         
         // Quitar badge anterior
         const oldBadge = document.querySelector('.split-main .cached-badge');
