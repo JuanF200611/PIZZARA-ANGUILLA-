@@ -7,12 +7,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap" rel="stylesheet">
 <style>
     :root {
-        --anguilla-orange: #ff7900;
-        --anguilla-blue: #0000a5;
-        --anguilla-blue-dark: #000066;
-        --anguilla-yellow: #ffcc00;
+        --anguilla-orange: #f97316;
+        --anguilla-blue: #0b1f4b;
+        --anguilla-blue-dark: #06132f;
+        --anguilla-yellow: #fbbf24;
         --white: #ffffff;
         --gray-text: #475569;
+        --weekly-bg: #f8fafc;
+        --weekly-line: #dbe3ef;
+        --weekly-green: #16a34a;
+        --weekly-muted: #94a3b8;
         --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
         --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
@@ -69,7 +73,7 @@
     #canvas-master {
         width: 1920px;
         height: 1080px;
-        background: radial-gradient(circle at 50% 50%, #ff881a 0%, #cc5200 100%);
+        background: radial-gradient(circle at 50% 20%, #173b78 0%, #0b1f4b 42%, #06132f 100%);
         position: absolute;
         top: 50%;
         left: 50%;
@@ -197,7 +201,7 @@
     @keyframes marquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
     /* --- CONTENEDORES CON TRANSICIÓN SUAVE --- */
-    #view-grid, #view-featured, #view-ads {
+    #view-grid, #view-featured, #view-ads, #view-weekly {
         height: 875px;
         padding: 25px 30px;
         position: absolute; 
@@ -458,6 +462,208 @@
         position: absolute; width: 1px; height: 1px; opacity: 0.01; overflow: hidden; bottom: 0; left: 0; pointer-events: none;
     }
 
+
+    /* =========================================================
+       VISTA SEMANAL - TABLA LUNES A DOMINGO
+       ========================================================= */
+    #view-weekly {
+        padding: 18px 24px 24px;
+        position: absolute;
+        width: 100%;
+        top: 205px;
+        left: 0;
+        z-index: 1;
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        visibility: visible;
+        transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+                    transform 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+                    visibility 0.6s;
+    }
+
+    .weekly-shell {
+        height: 100%;
+        width: 100%;
+        background: var(--weekly-bg);
+        border-radius: 22px;
+        overflow: hidden;
+        box-shadow: 0 18px 45px rgba(0,0,0,.28);
+        border: 2px solid rgba(251,191,36,.75);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .weekly-titlebar {
+        min-height: 76px;
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #0b1f4b, #123a78);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        border-bottom: 4px solid var(--anguilla-yellow);
+    }
+
+    .weekly-title {
+        font-size: 30px;
+        font-weight: 900;
+        letter-spacing: .8px;
+        text-transform: uppercase;
+    }
+
+    .weekly-subtitle {
+        font-size: 16px;
+        font-weight: 700;
+        opacity: .86;
+        margin-top: 3px;
+    }
+
+    .weekly-page {
+        background: rgba(251,191,36,.14);
+        color: #fff;
+        border: 1px solid rgba(251,191,36,.55);
+        border-radius: 999px;
+        padding: 9px 18px;
+        font-size: 15px;
+        font-weight: 900;
+        white-space: nowrap;
+    }
+
+    .weekly-table-wrap {
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+        padding: 14px 16px 16px;
+    }
+
+    .weekly-table {
+        width: 100%;
+        height: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        table-layout: fixed;
+        border: 1px solid var(--weekly-line);
+        border-radius: 14px;
+        overflow: hidden;
+        background: #fff;
+    }
+
+    .weekly-table th,
+    .weekly-table td {
+        border-right: 1px solid var(--weekly-line);
+        border-bottom: 1px solid var(--weekly-line);
+        text-align: center;
+        vertical-align: middle;
+        padding: 7px 6px;
+    }
+
+    .weekly-table th:last-child,
+    .weekly-table td:last-child { border-right: 0; }
+
+    .weekly-table tr:last-child td { border-bottom: 0; }
+
+    .weekly-table thead th {
+        height: 64px;
+        background: linear-gradient(180deg, #eef4ff 0%, #e3ecfb 100%);
+        color: #0b1f4b;
+        font-size: 18px;
+        font-weight: 900;
+        text-transform: uppercase;
+    }
+
+    .weekly-table thead th:first-child {
+        width: 125px;
+        background: #0b1f4b;
+        color: #fff;
+        font-size: 16px;
+    }
+
+    .weekly-day-date {
+        display: block;
+        color: #64748b;
+        font-size: 12px;
+        margin-top: 3px;
+        font-weight: 800;
+    }
+
+    .weekly-table td.weekly-time {
+        background: #f1f5f9;
+        color: #0b1f4b;
+        font-size: 21px;
+        font-weight: 900;
+        white-space: nowrap;
+    }
+
+    .weekly-cell {
+        height: 64px;
+        background: #fff;
+    }
+
+    .weekly-cell.has-result {
+        background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+    }
+
+    .weekly-balls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+    }
+
+    .weekly-ball {
+        width: 43px;
+        height: 43px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(circle at 30% 28%, #60a5fa 0%, #2563eb 52%, #1e3a8a 100%);
+        color: #fff;
+        font-size: 20px;
+        font-weight: 900;
+        box-shadow: inset -4px -5px 9px rgba(0,0,0,.28),
+                    inset 2px 2px 5px rgba(255,255,255,.45),
+                    0 4px 9px rgba(15,23,42,.22);
+    }
+
+    .weekly-result-mark {
+        display: block;
+        color: var(--weekly-green);
+        font-size: 10px;
+        font-weight: 900;
+        margin-top: 2px;
+        letter-spacing: .4px;
+    }
+
+    .weekly-empty {
+        color: var(--weekly-muted);
+        font-size: 23px;
+        font-weight: 800;
+    }
+
+    .weekly-footer {
+        height: 34px;
+        padding: 0 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #64748b;
+        background: #f8fafc;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .weekly-live-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #22c55e;
+        margin-right: 6px;
+        box-shadow: 0 0 9px rgba(34,197,94,.55);
+    }
+
     @keyframes pulse { 0% { opacity: 0.4; } 100% { opacity: 1; } }
     @keyframes floating {
         0% { transform: translateY(0px); }
@@ -501,6 +707,29 @@
         <div class="grid-container" id="mainGrid"></div>
     </div>
 
+
+    <div id="view-weekly" class="hidden">
+        <div class="weekly-shell">
+            <div class="weekly-titlebar">
+                <div>
+                    <div class="weekly-title">📊 Resultados de la semana</div>
+                    <div class="weekly-subtitle" id="weeklySubtitle">LUNES A DOMINGO</div>
+                </div>
+                <div class="weekly-page" id="weeklyPageIndicator">PÁGINA 1/1</div>
+            </div>
+            <div class="weekly-table-wrap">
+                <table class="weekly-table">
+                    <thead id="weeklyTableHead"></thead>
+                    <tbody id="weeklyTableBody"></tbody>
+                </table>
+            </div>
+            <div class="weekly-footer">
+                <div><span class="weekly-live-dot"></span>Resultados actualizados automáticamente</div>
+                <div id="weeklyFooterText">ANGUILLA LOTTERY</div>
+            </div>
+        </div>
+    </div>
+
     <div id="view-featured" class="hidden">
         <div class="split-container">
             <div class="split-main">
@@ -532,6 +761,12 @@
     const database = firebase.database();
 
     let SORTEOS = [];
+    let RESULTADOS_SEMANA = {};
+    let SEMANA_FECHAS = [];
+    let SEMANA_KEY = '';
+    let SEMANA_PAGE = 0;
+    const SEMANA_FILAS_POR_PAGINA = 10;
+    let SEMANA_LISTENERS = [];
     let ANUNCIOS = [];
     let currentView = 0; 
     let gridPage = 0;
@@ -580,6 +815,14 @@
             console.log('✅ Sorteos cargados desde caché:', SORTEOS.length);
         }
 
+        const semanaCache = obtenerDeCache('semanaResultados');
+        if (semanaCache && semanaCache.data && semanaCache.data.fechas && semanaCache.data.resultados) {
+            SEMANA_FECHAS = semanaCache.data.fechas;
+            SEMANA_KEY = SEMANA_FECHAS.join('|');
+            RESULTADOS_SEMANA = semanaCache.data.resultados;
+            datosCargados = true;
+        }
+
         const anunciosCache = obtenerDeCache('anuncios');
         if (anunciosCache && anunciosCache.data && anunciosCache.data.length > 0) {
             ANUNCIOS = anunciosCache.data.filter(ad => ad.activo !== false);
@@ -599,6 +842,7 @@
 
         if (datosCargados && sistemaIniciado && !enTransmisionVivo) {
             renderGrid();
+            if (currentView === 77) renderWeeklyTable();
             if (currentView === 88) renderFeatured();
             if (!rotationInterval) {
                 rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
@@ -724,6 +968,7 @@
     // ============================================
     function cargarDatosFirebase() {
         console.log('🔄 Cargando datos desde Firebase...');
+        iniciarListenersSemana();
         const hoyStr = getFormatDate(0);
         const ayerStr = getFormatDate(1);
 
@@ -836,6 +1081,198 @@
         });
 
         return finalSorteos;
+    }
+
+
+    // =========================================================
+    // RESULTADOS DE LA SEMANA (LUNES A DOMINGO)
+    // =========================================================
+    function getFechaISO(d) {
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    function obtenerFechasSemana() {
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+        const dia = hoy.getDay(); // 0 domingo, 1 lunes...
+        const diferencia = dia === 0 ? -6 : 1 - dia;
+        const lunes = new Date(hoy);
+        lunes.setDate(hoy.getDate() + diferencia);
+
+        return Array.from({ length: 7 }, (_, i) => {
+            const d = new Date(lunes);
+            d.setDate(lunes.getDate() + i);
+            return getFechaISO(d);
+        });
+    }
+
+    function formatearFechaCorta(iso) {
+        const [y, m, d] = iso.split('-');
+        return `${d}/${m}`;
+    }
+
+    function nombreDiaDesdeISO(iso) {
+        const d = new Date(`${iso}T12:00:00`);
+        const dias = ['DOMINGO','LUNES','MARTES','MIÉRCOLES','JUEVES','VIERNES','SÁBADO'];
+        return dias[d.getDay()];
+    }
+
+    function normalizarHoraSorteo(hora) {
+        if (!hora) return '';
+        return String(hora).replace(/\s+/g, ' ').replace(/(AM|PM)/i, ' $1').trim().toUpperCase();
+    }
+
+    function iniciarListenersSemana() {
+        const fechas = obtenerFechasSemana();
+        const nuevaKey = fechas.join('|');
+
+        if (nuevaKey === SEMANA_KEY && SEMANA_LISTENERS.length === 7) {
+            return;
+        }
+
+        SEMANA_LISTENERS.forEach(item => {
+            try { item.ref.off('value', item.callback); } catch (e) {}
+        });
+        SEMANA_LISTENERS = [];
+
+        SEMANA_FECHAS = fechas;
+        SEMANA_KEY = nuevaKey;
+        SEMANA_PAGE = 0;
+        RESULTADOS_SEMANA = {};
+
+        fechas.forEach(fecha => {
+            const ref = database.ref(`sorteos/${fecha}`);
+            const callback = snap => {
+                RESULTADOS_SEMANA[fecha] = snap.val() || [];
+                guardarEnCache('semanaResultados', {
+                    fechas: SEMANA_FECHAS,
+                    resultados: RESULTADOS_SEMANA
+                });
+
+                if (sistemaIniciado && !enTransmisionVivo && currentView === 77) {
+                    const totalPaginas = obtenerFilasSemana().length
+                        ? Math.ceil(obtenerFilasSemana().length / SEMANA_FILAS_POR_PAGINA)
+                        : 1;
+                    if (SEMANA_PAGE >= totalPaginas) SEMANA_PAGE = 0;
+                    renderWeeklyTable();
+                }
+            };
+            ref.on('value', callback);
+            SEMANA_LISTENERS.push({ ref, callback });
+        });
+
+        setTimeout(iniciarListenersSemana, 60 * 1000);
+        renderWeeklyTable();
+    }
+
+    function obtenerMapaSorteosSemana() {
+        const mapa = {};
+
+        SEMANA_FECHAS.forEach(fecha => {
+            mapa[fecha] = {};
+            const data = RESULTADOS_SEMANA[fecha] || [];
+
+            if (Array.isArray(data)) {
+                data.forEach(s => {
+                    if (!s || !s.hora) return;
+                    mapa[fecha][normalizarHoraSorteo(s.hora)] = s;
+                });
+            } else if (data && typeof data === 'object') {
+                Object.values(data).forEach(s => {
+                    if (!s || !s.hora) return;
+                    mapa[fecha][normalizarHoraSorteo(s.hora)] = s;
+                });
+            }
+        });
+
+        return mapa;
+    }
+
+    function obtenerFilasSemana() {
+        const mapa = obtenerMapaSorteosSemana();
+        const horas = new Set();
+
+        SEMANA_FECHAS.forEach(fecha => {
+            Object.keys(mapa[fecha] || {}).forEach(hora => horas.add(hora));
+        });
+
+        return [...horas].sort((a, b) => convertirHoraAminutos(a) - convertirHoraAminutos(b));
+    }
+
+    function renderWeeklyTable() {
+        const head = document.getElementById('weeklyTableHead');
+        const body = document.getElementById('weeklyTableBody');
+        const subtitle = document.getElementById('weeklySubtitle');
+        const indicator = document.getElementById('weeklyPageIndicator');
+        const footer = document.getElementById('weeklyFooterText');
+
+        if (!head || !body) return;
+
+        if (!SEMANA_FECHAS.length) {
+            SEMANA_FECHAS = obtenerFechasSemana();
+        }
+
+        const nombres = SEMANA_FECHAS.map(nombreDiaDesdeISO);
+        const mapa = obtenerMapaSorteosSemana();
+        const todasLasHoras = obtenerFilasSemana();
+
+        const totalPaginas = Math.max(1, Math.ceil(todasLasHoras.length / SEMANA_FILAS_POR_PAGINA));
+        if (SEMANA_PAGE >= totalPaginas) SEMANA_PAGE = 0;
+
+        const inicio = SEMANA_PAGE * SEMANA_FILAS_POR_PAGINA;
+        const horas = todasLasHoras.slice(inicio, inicio + SEMANA_FILAS_POR_PAGINA);
+
+        const primera = SEMANA_FECHAS[0] || '';
+        const ultima = SEMANA_FECHAS[6] || '';
+        subtitle.textContent = `${formatearFechaCorta(primera)} — ${formatearFechaCorta(ultima)} · ${nombres[0]} A ${nombres[6]}`;
+        indicator.textContent = `PÁGINA ${SEMANA_PAGE + 1}/${totalPaginas}`;
+        footer.textContent = `MOSTRANDO ${horas.length} DE ${todasLasHoras.length} HORARIOS`;
+
+        head.innerHTML = `
+            <tr>
+                <th>HORA</th>
+                ${SEMANA_FECHAS.map((fecha, i) => `
+                    <th>${nombres[i]}<span class="weekly-day-date">${formatearFechaCorta(fecha)}</span></th>
+                `).join('')}
+            </tr>
+        `;
+
+        if (!horas.length) {
+            body.innerHTML = `
+                <tr>
+                    <td colspan="8" class="weekly-cell">
+                        <div class="weekly-empty">NO HAY RESULTADOS REGISTRADOS ESTA SEMANA</div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        body.innerHTML = horas.map(hora => `
+            <tr>
+                <td class="weekly-time">${hora}</td>
+                ${SEMANA_FECHAS.map(fecha => {
+                    const sorteo = mapa[fecha]?.[hora];
+                    const premios = sorteo?.premios;
+                    const tieneResultado = premios && premios[0] !== '' && premios[0] !== undefined;
+
+                    if (!tieneResultado) {
+                        return `<td class="weekly-cell"><div class="weekly-empty">—</div></td>`;
+                    }
+
+                    return `
+                        <td class="weekly-cell has-result">
+                            <div class="weekly-balls">
+                                <span class="weekly-ball">${premios[0]}</span>
+                                <span class="weekly-ball">${premios[1] ?? '--'}</span>
+                                <span class="weekly-ball">${premios[2] ?? '--'}</span>
+                            </div>
+                            <span class="weekly-result-mark">RESULTADO</span>
+                        </td>
+                    `;
+                }).join('')}
+            </tr>
+        `).join('');
     }
 
     // ============================================
@@ -955,6 +1392,7 @@
                 }
                 if (sistemaIniciado && !enTransmisionVivo) {
                     renderGrid();
+                    if (currentView === 77) renderWeeklyTable();
                     if (currentView === 88) renderFeatured();
                 }
             });
@@ -966,6 +1404,7 @@
             
             const live = snap.val();
             const vGrid = document.getElementById('view-grid');
+            const vWeekly = document.getElementById('view-weekly');
             const vFeat = document.getElementById('view-featured');
             const vAds = document.getElementById('view-ads');
             const boxAd = document.getElementById('adDisplay');
@@ -977,6 +1416,7 @@
                 clearInterval(rotationInterval); 
                 
                 vGrid.classList.add('hidden');
+                vWeekly.classList.add('hidden');
                 vFeat.classList.add('hidden');
                 vAds.classList.remove('hidden');
 
@@ -1010,6 +1450,7 @@
                     mainBoxArea.style.width = "1190px";
 
                     vGrid.classList.remove('hidden');
+                    vWeekly.classList.add('hidden');
                     vFeat.classList.add('hidden');
                     vAds.classList.add('hidden');
                     renderGrid();
@@ -1184,11 +1625,15 @@
         clearInterval(rotationInterval);
 
         const vGrid = document.getElementById('view-grid');
+        const vWeekly = document.getElementById('view-weekly');
         const vFeat = document.getElementById('view-featured');
         const vAds = document.getElementById('view-ads');
-        const totalPages = Math.ceil(SORTEOS.length / 8);
+        const totalPages = Math.max(1, Math.ceil(SORTEOS.length / 8));
+        const weeklyRows = obtenerFilasSemana();
+        const weeklyPages = Math.max(1, Math.ceil(weeklyRows.length / SEMANA_FILAS_POR_PAGINA));
 
         vGrid.classList.add('hidden'); 
+        vWeekly.classList.add('hidden');
         vFeat.classList.add('hidden'); 
         vAds.classList.add('hidden');
 
@@ -1200,9 +1645,20 @@
                 renderGrid();
                 vGrid.classList.remove('hidden');
             } else if (currentView === totalPages - 1) {
-                currentView = 88; 
-                renderFeatured();
-                vFeat.classList.remove('hidden');
+                currentView = 77;
+                SEMANA_PAGE = 0;
+                renderWeeklyTable();
+                vWeekly.classList.remove('hidden');
+            } else if (currentView === 77) {
+                if (SEMANA_PAGE < weeklyPages - 1) {
+                    SEMANA_PAGE++;
+                    renderWeeklyTable();
+                    vWeekly.classList.remove('hidden');
+                } else {
+                    currentView = 88;
+                    renderFeatured();
+                    vFeat.classList.remove('hidden');
+                }
             } else if (currentView === 88) {
                 currentView = 99; 
                 nextTime = renderMediaAd();
@@ -1244,6 +1700,7 @@
         
         // Inicializar datos Firebase
         inicializarDatos();
+        iniciarListenersSemana();
         
         // Intentar cargar desde Firebase en segundo plano
         setTimeout(() => {
