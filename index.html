@@ -13,10 +13,6 @@
         --anguilla-yellow: #fbbf24;
         --white: #ffffff;
         --gray-text: #475569;
-        --weekly-bg: #f8fafc;
-        --weekly-line: #dbe3ef;
-        --weekly-green: #16a34a;
-        --weekly-muted: #94a3b8;
         --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
         --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
@@ -25,58 +21,27 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     html, body {
-        background: #000;
-        height: 100%;
-        width: 100%;
-        overflow: hidden;
-        margin: 0;
-        padding: 0;
+        background: #000; height: 100%; width: 100%;
+        overflow: hidden; margin: 0; padding: 0;
     }
 
-    /* --- PANTALLA DE INICIO (SPLASH SCREEN) --- */
+    /* --- SPLASH --- */
     #splash-screen {
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background: radial-gradient(circle at 50% 50%, var(--anguilla-blue) 0%, var(--anguilla-blue-dark) 100%);
         z-index: 99999;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
         transition: opacity 1s ease-in-out, visibility 1s;
     }
-    .splash-logo {
-        height: 320px;
-        object-fit: contain;
-        animation: floating 3s ease-in-out infinite;
-        filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5));
-    }
-    .splash-text {
-        color: var(--white);
-        font-family: 'Inter', sans-serif;
-        font-size: 42px;
-        font-weight: 800;
-        margin-top: 40px;
-        letter-spacing: 2px;
-        text-shadow: 0 4px 10px rgba(0,0,0,0.4);
-    }
-    .splash-sub {
-        color: var(--anguilla-yellow);
-        font-family: 'Inter', sans-serif;
-        font-size: 24px;
-        font-weight: 700;
-        margin-top: 10px;
-        letter-spacing: 4px;
-        animation: pulse 1.5s infinite alternate;
-    }
+    .splash-logo { height: 320px; object-fit: contain; animation: floating 3s ease-in-out infinite; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5)); }
+    .splash-text { color: var(--white); font-family: 'Inter', sans-serif; font-size: 42px; font-weight: 800; margin-top: 40px; letter-spacing: 2px; text-shadow: 0 4px 10px rgba(0,0,0,0.4); }
+    .splash-sub { color: var(--anguilla-yellow); font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 700; margin-top: 10px; letter-spacing: 4px; animation: pulse 1.5s infinite alternate; }
 
     #canvas-master {
-        width: 1920px;
-        height: 1080px;
+        width: 1920px; height: 1080px;
         background: radial-gradient(circle at 50% 20%, #173b78 0%, #0b1f4b 42%, #06132f 100%);
-        position: absolute;
-        top: 50%;
-        left: 50%;
+        position: absolute; top: 50%; left: 50%;
         transform: translate(-50%, -50%);
         transform-origin: center center;
         overflow: hidden;
@@ -92,11 +57,11 @@
         position: relative; z-index: 10;
     }
     .logo-main-area img { height: 210px; object-fit: contain; padding-top: 10%; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.25)); }
-    
+
     .header-info { display: flex; align-items: center; gap: 40px; }
-    .header-clock { 
-        font-size: 61px; font-weight: 900; color: var(--white); line-height: 1; 
-        border-right: 4px solid rgba(255, 204, 0, 0.4); padding-right: 40px; 
+    .header-clock {
+        font-size: 61px; font-weight: 900; color: var(--white); line-height: 1;
+        border-right: 4px solid rgba(255, 204, 0, 0.4); padding-right: 40px;
         font-variant-numeric: tabular-nums; text-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
     .date-header { text-align: right; }
@@ -104,325 +69,136 @@
     .sub-date { font-size: 19px; font-weight: 700; color: var(--white); opacity: 0.95; letter-spacing: 0.5px; margin-top: 2px; }
 
     /* --- INDICADOR DE CONEXIÓN --- */
-    .connection-status {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        margin-left: 15px;
-        cursor: default;
-        position: relative;
-    }
-    .connection-dot {
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        display: inline-block;
-        transition: all 0.3s ease;
-        box-shadow: 0 0 12px rgba(0,0,0,0.3);
-        flex-shrink: 0;
-    }
-    .connection-dot.online {
-        background: #22c55e;
-        box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
-        animation: pulse-dot-online 2s infinite;
-    }
-    .connection-dot.offline {
-        background: #ef4444;
-        box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
-        animation: pulse-dot-offline 1s infinite;
-    }
-    .connection-dot.checking {
-        background: #f59e0b;
-        box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
-        animation: pulse-dot-checking 0.8s infinite;
-    }
-    .connection-tooltip {
-        position: absolute;
-        bottom: calc(100% + 8px);
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0,0,0,0.9);
-        color: white;
-        padding: 4px 12px;
-        border-radius: 6px;
-        font-size: 12px;
-        font-weight: 700;
-        white-space: nowrap;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.3s;
-        font-family: 'Inter', sans-serif;
-        z-index: 100;
-    }
-    .connection-status:hover .connection-tooltip {
-        opacity: 1;
-    }
+    .connection-status { display: inline-flex; align-items: center; gap: 8px; margin-left: 15px; cursor: default; position: relative; }
+    .connection-dot { width: 16px; height: 16px; border-radius: 50%; display: inline-block; transition: all 0.3s ease; box-shadow: 0 0 12px rgba(0,0,0,0.3); flex-shrink: 0; }
+    .connection-dot.online { background: #22c55e; box-shadow: 0 0 20px rgba(34, 197, 94, 0.5); animation: pulse-dot-online 2s infinite; }
+    .connection-dot.offline { background: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); animation: pulse-dot-offline 1s infinite; }
+    .connection-dot.checking { background: #f59e0b; box-shadow: 0 0 20px rgba(245, 158, 11, 0.5); animation: pulse-dot-checking 0.8s infinite; }
+    .connection-tooltip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); color: white; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.3s; font-family: 'Inter', sans-serif; z-index: 100; }
+    .connection-status:hover .connection-tooltip { opacity: 1; }
+    .offline-badge { display: none; background: #ef4444; color: white; font-size: 16px; font-weight: 800; padding: 2px 14px; border-radius: 20px; margin-left: 10px; animation: pulse 1s infinite alternate; letter-spacing: 0.5px; }
+    .offline-badge.show { display: inline-block; }
 
-    .offline-badge {
-        display: none;
-        background: #ef4444;
-        color: white;
-        font-size: 16px;
-        font-weight: 800;
-        padding: 2px 14px;
-        border-radius: 20px;
-        margin-left: 10px;
-        animation: pulse 1s infinite alternate;
-        letter-spacing: 0.5px;
-    }
-    .offline-badge.show {
-        display: inline-block;
-    }
+    @keyframes pulse-dot-online { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(0.9); } }
+    @keyframes pulse-dot-offline { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.85); } }
+    @keyframes pulse-dot-checking { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.7); } }
 
-    @keyframes pulse-dot-online {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.7; transform: scale(0.9); }
-    }
-    @keyframes pulse-dot-offline {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.5; transform: scale(0.85); }
-    }
-    @keyframes pulse-dot-checking {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.4; transform: scale(0.7); }
-    }
-
-    /* --- TICKER BAR --- */
+    /* --- TICKER --- */
     .ticker-bar {
         width: 100%; height: 54px;
         background: #090909; border-bottom: 4px solid var(--anguilla-yellow);
         overflow: hidden; display: flex; align-items: center;
         position: relative; z-index: 10; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
     }
-    .ticker-text {
-        white-space: nowrap; font-size: 26px; font-weight: 800; color: #fff;
-        animation: marquee 25s linear infinite; padding-left: 100%; letter-spacing: 0.5px;
-    }
+    .ticker-text { white-space: nowrap; font-size: 26px; font-weight: 800; color: #fff; animation: marquee 25s linear infinite; padding-left: 100%; letter-spacing: 0.5px; }
     @keyframes marquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-    /* --- CONTENEDORES CON TRANSICIÓN SUAVE --- */
-    #view-grid, #view-featured, #view-ads, #view-weekly {
-        height: 875px;
-        padding: 25px 30px;
-        position: absolute; 
-        width: 100%; 
-        top: 205px;
-        left: 0;
-        z-index: 1;
-        opacity: 1;
-        transform: scale(1) translateY(0px);
+    /* --- CONTENEDORES CON TRANSICIÓN --- */
+    #view-grid, #view-featured, #view-ads, #view-realenoche {
+        height: 875px; padding: 25px 30px;
+        position: absolute; width: 100%; top: 205px; left: 0;
+        z-index: 1; opacity: 1; transform: scale(1) translateY(0px);
         visibility: visible;
-        transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), 
+        transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1),
                     transform 0.6s cubic-bezier(0.25, 1, 0.5, 1),
                     visibility 0.6s;
     }
+    .hidden { opacity: 0 !important; transform: scale(0.98) translateY(20px) !important; visibility: hidden !important; }
 
-    .hidden { 
-        opacity: 0 !important; 
-        transform: scale(0.98) translateY(20px) !important; 
-        visibility: hidden !important;
-    }
-
-    /* --- TARJETAS --- */
-    .grid-container {
-        display: grid; grid-template-columns: repeat(4, 1fr);
-        grid-template-rows: repeat(2, 1fr); gap: 25px; height: 100%;
-    }
+    /* --- TARJETAS GRID --- */
+    .grid-container { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); gap: 25px; height: 100%; }
     .card {
         background: var(--white); border-radius: 24px; border: 1px solid rgba(255, 204, 0, 0.7);
         display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--shadow-md);
         position: relative;
     }
-    .card::before {
-        content: ''; position: absolute; top:0; left:0; right:0; height: 6px; background: var(--anguilla-yellow);
-    }
-    
+    .card::before { content: ''; position: absolute; top:0; left:0; right:0; height: 6px; background: var(--anguilla-yellow); }
     .card-header { padding: 15px 0 10px 0; display: flex; flex-direction: column; align-items: center; background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); }
     .mini-logo { height: 135px; margin-bottom: 10px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05)); }
     .time-bar { width: 85%; text-align: center; padding: 5px 0; font-size: 35px; font-weight: 900; border-radius: 50px; background: #1e293b; color: #ffcc00; box-shadow: var(--shadow-sm); }
     .card-hoy .time-bar { background: #13a705; color: white; }
     .date-tag { font-size: 16px; font-weight: 800; color: var(--gray-text); text-transform: uppercase; margin-top: 6px; letter-spacing: 0.5px; }
+    .cached-badge { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.8); color: #f59e0b; font-size: 11px; padding: 2px 10px; border-radius: 12px; font-weight: 700; letter-spacing: 0.3px; border: 1px solid rgba(245, 158, 11, 0.3); z-index: 5; }
 
-    .cached-badge {
-        position: absolute;
-        bottom: 8px;
-        right: 8px;
-        background: rgba(0,0,0,0.8);
-        color: #f59e0b;
-        font-size: 11px;
-        padding: 2px 10px;
-        border-radius: 12px;
-        font-weight: 700;
-        letter-spacing: 0.3px;
-        border: 1px solid rgba(245, 158, 11, 0.3);
-        z-index: 5;
-    }
+    /* --- BOLOS 3D --- */
+    .ball-base { border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 900; text-shadow: 0 2px 4px rgba(0,0,0,0.3); position: relative; transition: transform 0.2s ease; animation: dropIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.15) both; }
+    .ball-base:hover { transform: scale(1.03); }
 
-    /* ============================================
-       BOLOS 3D CON ANIMACIÓN DE ENTRADA (SIN FLOTACIÓN)
-    ============================================ */
-    .ball-base {
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 900;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        position: relative;
-        transition: transform 0.2s ease;
-        animation: dropIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
-        animation-fill-mode: both;
-    }
-    .ball-base:hover {
-        transform: scale(1.03);
-    }
-
-    /* BOLO AZUL (HOY) - 3D */
-    .ball-blue {
-        background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #3b82f6 30%, #2563eb 60%, #1d4ed8 85%, #1e40af 100%);
-        color: #ffffff;
-        box-shadow: 
-            inset -8px -8px 20px rgba(0,0,0,0.4),
-            inset 4px 4px 12px rgba(255,255,255,0.5),
-            0 12px 25px rgba(0,0,0,0.3),
-            0 0 0 2px rgba(255,255,255,0.1);
-        border: 2px solid rgba(255,255,255,0.15);
-        text-shadow: 0 2px 8px rgba(0,0,0,0.4);
-    }
-    /* BOLO GRIS (AYER) - 3D */
-    .ball-gray {
-        background: radial-gradient(circle at 30% 30%, #f1f5f9 0%, #e2e8f0 30%, #cbd5e1 60%, #94a3b8 85%, #64748b 100%);
-        color: #1e293b;
-        box-shadow: 
-            inset -8px -8px 20px rgba(0,0,0,0.2),
-            inset 4px 4px 12px rgba(255,255,255,0.7),
-            0 12px 25px rgba(0,0,0,0.2);
-        border: 2px solid rgba(255,255,255,0.3);
-        text-shadow: 0 1px 2px rgba(255,255,255,0.5);
-    }
-    /* BOLO PEQUEÑO (siempre azul) */
     .ball-small {
-        width: 100px; height: 100px; 
+        width: 100px; height: 100px;
         background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #3b82f6 30%, #2563eb 60%, #1d4ed8 85%, #1e40af 100%);
-        color: white;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 38px;
-        font-weight: 800;
-        box-shadow: 
-            inset -6px -6px 16px rgba(0,0,0,0.4),
-            inset 4px 4px 10px rgba(255,255,255,0.5),
-            0 8px 20px rgba(0,0,0,0.25);
+        color: white; border-radius: 50%;
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 38px; font-weight: 800;
+        box-shadow: inset -6px -6px 16px rgba(0,0,0,0.4), inset 4px 4px 10px rgba(255,255,255,0.5), 0 8px 20px rgba(0,0,0,0.25);
         border: 2px solid rgba(255,255,255,0.15);
         text-shadow: 0 2px 6px rgba(0,0,0,0.3);
         animation: dropIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
-        animation-fill-mode: both;
     }
 
-    /* BOLO PLANO (tarjetas) */
     .ball-flat {
-        width: 125px; height: 125px;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 56px;
-        font-weight: 900;
+        width: 125px; height: 125px; border-radius: 50%;
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 56px; font-weight: 900;
         border: 2px solid rgba(255,255,255,0.15);
         animation: dropIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
-        animation-fill-mode: both;
         transition: transform 0.2s;
     }
-    .ball-flat:hover {
-        transform: scale(1.05);
-    }
-    .card-hoy .ball-flat {
-        background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #3b82f6 30%, #2563eb 60%, #1d4ed8 85%, #1e40af 100%);
-        color: #ffffff;
-        box-shadow: 
-            inset -8px -8px 20px rgba(0,0,0,0.4),
-            inset 4px 4px 12px rgba(255,255,255,0.5),
-            0 12px 25px rgba(0,0,0,0.3);
-        text-shadow: 0 2px 8px rgba(0,0,0,0.4);
-    }
-    .card-ayer .ball-flat {
-        background: radial-gradient(circle at 30% 30%, #f1f5f9 0%, #e2e8f0 30%, #cbd5e1 60%, #94a3b8 85%, #64748b 100%);
-        color: #1e293b;
-        box-shadow: 
-            inset -8px -8px 20px rgba(0,0,0,0.2),
-            inset 4px 4px 12px rgba(255,255,255,0.7),
-            0 12px 25px rgba(0,0,0,0.2);
-        text-shadow: 0 1px 2px rgba(255,255,255,0.5);
-    }
+    .ball-flat:hover { transform: scale(1.05); }
+    .card-hoy .ball-flat { background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #3b82f6 30%, #2563eb 60%, #1d4ed8 85%, #1e40af 100%); color: #ffffff; box-shadow: inset -8px -8px 20px rgba(0,0,0,0.4), inset 4px 4px 12px rgba(255,255,255,0.5), 0 12px 25px rgba(0,0,0,0.3); text-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+    .card-ayer .ball-flat { background: radial-gradient(circle at 30% 30%, #f1f5f9 0%, #e2e8f0 30%, #cbd5e1 60%, #94a3b8 85%, #64748b 100%); color: #1e293b; box-shadow: inset -8px -8px 20px rgba(0,0,0,0.2), inset 4px 4px 12px rgba(255,255,255,0.7), 0 12px 25px rgba(0,0,0,0.2); text-shadow: 0 1px 2px rgba(255,255,255,0.5); }
 
-    /* BOLO GRANDE (destacado) */
     .ball-big {
-        width: 205px; height: 205px;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 100px;
-        font-weight: 900;
+        width: 205px; height: 205px; border-radius: 50%;
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 100px; font-weight: 900;
         border: 3px solid rgba(255,255,255,0.15);
         animation: dropIn 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
-        animation-fill-mode: both;
         transition: transform 0.2s;
         position: relative;
     }
-    .ball-big:hover {
-        transform: scale(1.03);
-    }
-    .ball-big.blue {
-        background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #3b82f6 30%, #2563eb 60%, #1d4ed8 85%, #1e40af 100%);
-        color: #ffffff;
-        box-shadow: 
-            inset -12px -12px 30px rgba(0,0,0,0.5),
-            inset 6px 6px 18px rgba(255,255,255,0.6),
-            0 20px 40px rgba(0,0,0,0.4);
-        text-shadow: 0 3px 10px rgba(0,0,0,0.5);
-    }
-    .ball-big.gray {
-        background: radial-gradient(circle at 30% 30%, #f1f5f9 0%, #e2e8f0 30%, #cbd5e1 60%, #94a3b8 85%, #64748b 100%);
+    .ball-big:hover { transform: scale(1.03); }
+    /* Bolo AZUL = HOY */
+    .ball-big.blue { background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #3b82f6 30%, #2563eb 60%, #1d4ed8 85%, #1e40af 100%); color: #ffffff; box-shadow: inset -12px -12px 30px rgba(0,0,0,0.5), inset 6px 6px 18px rgba(255,255,255,0.6), 0 20px 40px rgba(0,0,0,0.4); text-shadow: 0 3px 10px rgba(0,0,0,0.5); }
+    /* Bolo BLANCO = AYER (u otros días) */
+    .ball-big.white {
+        background: radial-gradient(circle at 30% 30%, #ffffff 0%, #f8fafc 40%, #e2e8f0 80%, #cbd5e1 100%);
         color: #1e293b;
-        box-shadow: 
-            inset -12px -12px 30px rgba(0,0,0,0.2),
-            inset 6px 6px 18px rgba(255,255,255,0.8),
+        border: 3px solid rgba(0,0,0,0.15);
+        box-shadow:
+            inset -12px -12px 30px rgba(0,0,0,0.15),
+            inset 6px 6px 18px rgba(255,255,255,0.9),
             0 20px 40px rgba(0,0,0,0.25);
-        text-shadow: 0 1px 3px rgba(255,255,255,0.6);
+        text-shadow: 0 1px 2px rgba(255,255,255,0.6);
+    }
+    .ball-small.white {
+        background: radial-gradient(circle at 30% 30%, #ffffff 0%, #f8fafc 40%, #e2e8f0 80%, #cbd5e1 100%);
+        color: #1e293b;
+        border: 2px solid rgba(0,0,0,0.15);
+        box-shadow:
+            inset -6px -6px 16px rgba(0,0,0,0.15),
+            inset 4px 4px 10px rgba(255,255,255,0.9),
+            0 8px 20px rgba(0,0,0,0.2);
+        text-shadow: 0 1px 2px rgba(255,255,255,0.6);
     }
 
-    /* ANIMACIÓN DE ENTRADA (SIN FLOTACIÓN) */
     @keyframes dropIn {
-        0% {
-            opacity: 0;
-            transform: scale(0.4) translateY(-60px) rotate(-10deg);
-        }
-        60% {
-            transform: scale(1.05) translateY(8px) rotate(2deg);
-        }
-        100% {
-            opacity: 1;
-            transform: scale(1) translateY(0) rotate(0deg);
-        }
+        0% { opacity: 0; transform: scale(0.4) translateY(-60px) rotate(-10deg); }
+        60% { transform: scale(1.05) translateY(8px) rotate(2deg); }
+        100% { opacity: 1; transform: scale(1) translateY(0) rotate(0deg); }
     }
 
-    /* --- DIVISIONES --- */
+    /* --- SPLIT CONTAINER --- */
     .split-container { display: flex; gap: 25px; height: 100%; width: 100%; }
     .split-main {
         width: 1190px;
-        background: linear-gradient(145deg, var(--anguilla-blue) 0%, var(--anguilla-blue-dark) 100%); 
+        background: linear-gradient(145deg, var(--anguilla-blue) 0%, var(--anguilla-blue-dark) 100%);
         border: 5px solid var(--anguilla-yellow);
-        border-radius: 32px; display: flex; flex-direction: column; align-items: center; 
+        border-radius: 32px; display: flex; flex-direction: column; align-items: center;
         justify-content: center; padding: 30px; box-shadow: var(--shadow-lg); overflow: hidden;
         position: relative;
     }
-    .side-panel { 
-        width: 730px;
-        display: flex; flex-direction: column; gap: 15px; 
-    }
+    .side-panel { width: 730px; display: flex; flex-direction: column; gap: 15px; }
     .side-row {
         background: white; border-radius: 20px; padding: 0 30px; display: flex;
         justify-content: space-between; align-items: center; border-left: 12px solid var(--anguilla-blue);
@@ -431,24 +207,32 @@
     .side-time { color: var(--anguilla-blue); font-size: 34px; font-weight: 900; }
 
     .featured-label { font-size: 26px; background: rgba(255,255,255,0.12); padding: 6px 30px; border-radius: 50px; margin-bottom: 20px; font-weight: 800; color: #fff; letter-spacing: 1px; }
-    .featured-logo-big { height: 275px; margin-bottom: 20px; filter: drop-shadow(0 12px 20px rgba(0,0,0,0.4)); }
+    .featured-logo-big { height: 275px; margin-bottom: 20px; filter: drop-shadow(0 12px 20px rgba(0,0,0,0.4)); object-fit: contain; }
     .featured-time-box { font-size: 100px; background: var(--anguilla-yellow); color: var(--anguilla-blue); padding: 4px 70px; border-radius: 24px; font-weight: 900; box-shadow: var(--shadow-md); }
-    
-    .balls-container { 
-        display: flex; justify-content: center; align-items: center; gap: 18px; padding: 15px; background: transparent; border-radius: 20px; flex-grow: 1; width: 100%; 
+
+    /* NUEVA: Fecha grande abajo del sorteo destacado */
+    .featured-date-big {
+        font-size: 30px;
+        font-weight: 800;
+        color: var(--white);
+        margin-top: 18px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        opacity: 0.95;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.4);
     }
 
+    .balls-container { display: flex; justify-content: center; align-items: center; gap: 18px; padding: 15px; background: transparent; border-radius: 20px; flex-grow: 1; width: 100%; }
+
     .ad-box { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #000; overflow: hidden; border-radius: 24px; position: relative; }
-    .ad-box img, .ad-box video { width: 100%; height: 100%; object-fit: contain; } 
+    .ad-box img, .ad-box video { width: 100%; height: 100%; object-fit: contain; }
     .ad-box iframe { width: 100%; height: 100%; border: none; }
 
     .waiting-text { color: #dc2626; font-size: 26px; font-weight: 900; text-align: center; animation: pulse 1.2s infinite alternate; width: 100%; margin: auto 0; letter-spacing: 0.5px; }
 
     .live-indicator {
-        position: absolute;
-        top: 25px; left: 25px;
-        background: #e63946;
-        color: #fff;
+        position: absolute; top: 25px; left: 25px;
+        background: #e63946; color: #fff;
         font-family: 'Inter', sans-serif;
         font-size: 24px; font-weight: 900;
         padding: 8px 24px; border-radius: 8px;
@@ -458,217 +242,25 @@
         display: inline-flex; align-items: center; gap: 8px;
     }
 
-    #preloader-cache {
-        position: absolute; width: 1px; height: 1px; opacity: 0.01; overflow: hidden; bottom: 0; left: 0; pointer-events: none;
-    }
-
-
-    /* =========================================================
-       VISTA SEMANAL - TABLA LUNES A DOMINGO
-       ========================================================= */
-    #view-weekly {
-        padding: 18px 24px 24px;
-        position: absolute;
-        width: 100%;
-        top: 205px;
-        left: 0;
-        z-index: 1;
-        opacity: 1;
-        transform: scale(1) translateY(0);
-        visibility: visible;
-        transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1),
-                    transform 0.6s cubic-bezier(0.25, 1, 0.5, 1),
-                    visibility 0.6s;
-    }
-
-    .weekly-shell {
-        height: 100%;
-        width: 100%;
-        background: var(--weekly-bg);
-        border-radius: 22px;
-        overflow: hidden;
-        box-shadow: 0 18px 45px rgba(0,0,0,.28);
-        border: 2px solid rgba(251,191,36,.75);
-        display: flex;
-        flex-direction: column;
-    }
-
-    .weekly-titlebar {
-        min-height: 76px;
-        padding: 12px 24px;
-        background: linear-gradient(135deg, #0b1f4b, #123a78);
-        color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-        border-bottom: 4px solid var(--anguilla-yellow);
-    }
-
-    .weekly-title {
-        font-size: 30px;
-        font-weight: 900;
-        letter-spacing: .8px;
-        text-transform: uppercase;
-    }
-
-    .weekly-subtitle {
-        font-size: 16px;
-        font-weight: 700;
-        opacity: .86;
-        margin-top: 3px;
-    }
-
-    .weekly-page {
-        background: rgba(251,191,36,.14);
-        color: #fff;
-        border: 1px solid rgba(251,191,36,.55);
-        border-radius: 999px;
-        padding: 9px 18px;
-        font-size: 15px;
-        font-weight: 900;
-        white-space: nowrap;
-    }
-
-    .weekly-table-wrap {
-        flex: 1;
-        min-height: 0;
-        overflow: hidden;
-        padding: 14px 16px 16px;
-    }
-
-    .weekly-table {
-        width: 100%;
-        height: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-        table-layout: fixed;
-        border: 1px solid var(--weekly-line);
-        border-radius: 14px;
-        overflow: hidden;
-        background: #fff;
-    }
-
-    .weekly-table th,
-    .weekly-table td {
-        border-right: 1px solid var(--weekly-line);
-        border-bottom: 1px solid var(--weekly-line);
-        text-align: center;
-        vertical-align: middle;
-        padding: 7px 6px;
-    }
-
-    .weekly-table th:last-child,
-    .weekly-table td:last-child { border-right: 0; }
-
-    .weekly-table tr:last-child td { border-bottom: 0; }
-
-    .weekly-table thead th {
-        height: 64px;
-        background: linear-gradient(180deg, #eef4ff 0%, #e3ecfb 100%);
-        color: #0b1f4b;
-        font-size: 18px;
-        font-weight: 900;
-        text-transform: uppercase;
-    }
-
-    .weekly-table thead th:first-child {
-        width: 125px;
-        background: #0b1f4b;
-        color: #fff;
-        font-size: 16px;
-    }
-
-    .weekly-day-date {
-        display: block;
-        color: #64748b;
-        font-size: 12px;
-        margin-top: 3px;
-        font-weight: 800;
-    }
-
-    .weekly-table td.weekly-time {
-        background: #f1f5f9;
-        color: #0b1f4b;
-        font-size: 21px;
-        font-weight: 900;
-        white-space: nowrap;
-    }
-
-    .weekly-cell {
-        height: 64px;
-        background: #fff;
-    }
-
-    .weekly-cell.has-result {
-        background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
-    }
-
-    .weekly-balls {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 7px;
-    }
-
-    .weekly-ball {
-        width: 43px;
-        height: 43px;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: radial-gradient(circle at 30% 28%, #60a5fa 0%, #2563eb 52%, #1e3a8a 100%);
-        color: #fff;
-        font-size: 20px;
-        font-weight: 900;
-        box-shadow: inset -4px -5px 9px rgba(0,0,0,.28),
-                    inset 2px 2px 5px rgba(255,255,255,.45),
-                    0 4px 9px rgba(15,23,42,.22);
-    }
-
-    .weekly-result-mark {
-        display: block;
-        color: var(--weekly-green);
-        font-size: 10px;
-        font-weight: 900;
-        margin-top: 2px;
-        letter-spacing: .4px;
-    }
-
-    .weekly-empty {
-        color: var(--weekly-muted);
-        font-size: 23px;
-        font-weight: 800;
-    }
-
-    .weekly-footer {
-        height: 34px;
-        padding: 0 18px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        color: #64748b;
-        background: #f8fafc;
-        font-size: 12px;
-        font-weight: 800;
-    }
-
-    .weekly-live-dot {
-        display: inline-block;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #22c55e;
-        margin-right: 6px;
-        box-shadow: 0 0 9px rgba(34,197,94,.55);
-    }
+    #preloader-cache { position: absolute; width: 1px; height: 1px; opacity: 0.01; overflow: hidden; bottom: 0; left: 0; pointer-events: none; }
 
     @keyframes pulse { 0% { opacity: 0.4; } 100% { opacity: 1; } }
     @keyframes floating {
         0% { transform: translateY(0px); }
         50% { transform: translateY(-15px); }
         100% { transform: translateY(0px); }
+    }
+
+    /* ============================================
+       REAL NOCHE — MISMO ESTILO ANGUILLA
+       HOY  → bolos azules
+       AYER → bolos blancos
+       ============================================ */
+    .reallogo-main {
+        height: 275px;
+        margin-bottom: 20px;
+        filter: drop-shadow(0 12px 20px rgba(0,0,0,0.4));
+        object-fit: contain;
     }
 </style>
 </head>
@@ -707,38 +299,29 @@
         <div class="grid-container" id="mainGrid"></div>
     </div>
 
-
-    <div id="view-weekly" class="hidden">
-        <div class="weekly-shell">
-            <div class="weekly-titlebar">
-                <div>
-                    <div class="weekly-title">📊 Resultados de la semana</div>
-                    <div class="weekly-subtitle" id="weeklySubtitle">LUNES A DOMINGO</div>
-                </div>
-                <div class="weekly-page" id="weeklyPageIndicator">PÁGINA 1/1</div>
-            </div>
-            <div class="weekly-table-wrap">
-                <table class="weekly-table">
-                    <thead id="weeklyTableHead"></thead>
-                    <tbody id="weeklyTableBody"></tbody>
-                </table>
-            </div>
-            <div class="weekly-footer">
-                <div><span class="weekly-live-dot"></span>Resultados actualizados automáticamente</div>
-                <div id="weeklyFooterText">ANGUILLA LOTTERY</div>
-            </div>
-        </div>
-    </div>
-
     <div id="view-featured" class="hidden">
         <div class="split-container">
             <div class="split-main">
                 <div class="featured-label">ÚLTIMO SORTEO REALIZADO</div>
-                <img src="anguilla.png" class="featured-logo-big">
+                <img src="anguilla.png" class="featured-logo-big" alt="Anguilla">
                 <div class="featured-time-box" id="fTime">--:--</div>
                 <div class="balls-container" style="background:transparent; margin-top:20px;" id="fBalls"></div>
+                <div class="featured-date-big" id="fDate">--</div>
             </div>
             <div class="side-panel" id="sidePanelFeatured"></div>
+        </div>
+    </div>
+
+    <div id="view-realenoche" class="hidden">
+        <div class="split-container">
+            <div class="split-main">
+                <div class="featured-label">🌙 REAL NOCHE · ÚLTIMO SORTEO</div>
+                <img src="logoreal.png" class="reallogo-main" alt="Real Noche" onerror="this.src='anguilla.png'">
+                <div class="featured-time-box" id="realTime">--:--</div>
+                <div class="balls-container" style="background:transparent; margin-top:20px;" id="realBalls"></div>
+                <div class="featured-date-big" id="realDate">--</div>
+            </div>
+            <div class="side-panel" id="sidePanelReal"></div>
         </div>
     </div>
 
@@ -761,214 +344,199 @@
     const database = firebase.database();
 
     let SORTEOS = [];
-    let RESULTADOS_SEMANA = {};
-    let SEMANA_FECHAS = [];
-    let SEMANA_KEY = '';
-    let SEMANA_PAGE = 0;
-    const SEMANA_FILAS_POR_PAGINA = 10;
-    let SEMANA_LISTENERS = [];
+    let REAL_NOCHE_SORTEOS = [];
     let ANUNCIOS = [];
-    let currentView = 0; 
+    let currentView = 0;
     let gridPage = 0;
     let adIndex = 0;
     let rotationInterval = null;
     let enTransmisionVivo = false;
-    let sistemaIniciado = false; 
+    let sistemaIniciado = false;
     let tiempoRotacionGlobal = 15000;
     let usandoCache = false;
     let isOnline = true;
 
     // ============================================
-    // FUNCIONES DE CACHE (localStorage)
+    // CACHE
     // ============================================
     function guardarEnCache(clave, datos) {
-        try {
-            localStorage.setItem(`anguilla_${clave}`, JSON.stringify({
-                data: datos,
-                timestamp: Date.now()
-            }));
-        } catch (e) {
-            console.warn('No se pudo guardar en cache:', e);
-        }
+        try { localStorage.setItem(`anguilla_${clave}`, JSON.stringify({ data: datos, timestamp: Date.now() })); }
+        catch (e) { console.warn('No se pudo guardar en cache:', e); }
     }
-
     function obtenerDeCache(clave) {
         try {
             const item = localStorage.getItem(`anguilla_${clave}`);
             if (!item) return null;
             return JSON.parse(item);
-        } catch (e) {
-            console.warn('No se pudo leer cache:', e);
-            return null;
-        }
+        } catch (e) { return null; }
     }
-
     function cargarDesdeCache() {
-        console.log('📦 Cargando datos desde caché...');
         usandoCache = true;
         let datosCargados = false;
-        
         const sorteosCache = obtenerDeCache('sorteos');
-        if (sorteosCache && sorteosCache.data && sorteosCache.data.length > 0) {
-            SORTEOS = sorteosCache.data;
-            datosCargados = true;
-            console.log('✅ Sorteos cargados desde caché:', SORTEOS.length);
-        }
-
-        const semanaCache = obtenerDeCache('semanaResultados');
-        if (semanaCache && semanaCache.data && semanaCache.data.fechas && semanaCache.data.resultados) {
-            SEMANA_FECHAS = semanaCache.data.fechas;
-            SEMANA_KEY = SEMANA_FECHAS.join('|');
-            RESULTADOS_SEMANA = semanaCache.data.resultados;
-            datosCargados = true;
-        }
-
+        if (sorteosCache?.data?.length) { SORTEOS = sorteosCache.data; datosCargados = true; }
+        const realCache = obtenerDeCache('realNoche');
+        if (realCache?.data?.length) { REAL_NOCHE_SORTEOS = realCache.data; datosCargados = true; }
         const anunciosCache = obtenerDeCache('anuncios');
-        if (anunciosCache && anunciosCache.data && anunciosCache.data.length > 0) {
-            ANUNCIOS = anunciosCache.data.filter(ad => ad.activo !== false);
-            datosCargados = true;
-            console.log('✅ Anuncios cargados desde caché:', ANUNCIOS.length);
-        }
-
+        if (anunciosCache?.data?.length) { ANUNCIOS = anunciosCache.data.filter(ad => ad.activo !== false); datosCargados = true; }
         const tickerCache = obtenerDeCache('ticker');
-        if (tickerCache && tickerCache.data) {
-            document.getElementById('marqueeText').innerText = tickerCache.data;
-        }
-
+        if (tickerCache?.data) document.getElementById('marqueeText').innerText = tickerCache.data;
         const tiempoCache = obtenerDeCache('tiempoRotacion');
-        if (tiempoCache && tiempoCache.data) {
-            tiempoRotacionGlobal = tiempoCache.data;
-        }
+        if (tiempoCache?.data) tiempoRotacionGlobal = tiempoCache.data;
 
         if (datosCargados && sistemaIniciado && !enTransmisionVivo) {
             renderGrid();
-            if (currentView === 77) renderWeeklyTable();
             if (currentView === 88) renderFeatured();
-            if (!rotationInterval) {
-                rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
-            }
-        } else if (sistemaIniciado) {
-            const grid = document.getElementById('mainGrid');
-            grid.innerHTML = `<div style="grid-column:1/-1; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-size:32px; font-weight:800; gap:20px;">
-                <span>📡 SIN DATOS DISPONIBLES</span>
-                <span style="font-size:20px; font-weight:400; opacity:0.7;">Esperando conexión a internet...</span>
-            </div>`;
+            if (currentView === 111) renderRealNoche();
+            if (!rotationInterval) rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
         }
     }
 
     // ============================================
-    // INDICADOR DE CONEXIÓN
+    // CONEXIÓN
     // ============================================
     function actualizarIndicadorConexion(estado, mensaje) {
         const dot = document.getElementById('connectionDot');
         const tooltip = document.getElementById('connectionTooltip');
         const badge = document.getElementById('offlineBadge');
-        
         dot.className = 'connection-dot';
-        
-        if (estado === 'online') {
-            dot.classList.add('online');
-            tooltip.textContent = mensaje || '✅ Conectado';
-            badge.classList.remove('show');
-            isOnline = true;
-        } else if (estado === 'offline') {
-            dot.classList.add('offline');
-            tooltip.textContent = mensaje || '❌ Sin conexión';
-            badge.classList.add('show');
-            isOnline = false;
-            usandoCache = true;
-        } else {
-            dot.classList.add('checking');
-            tooltip.textContent = mensaje || '⏳ Verificando...';
-        }
+        if (estado === 'online') { dot.classList.add('online'); tooltip.textContent = mensaje || '✅ Conectado'; badge.classList.remove('show'); isOnline = true; }
+        else if (estado === 'offline') { dot.classList.add('offline'); tooltip.textContent = mensaje || '❌ Sin conexión'; badge.classList.add('show'); isOnline = false; usandoCache = true; }
+        else { dot.classList.add('checking'); tooltip.textContent = mensaje || '⏳ Verificando...'; }
     }
-
     function verificarConexion() {
         actualizarIndicadorConexion('checking', '⏳ Verificando conexión...');
-        
-        const connectedRef = database.ref('.info/connected');
-        connectedRef.once('value', (snap) => {
-            const connected = snap.val();
-            if (connected) {
+        database.ref('.info/connected').once('value', (snap) => {
+            if (snap.val()) {
                 actualizarIndicadorConexion('online', '✅ Conectado a Firebase');
                 isOnline = true;
-                if (usandoCache) {
-                    usandoCache = false;
-                    cargarDatosFirebase();
-                }
+                if (usandoCache) { usandoCache = false; cargarDatosFirebase(); }
             } else {
                 actualizarIndicadorConexion('offline', '❌ Sin conexión a Firebase');
-                isOnline = false;
-                cargarDesdeCache();
+                isOnline = false; cargarDesdeCache();
             }
         }).catch(() => {
-            fetch('https://www.google.com/favicon.ico', { 
-                mode: 'no-cors',
-                cache: 'no-cache',
-                timeout: 5000
-            })
-            .then(() => {
-                actualizarIndicadorConexion('online', '✅ Conectado a internet');
-                isOnline = true;
-            })
-            .catch(() => {
-                actualizarIndicadorConexion('offline', '❌ Sin conexión a internet');
-                isOnline = false;
-                cargarDesdeCache();
-            });
+            fetch('https://www.google.com/favicon.ico', { mode: 'no-cors', cache: 'no-cache' })
+                .then(() => { actualizarIndicadorConexion('online', '✅ Conectado a internet'); isOnline = true; })
+                .catch(() => { actualizarIndicadorConexion('offline', '❌ Sin conexión a internet'); isOnline = false; cargarDesdeCache(); });
         });
     }
-
     function monitorearConexion() {
-        const connectedRef = database.ref('.info/connected');
-        connectedRef.on('value', (snap) => {
-            const connected = snap.val();
-            if (connected) {
+        database.ref('.info/connected').on('value', (snap) => {
+            if (snap.val()) {
                 actualizarIndicadorConexion('online', '✅ Conectado a Firebase');
                 isOnline = true;
-                if (usandoCache) {
-                    usandoCache = false;
-                    cargarDatosFirebase();
-                }
+                if (usandoCache) { usandoCache = false; cargarDatosFirebase(); }
             } else {
                 actualizarIndicadorConexion('offline', '❌ Sin conexión a Firebase');
-                isOnline = false;
-                cargarDesdeCache();
+                isOnline = false; cargarDesdeCache();
             }
         });
     }
 
     // ============================================
-    // FUNCIÓN PARA ORDENAR SORTEOS CRONOLÓGICAMENTE
+    // HELPERS
     // ============================================
-    function ordenarSorteosCronologicamente(sorteos) {
-        const hoy = sorteos.filter(s => s.day === 'hoy');
-        const ayer = sorteos.filter(s => s.day === 'ayer');
-        
-        const ordenarPorHora = (arr) => {
-            return arr.sort((a, b) => convertirHoraAminutos(a.hour) - convertirHoraAminutos(b.hour));
-        };
-        
-        return [...ordenarPorHora(hoy), ...ordenarPorHora(ayer)];
-    }
-
     function convertirHoraAminutos(horaStr) {
-        const match = horaStr.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/);
+        if (!horaStr) return 0;
+        const match = horaStr.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
         if (!match) return 0;
         let h = parseInt(match[1]);
         const m = parseInt(match[2]);
-        const ampm = match[3];
+        const ampm = match[3].toUpperCase();
         if (ampm === 'PM' && h !== 12) h += 12;
         if (ampm === 'AM' && h === 12) h = 0;
         return h * 60 + m;
     }
+    function ordenarSorteosCronologicamente(sorteos) {
+        const hoy = sorteos.filter(s => s.day === 'hoy');
+        const ayer = sorteos.filter(s => s.day === 'ayer');
+        const ordenarPorHora = (arr) => arr.sort((a, b) => convertirHoraAminutos(a.hour) - convertirHoraAminutos(b.hour));
+        return [...ordenarPorHora(hoy), ...ordenarPorHora(ayer)];
+    }
+    function getFormatDate(offsetDays = 0) {
+        const d = new Date();
+        d.setDate(d.getDate() - offsetDays);
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+    // Formato legible: "JUEVES 10 SEPTIEMBRE 2026"
+    function formatearFechaLarga(isoOrOffset) {
+        let d;
+        if (typeof isoOrOffset === 'number') {
+            d = new Date();
+            d.setDate(d.getDate() - isoOrOffset);
+        } else if (typeof isoOrOffset === 'string' && isoOrOffset.includes('-')) {
+            d = new Date(isoOrOffset + 'T12:00:00');
+        } else {
+            d = new Date();
+        }
+        const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO'];
+        const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+        return `${dias[d.getDay()]} ${d.getDate()} ${meses[d.getMonth()]} ${d.getFullYear()}`;
+    }
+    function esVideoDirecto(url) {
+        if (!url) return false;
+        return url.includes('github.com') || url.includes('raw.githubusercontent') || /\.(mp4|webm|ogg|mov)$/i.test(url);
+    }
+    function esImagen(url) {
+        if (!url) return false;
+        return /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)$/i.test(url);
+    }
+    function convertirLinkGitHub(url) {
+        if (!url) return url;
+        url = url.trim();
+        if (url.includes('raw.githubusercontent.com')) return url;
+        if (url.includes('github.com') && url.includes('/blob/')) return url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
+        if (url.includes('github.com') && url.includes('?raw=true')) return url.replace('github.com', 'raw.githubusercontent.com');
+        if (url.includes('github.com') && !url.includes('raw.githubusercontent.com')) {
+            const match = url.match(/github\.com\/([^\/]+\/[^\/]+\/blob\/[^?]+)/);
+            if (match) return 'https://raw.githubusercontent.com/' + match[1].replace('/blob/', '/');
+        }
+        return url;
+    }
 
     // ============================================
-    // CARGAR DATOS DESDE FIREBASE
+    // CARGA DE DATOS
     // ============================================
+    function procesarSorteosData(dataHoy, dataAyer) {
+        let finalSorteos = [];
+        const ahora = new Date();
+        const horaAct = { hrs: ahora.getHours(), mins: ahora.getMinutes() };
+        if (!dataHoy || dataHoy.length === 0) return finalSorteos;
+
+        dataHoy.forEach((sHoy, index) => {
+            if (!sHoy) return;
+            let [h, mP] = sHoy.hora.split(":");
+            let mSor = parseInt(mP.substring(0, 2));
+            let ampm = mP.substring(2).trim();
+            let hSor = parseInt(h);
+            if (ampm === "PM" && hSor !== 12) hSor += 12;
+            if (ampm === "AM" && hSor === 12) hSor = 0;
+
+            const tieneHoy = sHoy.premios && sHoy.premios[0] !== "" && sHoy.premios[0] !== undefined && sHoy.premios[0] !== null;
+            const yaPasoHora = (horaAct.hrs > hSor || (horaAct.hrs === hSor && horaAct.mins >= mSor + 5));
+
+            let sorteoFinal = { hour: sHoy.hora.replace(/(AM|PM)/, ' $1'), key: index };
+
+            if (tieneHoy) {
+                sorteoFinal.day = "hoy"; sorteoFinal.date = "HOY";
+                sorteoFinal.nums = [sHoy.premios[0], sHoy.premios[1], sHoy.premios[2]];
+                sorteoFinal.isWaiting = false;
+            } else if (yaPasoHora) {
+                sorteoFinal.day = "hoy"; sorteoFinal.date = "HOY";
+                sorteoFinal.nums = null; sorteoFinal.isWaiting = true;
+            } else {
+                const sAyer = dataAyer && dataAyer[index] ? dataAyer[index] : null;
+                sorteoFinal.day = "ayer"; sorteoFinal.date = "AYER";
+                sorteoFinal.nums = (sAyer?.premios?.[0] !== "" && sAyer?.premios?.[0] != null) ? [sAyer.premios[0], sAyer.premios[1], sAyer.premios[2]] : null;
+                sorteoFinal.isWaiting = false;
+            }
+            finalSorteos.push(sorteoFinal);
+        });
+        return finalSorteos;
+    }
+
     function cargarDatosFirebase() {
-        console.log('🔄 Cargando datos desde Firebase...');
-        iniciarListenersSemana();
         const hoyStr = getFormatDate(0);
         const ayerStr = getFormatDate(1);
 
@@ -983,46 +551,28 @@
             database.ref(`sorteos/${ayerStr}`).once('value', snapAyer => {
                 const dataAyer = snapAyer.val() || [];
                 const procesados = procesarSorteosData(dataHoy, dataAyer);
-                if (procesados && procesados.length > 0) {
+                if (procesados?.length) {
                     SORTEOS = ordenarSorteosCronologicamente(procesados);
                     guardarEnCache('sorteos', SORTEOS);
-                    console.log('✅ Sorteos actualizados desde Firebase:', SORTEOS.length);
                     if (sistemaIniciado && !enTransmisionVivo) {
                         renderGrid();
                         if (currentView === 88) renderFeatured();
                     }
-                } else if (SORTEOS.length === 0) {
-                    const grid = document.getElementById('mainGrid');
-                    grid.innerHTML = `<div style="grid-column:1/-1; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-size:32px; font-weight:800; gap:20px;">
-                        <span>📡 ESPERANDO DATOS</span>
-                        <span style="font-size:20px; font-weight:400; opacity:0.7;">No hay sorteos disponibles aún</span>
-                    </div>`;
                 }
             });
         });
 
         database.ref('anunciosList').once('value', snap => {
             const anuncios = [];
-            if(snap.exists()) {
-                snap.forEach(child => {
-                    let item = child.val();
-                    if (item && item.activo !== false && item.url && item.url.trim() !== "") {
-                        anuncios.push(item);
-                    }
-                });
-            }
-            if (anuncios.length > 0) {
-                ANUNCIOS = anuncios;
-                guardarEnCache('anuncios', ANUNCIOS);
-                console.log('✅ Anuncios actualizados desde Firebase:', ANUNCIOS.length);
-                if (adIndex >= ANUNCIOS.length) {
-                    adIndex = 0;
-                }
-            }
+            if (snap.exists()) snap.forEach(child => {
+                let item = child.val();
+                if (item?.activo !== false && item?.url?.trim()) anuncios.push(item);
+            });
+            if (anuncios.length) { ANUNCIOS = anuncios; guardarEnCache('anuncios', ANUNCIOS); }
         });
 
         database.ref('configuracion/tiempoPantalla').once('value', snap => {
-            if(snap.val()) {
+            if (snap.val()) {
                 tiempoRotacionGlobal = parseInt(snap.val()) * 1000;
                 guardarEnCache('tiempoRotacion', tiempoRotacionGlobal);
                 if (rotationInterval && !enTransmisionVivo) {
@@ -1033,308 +583,100 @@
         });
     }
 
-    function procesarSorteosData(dataHoy, dataAyer) {
-        let finalSorteos = [];
-        const ahora = new Date();
-        const horaAct = { hrs: ahora.getHours(), mins: ahora.getMinutes() };
-
-        if (!dataHoy || dataHoy.length === 0) {
-            return finalSorteos;
+    // ============================================
+    // REAL NOCHE — desde sorteos_enloteria/resultados
+    // ============================================
+    function procesarRealNoche(data) {
+        const arr = [];
+        if (!data) return arr;
+        const items = Array.isArray(data) ? data : Object.values(data);
+        for (const s of items) {
+            if (!s) continue;
+            const nombre = (s.nombre || '').toLowerCase();
+            if (!nombre.includes('real noche') && !nombre.includes('real_noche')) continue;
+            if (!s.numeros || !Array.isArray(s.numeros) || s.numeros.length < 3) continue;
+            if (!s.numeros[0] || s.numeros[0] === "") continue;
+            arr.push({
+                nombre: s.nombre,
+                hora: (s.hora || '').replace(/(AM|PM)/i, ' $1').trim(),
+                fechaRD: s.fechaRD || '',
+                fecha: s.fecha || '',
+                numeros: [s.numeros[0], s.numeros[1], s.numeros[2]],
+                enviadoEn: s.enviadoEn || '',
+                timestamp: s.enviadoEn ? new Date(s.enviadoEn).getTime() : 0
+            });
         }
-
-        dataHoy.forEach((sHoy, index) => {
-            if(!sHoy) return;
-            
-            let [h, mP] = sHoy.hora.split(":");
-            let mSor = parseInt(mP.substring(0, 2));
-            let ampm = mP.substring(2).trim();
-            let hSor = parseInt(h);
-            if (ampm === "PM" && hSor !== 12) hSor += 12;
-            if (ampm === "AM" && hSor === 12) hSor = 0;
-
-            const tieneHoy = sHoy.premios && sHoy.premios[0] !== "" && sHoy.premios[0] !== undefined;
-            const yaPasoHora = (horaAct.hrs > hSor || (horaAct.hrs === hSor && horaAct.mins >= mSor + 5));
-
-            let sorteoFinal = {
-                hour: sHoy.hora.replace(/(AM|PM)/, ' $1'),
-                key: index
-            };
-
-            if (tieneHoy) {
-                sorteoFinal.day = "hoy";
-                sorteoFinal.date = "HOY";
-                sorteoFinal.nums = [sHoy.premios[0], sHoy.premios[1], sHoy.premios[2]];
-                sorteoFinal.isWaiting = false;
-            } else if (yaPasoHora) {
-                sorteoFinal.day = "hoy";
-                sorteoFinal.date = "HOY";
-                sorteoFinal.nums = null;
-                sorteoFinal.isWaiting = true;
-            } else {
-                const sAyer = dataAyer && dataAyer[index] ? dataAyer[index] : null;
-                sorteoFinal.day = "ayer";
-                sorteoFinal.date = "AYER";
-                sorteoFinal.nums = (sAyer && sAyer.premios && sAyer.premios[0] !== "") ? [sAyer.premios[0], sAyer.premios[1], sAyer.premios[2]] : null;
-                sorteoFinal.isWaiting = false;
-            }
-            finalSorteos.push(sorteoFinal);
-        });
-
-        return finalSorteos;
+        arr.sort((a, b) => b.timestamp - a.timestamp);
+        return arr;
     }
 
+    function renderRealNoche() {
+        const timeEl = document.getElementById('realTime');
+        const ballsEl = document.getElementById('realBalls');
+        const sidePanel = document.getElementById('sidePanelReal');
+        const dateEl = document.getElementById('realDate');
 
-    // =========================================================
-    // RESULTADOS DE LA SEMANA (LUNES A DOMINGO)
-    // =========================================================
-    function getFechaISO(d) {
-        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    }
-
-    function obtenerFechasSemana() {
-        const hoy = new Date();
-        hoy.setHours(0, 0, 0, 0);
-        const dia = hoy.getDay(); // 0 domingo, 1 lunes...
-        const diferencia = dia === 0 ? -6 : 1 - dia;
-        const lunes = new Date(hoy);
-        lunes.setDate(hoy.getDate() + diferencia);
-
-        return Array.from({ length: 7 }, (_, i) => {
-            const d = new Date(lunes);
-            d.setDate(lunes.getDate() + i);
-            return getFechaISO(d);
-        });
-    }
-
-    function formatearFechaCorta(iso) {
-        const [y, m, d] = iso.split('-');
-        return `${d}/${m}`;
-    }
-
-    function nombreDiaDesdeISO(iso) {
-        const d = new Date(`${iso}T12:00:00`);
-        const dias = ['DOMINGO','LUNES','MARTES','MIÉRCOLES','JUEVES','VIERNES','SÁBADO'];
-        return dias[d.getDay()];
-    }
-
-    function normalizarHoraSorteo(hora) {
-        if (!hora) return '';
-        return String(hora).replace(/\s+/g, ' ').replace(/(AM|PM)/i, ' $1').trim().toUpperCase();
-    }
-
-    function iniciarListenersSemana() {
-        const fechas = obtenerFechasSemana();
-        const nuevaKey = fechas.join('|');
-
-        if (nuevaKey === SEMANA_KEY && SEMANA_LISTENERS.length === 7) {
+        if (!REAL_NOCHE_SORTEOS.length) {
+            timeEl.innerText = '--:--';
+            dateEl.innerText = '--';
+            ballsEl.innerHTML = '<div class="waiting-text">ESPERANDO SORTEO DE REAL NOCHE...</div>';
+            sidePanel.innerHTML = '<div class="waiting-text">NO HAY SORTEOS REGISTRADOS</div>';
             return;
         }
 
-        SEMANA_LISTENERS.forEach(item => {
-            try { item.ref.off('value', item.callback); } catch (e) {}
-        });
-        SEMANA_LISTENERS = [];
+        const last = REAL_NOCHE_SORTEOS[0];
+        const hoy = getFormatDate(0);
+        const esHoy = last.fechaRD === hoy;
 
-        SEMANA_FECHAS = fechas;
-        SEMANA_KEY = nuevaKey;
-        SEMANA_PAGE = 0;
-        RESULTADOS_SEMANA = {};
+        timeEl.innerText = last.hora || '--:--';
 
-        fechas.forEach(fecha => {
-            const ref = database.ref(`sorteos/${fecha}`);
-            const callback = snap => {
-                RESULTADOS_SEMANA[fecha] = snap.val() || [];
-                guardarEnCache('semanaResultados', {
-                    fechas: SEMANA_FECHAS,
-                    resultados: RESULTADOS_SEMANA
-                });
+        // Fecha grande abajo del sorteo principal
+        if (last.fechaRD && last.fechaRD.includes('-')) {
+            dateEl.innerText = formatearFechaLarga(last.fechaRD);
+        } else {
+            dateEl.innerText = last.fecha || '--';
+        }
 
-                if (sistemaIniciado && !enTransmisionVivo && currentView === 77) {
-                    const totalPaginas = obtenerFilasSemana().length
-                        ? Math.ceil(obtenerFilasSemana().length / SEMANA_FILAS_POR_PAGINA)
-                        : 1;
-                    if (SEMANA_PAGE >= totalPaginas) SEMANA_PAGE = 0;
-                    renderWeeklyTable();
+        // HOY → bolos AZULES | AYER/otro → bolos BLANCOS
+        const ballClass = esHoy ? 'blue' : 'white';
+        ballsEl.innerHTML = last.numeros.map((n, i) =>
+            `<div class="ball-big ${ballClass}" style="animation-delay: ${i * 0.2}s">${n}</div>`
+        ).join('');
+
+        const historial = REAL_NOCHE_SORTEOS.slice(1, 6);
+        if (!historial.length) {
+            sidePanel.innerHTML = '<div class="waiting-text" style="color:white;">SOLO HAY UN SORTEO REGISTRADO</div>';
+        } else {
+            sidePanel.innerHTML = historial.map((s, idx) => {
+                let label = s.fecha || '';
+                if (s.fechaRD === hoy) label = 'HOY';
+                else if (s.fechaRD === getFormatDate(1)) label = 'AYER';
+                else if (s.fechaRD) {
+                    const [y, m, d] = s.fechaRD.split('-');
+                    label = `${d}/${m}/${y}`;
                 }
-            };
-            ref.on('value', callback);
-            SEMANA_LISTENERS.push({ ref, callback });
-        });
-
-        setTimeout(iniciarListenersSemana, 60 * 1000);
-        renderWeeklyTable();
-    }
-
-    function obtenerMapaSorteosSemana() {
-        const mapa = {};
-
-        SEMANA_FECHAS.forEach(fecha => {
-            mapa[fecha] = {};
-            const data = RESULTADOS_SEMANA[fecha] || [];
-
-            if (Array.isArray(data)) {
-                data.forEach(s => {
-                    if (!s || !s.hora) return;
-                    mapa[fecha][normalizarHoraSorteo(s.hora)] = s;
-                });
-            } else if (data && typeof data === 'object') {
-                Object.values(data).forEach(s => {
-                    if (!s || !s.hora) return;
-                    mapa[fecha][normalizarHoraSorteo(s.hora)] = s;
-                });
-            }
-        });
-
-        return mapa;
-    }
-
-    function obtenerFilasSemana() {
-        const mapa = obtenerMapaSorteosSemana();
-        const horas = new Set();
-
-        SEMANA_FECHAS.forEach(fecha => {
-            Object.keys(mapa[fecha] || {}).forEach(hora => horas.add(hora));
-        });
-
-        return [...horas].sort((a, b) => convertirHoraAminutos(a) - convertirHoraAminutos(b));
-    }
-
-    function renderWeeklyTable() {
-        const head = document.getElementById('weeklyTableHead');
-        const body = document.getElementById('weeklyTableBody');
-        const subtitle = document.getElementById('weeklySubtitle');
-        const indicator = document.getElementById('weeklyPageIndicator');
-        const footer = document.getElementById('weeklyFooterText');
-
-        if (!head || !body) return;
-
-        if (!SEMANA_FECHAS.length) {
-            SEMANA_FECHAS = obtenerFechasSemana();
+                const smallClass = s.fechaRD === hoy ? '' : 'white';
+                return `
+                    <div class="side-row">
+                        <div class="side-time">
+                            ${s.hora}
+                            <small style="font-size:18px; display:block; color:#64748b; font-weight:700; margin-top:2px;">${label}</small>
+                        </div>
+                        <div style="display:flex; gap:10px;">
+                            <div class="ball-small ${smallClass}" style="animation-delay: ${idx * 0.1}s">${s.numeros[0]}</div>
+                            <div class="ball-small ${smallClass}" style="animation-delay: ${idx * 0.1 + 0.15}s">${s.numeros[1]}</div>
+                            <div class="ball-small ${smallClass}" style="animation-delay: ${idx * 0.1 + 0.30}s">${s.numeros[2]}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
-
-        const nombres = SEMANA_FECHAS.map(nombreDiaDesdeISO);
-        const mapa = obtenerMapaSorteosSemana();
-        const todasLasHoras = obtenerFilasSemana();
-
-        const totalPaginas = Math.max(1, Math.ceil(todasLasHoras.length / SEMANA_FILAS_POR_PAGINA));
-        if (SEMANA_PAGE >= totalPaginas) SEMANA_PAGE = 0;
-
-        const inicio = SEMANA_PAGE * SEMANA_FILAS_POR_PAGINA;
-        const horas = todasLasHoras.slice(inicio, inicio + SEMANA_FILAS_POR_PAGINA);
-
-        const primera = SEMANA_FECHAS[0] || '';
-        const ultima = SEMANA_FECHAS[6] || '';
-        subtitle.textContent = `${formatearFechaCorta(primera)} — ${formatearFechaCorta(ultima)} · ${nombres[0]} A ${nombres[6]}`;
-        indicator.textContent = `PÁGINA ${SEMANA_PAGE + 1}/${totalPaginas}`;
-        footer.textContent = `MOSTRANDO ${horas.length} DE ${todasLasHoras.length} HORARIOS`;
-
-        head.innerHTML = `
-            <tr>
-                <th>HORA</th>
-                ${SEMANA_FECHAS.map((fecha, i) => `
-                    <th>${nombres[i]}<span class="weekly-day-date">${formatearFechaCorta(fecha)}</span></th>
-                `).join('')}
-            </tr>
-        `;
-
-        if (!horas.length) {
-            body.innerHTML = `
-                <tr>
-                    <td colspan="8" class="weekly-cell">
-                        <div class="weekly-empty">NO HAY RESULTADOS REGISTRADOS ESTA SEMANA</div>
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-
-        body.innerHTML = horas.map(hora => `
-            <tr>
-                <td class="weekly-time">${hora}</td>
-                ${SEMANA_FECHAS.map(fecha => {
-                    const sorteo = mapa[fecha]?.[hora];
-                    const premios = sorteo?.premios;
-                    const tieneResultado = premios && premios[0] !== '' && premios[0] !== undefined;
-
-                    if (!tieneResultado) {
-                        return `<td class="weekly-cell"><div class="weekly-empty">—</div></td>`;
-                    }
-
-                    return `
-                        <td class="weekly-cell has-result">
-                            <div class="weekly-balls">
-                                <span class="weekly-ball">${premios[0]}</span>
-                                <span class="weekly-ball">${premios[1] ?? '--'}</span>
-                                <span class="weekly-ball">${premios[2] ?? '--'}</span>
-                            </div>
-                            <span class="weekly-result-mark">RESULTADO</span>
-                        </td>
-                    `;
-                }).join('')}
-            </tr>
-        `).join('');
     }
 
     // ============================================
-    // FUNCIONES PRINCIPALES
+    // INICIALIZACIÓN DE DATOS
     // ============================================
-    function dimensionarPantalla() {
-        const baseWidth = 1920;
-        const baseHeight = 1080;
-        const windowWidth = window.innerWidth;
-        const windowHeight = window.innerHeight;
-        
-        const scaleX = windowWidth / baseWidth;
-        const scaleY = windowHeight / baseHeight;
-        const elScale = Math.min(scaleX, scaleY);
-
-        document.getElementById('canvas-master').style.transform = `translate(-50%, -50%) scale(${elScale})`;
-    }
-    
-    window.addEventListener('resize', dimensionarPantalla);
-
-    function getFormatDate(offsetDays = 0) {
-        const d = new Date();
-        d.setDate(d.getDate() - offsetDays);
-        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    }
-
-    function esVideoDirecto(url) {
-        if (!url) return false;
-        return url.includes('github.com') || url.includes('raw.githubusercontent') || /\.(mp4|webm|ogg|mov)$/i.test(url);
-    }
-
-    function esImagen(url) {
-        if (!url) return false;
-        return /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)$/i.test(url);
-    }
-
-    function convertirLinkGitHub(url) {
-        if (!url) return url;
-        url = url.trim();
-        
-        if (url.includes('raw.githubusercontent.com')) return url;
-        
-        if (url.includes('github.com') && url.includes('/blob/')) {
-            return url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
-        }
-        
-        if (url.includes('github.com') && url.includes('?raw=true')) {
-            return url.replace('github.com', 'raw.githubusercontent.com');
-        }
-        
-        if (url.includes('github.com') && !url.includes('raw.githubusercontent.com')) {
-            const match = url.match(/github\.com\/([^\/]+\/[^\/]+\/blob\/[^?]+)/);
-            if (match) {
-                return 'https://raw.githubusercontent.com/' + match[1].replace('/blob/', '/');
-            }
-        }
-        
-        return url;
-    }
-
     function inicializarDatos() {
-        // Escuchar cambios en tiempo real
         database.ref('ticker').on('value', snap => {
             const texto = snap.val() || "BIENVENIDOS A ANGUILLA LOTTERY";
             document.getElementById('marqueeText').innerText = texto;
@@ -1342,42 +684,29 @@
         });
 
         database.ref('configuracion/tiempoPantalla').on('value', snap => {
-            if(snap.val()) {
+            if (snap.val()) {
                 tiempoRotacionGlobal = parseInt(snap.val()) * 1000;
                 guardarEnCache('tiempoRotacion', tiempoRotacionGlobal);
             }
         });
 
-        // ANUNCIOS: Solo activos en tiempo real
         database.ref('anunciosList').on('value', snap => {
             ANUNCIOS = [];
             const cacheContainer = document.getElementById('preloader-cache');
-            cacheContainer.innerHTML = ""; 
-
-            if(snap.exists()) {
-                snap.forEach(child => { 
-                    let item = child.val();
-                    if (item && item.activo !== false && item.url && item.url.trim() !== "") { 
-                        ANUNCIOS.push(item); 
-                        let urlMedia = item.url.trim();
-                        let imgPre = new Image();
-                        let urlParaCargar = convertirLinkGitHub(urlMedia);
-                        imgPre.src = urlParaCargar;
-                        cacheContainer.appendChild(imgPre);
-                    }
-                });
-            }
-            
+            cacheContainer.innerHTML = "";
+            if (snap.exists()) snap.forEach(child => {
+                let item = child.val();
+                if (item?.activo !== false && item?.url?.trim()) {
+                    ANUNCIOS.push(item);
+                    let imgPre = new Image();
+                    imgPre.src = convertirLinkGitHub(item.url.trim());
+                    cacheContainer.appendChild(imgPre);
+                }
+            });
             guardarEnCache('anuncios', ANUNCIOS);
-            
-            if (adIndex >= ANUNCIOS.length) {
-                adIndex = 0;
-            }
-            
-            console.log('📢 Anuncios activos:', ANUNCIOS.length);
+            if (adIndex >= ANUNCIOS.length) adIndex = 0;
         });
 
-        // Sorteos en tiempo real
         const hoyStr = getFormatDate(0);
         const ayerStr = getFormatDate(1);
 
@@ -1392,20 +721,29 @@
                 }
                 if (sistemaIniciado && !enTransmisionVivo) {
                     renderGrid();
-                    if (currentView === 77) renderWeeklyTable();
                     if (currentView === 88) renderFeatured();
                 }
             });
         });
 
-        // Transmisión en vivo
+        // REAL NOCHE — desde sorteos_enloteria/resultados
+        database.ref('sorteos_enloteria/resultados').on('value', snap => {
+            const data = snap.val();
+            const procesados = procesarRealNoche(data);
+            REAL_NOCHE_SORTEOS = procesados;
+            guardarEnCache('realNoche', REAL_NOCHE_SORTEOS);
+            console.log('🌙 Real Noche sorteos:', REAL_NOCHE_SORTEOS.length);
+            if (sistemaIniciado && !enTransmisionVivo && currentView === 111) {
+                renderRealNoche();
+            }
+        });
+
         database.ref('transmisionVivo').on('value', snap => {
-            if (!sistemaIniciado) return; 
-            
+            if (!sistemaIniciado) return;
             const live = snap.val();
             const vGrid = document.getElementById('view-grid');
-            const vWeekly = document.getElementById('view-weekly');
             const vFeat = document.getElementById('view-featured');
+            const vReal = document.getElementById('view-realenoche');
             const vAds = document.getElementById('view-ads');
             const boxAd = document.getElementById('adDisplay');
             const mainBoxArea = document.getElementById('adMainBox');
@@ -1413,67 +751,52 @@
 
             if (live && live.activo === true) {
                 enTransmisionVivo = true;
-                clearInterval(rotationInterval); 
-                
+                clearInterval(rotationInterval);
                 vGrid.classList.add('hidden');
-                vWeekly.classList.add('hidden');
                 vFeat.classList.add('hidden');
+                vReal.classList.add('hidden');
                 vAds.classList.remove('hidden');
 
                 sidePanelAds.style.display = "none";
                 mainBoxArea.style.width = "100%";
 
                 let rawUrl = live.url || "";
-                
                 if (esVideoDirecto(rawUrl)) {
                     let directUrl = convertirLinkGitHub(rawUrl);
-                    boxAd.innerHTML = `
-                        <div class="live-indicator">● EN VIVO</div>
-                        <video src="${directUrl}" autoplay muted playsinline controls style="width:100%; height:100%; background:#000;"></video>
-                    `;
+                    boxAd.innerHTML = `<div class="live-indicator">● EN VIVO</div><video src="${directUrl}" autoplay muted playsinline controls style="width:100%; height:100%; background:#000;"></video>`;
                 } else {
                     let embedUrl = rawUrl.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/");
-                    if(embedUrl.includes("?")) { embedUrl = embedUrl.split("?")[0]; }
-                    boxAd.innerHTML = `
-                        <div class="live-indicator">● EN VIVO</div>
-                        <iframe src="${embedUrl}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;"></iframe>
-                    `;
+                    if (embedUrl.includes("?")) embedUrl = embedUrl.split("?")[0];
+                    boxAd.innerHTML = `<div class="live-indicator">● EN VIVO</div><iframe src="${embedUrl}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;"></iframe>`;
                 }
-            } else {
-                if (enTransmisionVivo) {
-                    enTransmisionVivo = false;
-                    boxAd.innerHTML = "";
-                    gridPage = 0;
-                    currentView = 0;
-                    
-                    sidePanelAds.style.display = "flex";
-                    mainBoxArea.style.width = "1190px";
-
-                    vGrid.classList.remove('hidden');
-                    vWeekly.classList.add('hidden');
-                    vFeat.classList.add('hidden');
-                    vAds.classList.add('hidden');
-                    renderGrid();
-
-                    clearInterval(rotationInterval);
-                    rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
-                }
+            } else if (enTransmisionVivo) {
+                enTransmisionVivo = false;
+                boxAd.innerHTML = "";
+                gridPage = 0; currentView = 0;
+                sidePanelAds.style.display = "flex";
+                mainBoxArea.style.width = "1190px";
+                vGrid.classList.remove('hidden');
+                vFeat.classList.add('hidden');
+                vReal.classList.add('hidden');
+                vAds.classList.add('hidden');
+                renderGrid();
+                clearInterval(rotationInterval);
+                rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
             }
         });
     }
 
+    // ============================================
+    // RENDER GRID / FEATURED / ADS
+    // ============================================
     function renderGrid() {
         const grid = document.getElementById('mainGrid');
         grid.innerHTML = '';
         if (SORTEOS.length === 0) {
-            if (usandoCache) {
-                grid.innerHTML = `<div style="grid-column:1/-1; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-size:32px; font-weight:800; gap:20px;">
-                    <span>📡 MODO OFFLINE</span>
-                    <span style="font-size:20px; font-weight:400; opacity:0.7;">Cargando datos desde caché...</span>
-                </div>`;
-            } else {
-                grid.innerHTML = '<div style="grid-column:1/-1; display:flex; align-items:center; justify-content:center; color:white; font-size:32px; font-weight:800;">CARGANDO SORTEOS...</div>';
-            }
+            grid.innerHTML = `<div style="grid-column:1/-1; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-size:32px; font-weight:800; gap:20px;">
+                <span>${usandoCache ? '📡 MODO OFFLINE' : '📡 ESPERANDO DATOS'}</span>
+                <span style="font-size:20px; font-weight:400; opacity:0.7;">${usandoCache ? 'Cargando desde caché...' : 'No hay sorteos disponibles'}</span>
+            </div>`;
             return;
         }
         const start = gridPage * 8;
@@ -1482,12 +805,13 @@
         pageItems.forEach((s, idx) => {
             const card = document.createElement('div');
             card.className = `card ${s.day === 'hoy' ? 'card-hoy' : 'card-ayer'}`;
-            let bottom = s.isWaiting ? `<div class="waiting-text">ESPERANDO RESULTADOS...</div>` : `
-                <div class="balls-container">
+            let bottom = s.isWaiting
+                ? `<div class="waiting-text">ESPERANDO RESULTADOS...</div>`
+                : `<div class="balls-container">
                     <div class="ball-flat" style="animation-delay: ${(idx * 0.1)}s">${s.nums ? s.nums[0] : '--'}</div>
                     <div class="ball-flat" style="animation-delay: ${(idx * 0.1 + 0.15)}s">${s.nums ? s.nums[1] : '--'}</div>
                     <div class="ball-flat" style="animation-delay: ${(idx * 0.1 + 0.30)}s">${s.nums ? s.nums[2] : '--'}</div>
-                </div>`;
+                   </div>`;
             const cacheBadge = usandoCache ? `<div class="cached-badge">📦 CACHÉ</div>` : '';
             card.innerHTML = `<div class="card-header"><img class="mini-logo" src="anguilla.png"><div class="time-bar">${s.hour}</div><div class="date-tag">${s.date}</div></div>${bottom}${cacheBadge}`;
             grid.appendChild(card);
@@ -1495,23 +819,18 @@
     }
 
     function generarPanelLateral(contenedorId) {
-        let jugados = SORTEOS.filter(s => s.nums !== null && s.nums.length > 0);
+        let jugados = SORTEOS.filter(s => s.nums?.length > 0);
         const panel = document.getElementById(contenedorId);
-        
         if (jugados.length === 0) {
             panel.innerHTML = '<div class="waiting-text">NO HAY SORTEOS PREVIOS</div>';
             return SORTEOS[0] || { hour: '--:--', date: 'HOY', nums: null };
         }
-        
         jugados.sort((a, b) => {
-            if (a.day === b.day) {
-                return convertirHoraAminutos(b.hour) - convertirHoraAminutos(a.hour);
-            }
+            if (a.day === b.day) return convertirHoraAminutos(b.hour) - convertirHoraAminutos(a.hour);
             return a.day === 'hoy' ? -1 : 1;
         });
         let last = jugados[0];
-        const historial = jugados.slice(1, 6); 
-        
+        const historial = jugados.slice(1, 6);
         panel.innerHTML = historial.map((s, idx) => `
             <div class="side-row">
                 <div class="side-time">${s.hour} <small style="font-size:18px; display:block; color:#64748b; font-weight:700; margin-top:2px;">${s.date}</small></div>
@@ -1528,34 +847,20 @@
         let last = generarPanelLateral('sidePanelFeatured');
         document.getElementById('fTime').innerText = last.hour;
         const fBalls = document.getElementById('fBalls');
+        const fDate = document.getElementById('fDate');
+
         if (last.nums) {
             const esHoy = last.day === 'hoy';
-            fBalls.innerHTML = last.nums.map((n, i) => `
-                <div class="ball-big ${esHoy ? 'blue' : 'gray'}" style="animation-delay: ${i * 0.2}s">${n}</div>
-            `).join('');
+            fBalls.innerHTML = last.nums.map((n, i) => `<div class="ball-big ${esHoy ? 'blue' : 'gray'}" style="animation-delay: ${i * 0.2}s">${n}</div>`).join('');
+            // Fecha grande abajo
+            if (esHoy) {
+                fDate.innerText = formatearFechaLarga(0);
+            } else {
+                fDate.innerText = formatearFechaLarga(1);
+            }
         } else {
             fBalls.innerHTML = '<div class="waiting-text">PROXIMO SORTEO</div>';
-        }
-        
-        // Quitar badge anterior
-        const oldBadge = document.querySelector('.split-main .cached-badge');
-        if (oldBadge) oldBadge.remove();
-        
-        if (usandoCache) {
-            const badge = document.createElement('div');
-            badge.className = 'cached-badge';
-            badge.textContent = '📦 CACHÉ';
-            badge.style.position = 'absolute';
-            badge.style.bottom = '12px';
-            badge.style.right = '12px';
-            badge.style.background = 'rgba(0,0,0,0.8)';
-            badge.style.color = '#f59e0b';
-            badge.style.fontSize = '11px';
-            badge.style.padding = '2px 10px';
-            badge.style.borderRadius = '12px';
-            badge.style.fontWeight = '700';
-            badge.style.border = '1px solid rgba(245, 158, 11, 0.3)';
-            document.querySelector('.split-main').appendChild(badge);
+            fDate.innerText = formatearFechaLarga(0);
         }
     }
 
@@ -1563,78 +868,50 @@
         generarPanelLateral('sidePanelAds');
         const box = document.getElementById('adDisplay');
         box.innerHTML = "";
-        
         const activos = ANUNCIOS.filter(ad => ad.activo !== false);
-        
         if (activos.length === 0) {
             const msg = usandoCache ? '📡 MODO OFFLINE - ANGUILLA LOTTERY' : 'ANGUILLA LOTTERY';
             box.innerHTML = `<div style='color:white; font-size:40px; font-weight:800; letter-spacing:1px;'>${msg}</div>`;
-            return tiempoRotacionGlobal; 
+            return tiempoRotacionGlobal;
         }
-        
         if (adIndex >= activos.length) adIndex = 0;
         const ad = activos[adIndex];
         let urlTarget = ad.url ? ad.url.trim() : "";
-        
         let urlProcesada = convertirLinkGitHub(urlTarget);
-        
+
         if (esVideoDirecto(urlTarget) && (urlTarget.includes('.mp4') || urlTarget.includes('.webm') || urlTarget.includes('.ogg') || urlTarget.includes('.mov') || urlTarget.includes('raw.githubusercontent'))) {
             box.innerHTML = `<video src="${urlProcesada}" autoplay muted playsinline style="width:100%; height:100%; object-fit:contain;"></video>`;
         } else if (urlTarget.includes('youtube.com') || urlTarget.includes('youtu.be')) {
             let embed = urlTarget.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/");
-            if(embed.includes("?")) { embed = embed.split("?")[0]; }
+            if (embed.includes("?")) embed = embed.split("?")[0];
             box.innerHTML = `<iframe src="${embed}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;"></iframe>`;
         } else if (urlTarget !== "") {
-            if (esImagen(urlProcesada) || urlProcesada.includes('raw.githubusercontent.com')) {
-                box.innerHTML = `<img src="${urlProcesada}" style="width:100%; height:100%; object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'color:white; font-size:40px; font-weight:800; letter-spacing:1px;\\'>ANGUILLA LOTTERY</div>';">`;
-            } else {
-                box.innerHTML = `<img src="${urlProcesada}" style="width:100%; height:100%; object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'color:white; font-size:40px; font-weight:800; letter-spacing:1px;\\'>ANGUILLA LOTTERY</div>';">`;
-            }
+            box.innerHTML = `<img src="${urlProcesada}" style="width:100%; height:100%; object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'color:white; font-size:40px; font-weight:800; letter-spacing:1px;\\'>ANGUILLA LOTTERY</div>';">`;
         } else {
             box.innerHTML = "<div style='color:white; font-size:40px; font-weight:800; letter-spacing:1px;'>ANGUILLA LOTTERY</div>";
         }
 
-        // Badge de caché en anuncios
-        const oldBadge = box.querySelector('.cached-badge');
-        if (oldBadge) oldBadge.remove();
-
-        if (usandoCache) {
-            const badge = document.createElement('div');
-            badge.className = 'cached-badge';
-            badge.textContent = '📦 CACHÉ';
-            badge.style.position = 'absolute';
-            badge.style.bottom = '12px';
-            badge.style.right = '12px';
-            badge.style.background = 'rgba(0,0,0,0.8)';
-            badge.style.color = '#f59e0b';
-            badge.style.fontSize = '11px';
-            badge.style.padding = '2px 10px';
-            badge.style.borderRadius = '12px';
-            badge.style.fontWeight = '700';
-            badge.style.border = '1px solid rgba(245, 158, 11, 0.3)';
-            box.appendChild(badge);
-        }
-        
         let tiempoAsignado = (parseInt(ad.tiempo) || 15) * 1000;
         adIndex++;
         return tiempoAsignado;
     }
 
+    // ============================================
+    // ROTACIÓN
+    // ============================================
     function rotateDisplay() {
         if (SORTEOS.length === 0 || enTransmisionVivo || !sistemaIniciado) return;
         clearInterval(rotationInterval);
 
         const vGrid = document.getElementById('view-grid');
-        const vWeekly = document.getElementById('view-weekly');
         const vFeat = document.getElementById('view-featured');
+        const vReal = document.getElementById('view-realenoche');
         const vAds = document.getElementById('view-ads');
         const totalPages = Math.max(1, Math.ceil(SORTEOS.length / 8));
-        const weeklyRows = obtenerFilasSemana();
-        const weeklyPages = Math.max(1, Math.ceil(weeklyRows.length / SEMANA_FILAS_POR_PAGINA));
 
-        vGrid.classList.add('hidden'); 
-        vWeekly.classList.add('hidden');
-        vFeat.classList.add('hidden'); 
+        vGrid.classList.add('hidden');
+        vFeat.classList.add('hidden');
+        vReal.classList.add('hidden');
         vAds.classList.add('hidden');
 
         setTimeout(() => {
@@ -1645,22 +922,15 @@
                 renderGrid();
                 vGrid.classList.remove('hidden');
             } else if (currentView === totalPages - 1) {
-                currentView = 77;
-                SEMANA_PAGE = 0;
-                renderWeeklyTable();
-                vWeekly.classList.remove('hidden');
-            } else if (currentView === 77) {
-                if (SEMANA_PAGE < weeklyPages - 1) {
-                    SEMANA_PAGE++;
-                    renderWeeklyTable();
-                    vWeekly.classList.remove('hidden');
-                } else {
-                    currentView = 88;
-                    renderFeatured();
-                    vFeat.classList.remove('hidden');
-                }
+                currentView = 88;
+                renderFeatured();
+                vFeat.classList.remove('hidden');
             } else if (currentView === 88) {
-                currentView = 99; 
+                currentView = 111;
+                renderRealNoche();
+                vReal.classList.remove('hidden');
+            } else if (currentView === 111) {
+                currentView = 99;
                 nextTime = renderMediaAd();
                 vAds.classList.remove('hidden');
             } else {
@@ -1668,7 +938,7 @@
                 renderGrid();
                 vGrid.classList.remove('hidden');
             }
-            
+
             rotationInterval = setInterval(rotateDisplay, Math.max(1000, nextTime - 450));
         }, 450);
     }
@@ -1688,50 +958,42 @@
 
     window.onload = () => {
         dimensionarPantalla();
-        updateDateTime(); 
+        updateDateTime();
         setInterval(updateDateTime, 1000);
-        
-        // Verificar conexión
+
         verificarConexion();
         monitorearConexion();
-        
-        // Cargar desde caché inmediatamente para velocidad
         cargarDesdeCache();
-        
-        // Inicializar datos Firebase
         inicializarDatos();
-        iniciarListenersSemana();
-        
-        // Intentar cargar desde Firebase en segundo plano
-        setTimeout(() => {
-            cargarDatosFirebase();
-        }, 1000);
-        
+
+        setTimeout(() => { cargarDatosFirebase(); }, 1000);
         activarMantenerPantallaEncendida();
 
         setTimeout(() => {
             const splash = document.getElementById('splash-screen');
             splash.style.opacity = '0';
             splash.style.visibility = 'hidden';
-            
             sistemaIniciado = true;
-            
-            // Si no hay datos, cargar desde caché
-            if (SORTEOS.length === 0) {
-                cargarDesdeCache();
-            }
-            
+            if (SORTEOS.length === 0) cargarDesdeCache();
+
             database.ref('transmisionVivo').once('value', snap => {
                 const live = snap.val();
-                if(live && live.activo === true) {
-                    database.ref('transmisionVivo').getRef().set(live); 
+                if (live && live.activo === true) {
+                    // mantener vista
                 } else {
                     renderGrid();
                     rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
                 }
             });
-        }, 2000); 
+        }, 2000);
     };
+
+    function dimensionarPantalla() {
+        const baseWidth = 1920, baseHeight = 1080;
+        const elScale = Math.min(window.innerWidth / baseWidth, window.innerHeight / baseHeight);
+        document.getElementById('canvas-master').style.transform = `translate(-50%, -50%) scale(${elScale})`;
+    }
+    window.addEventListener('resize', dimensionarPantalla);
 
     let wakeLock = null;
     async function activarMantenerPantallaEncendida() {
