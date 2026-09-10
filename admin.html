@@ -1,339 +1,393 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-<title>Anguilla Lottery | Sistema Multipantalla Premium</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap" rel="stylesheet">
-<style>
-    :root {
-        --anguilla-orange: #f97316;
-        --anguilla-blue: #0b1f4b;
-        --anguilla-blue-dark: #06132f;
-        --anguilla-yellow: #fbbf24;
-        --white: #ffffff;
-        --gray-text: #475569;
-        --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
-        --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Dashboard Máster | Anguilla Admin Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0c14;
+            --card-bg: #121624;
+            --card-border: #1e2538;
+            --neon-blue: #00f0ff;
+            --neon-orange: #ff7900;
+            --neon-green: #39ff14;
+            --neon-red: #e63946;
+            --text-light: #ffffff;
+            --text-muted: #8a99ad;
+            --shadow-glow: 0 8px 32px rgba(0,0,0,0.6);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            padding: 15px;
+            min-height: 100vh;
+        }
+        .dashboard { max-width: 1800px; margin: 0 auto; display: flex; flex-direction: column; gap: 15px; }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+        header {
+            text-align: center;
+            padding: 15px 0 20px 0;
+            border-bottom: 1px solid var(--card-border);
+            position: relative;
+        }
+        header::after {
+            content: '';
+            position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%);
+            width: 150px; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-orange), var(--neon-blue), transparent);
+        }
+        header h1 {
+            font-size: 1.8rem; font-weight: 800;
+            background: linear-gradient(135deg, var(--neon-orange), var(--neon-blue));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-transform: uppercase; letter-spacing: 2px;
+        }
+        header p { color: var(--text-muted); margin: 5px 0 0 0; font-size: 0.85rem; letter-spacing: 1px; }
 
-    html, body {
-        background: #000; height: 100%; width: 100%;
-        overflow: hidden; margin: 0; padding: 0;
-    }
+        .main-layout { display: flex; flex-direction: column; gap: 15px; }
+        .grid-2col { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        @media (min-width: 1024px) { .grid-2col { grid-template-columns: 2fr 1fr; } }
 
-    /* --- SPLASH --- */
-    #splash-screen {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: radial-gradient(circle at 50% 50%, var(--anguilla-blue) 0%, var(--anguilla-blue-dark) 100%);
-        z-index: 99999;
-        display: flex; flex-direction: column;
-        align-items: center; justify-content: center;
-        transition: opacity 1s ease-in-out, visibility 1s;
-    }
-    .splash-logo { height: 320px; object-fit: contain; animation: floating 3s ease-in-out infinite; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5)); }
-    .splash-text { color: var(--white); font-family: 'Inter', sans-serif; font-size: 42px; font-weight: 800; margin-top: 40px; letter-spacing: 2px; text-shadow: 0 4px 10px rgba(0,0,0,0.4); }
-    .splash-sub { color: var(--anguilla-yellow); font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 700; margin-top: 10px; letter-spacing: 4px; animation: pulse 1.5s infinite alternate; }
+        .panel-card {
+            background: var(--card-bg); border-radius: 12px; padding: 18px;
+            border: 1px solid var(--card-border); box-shadow: var(--shadow-glow);
+            position: relative; overflow: hidden;
+        }
+        .panel-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--neon-orange), var(--neon-blue)); opacity: 0.5;
+        }
+        .panel-card h2 {
+            margin-top: 0; font-size: 1rem; border-left: 3px solid var(--neon-orange);
+            padding-left: 10px; margin-bottom: 14px; text-transform: uppercase;
+            letter-spacing: 0.5px; color: var(--text-light); font-weight: 700;
+        }
 
-    #canvas-master {
-        width: 1920px; height: 1080px;
-        background: radial-gradient(circle at 50% 20%, #173b78 0%, #0b1f4b 42%, #06132f 100%);
-        position: absolute; top: 50%; left: 50%;
-        transform: translate(-50%, -50%);
-        transform-origin: center center;
-        overflow: hidden;
-    }
+        .flex-row { display: flex; flex-direction: column; gap: 8px; }
+        @media (min-width: 480px) { .flex-row { flex-direction: row; align-items: center; } }
+        .flex-wrap { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 
-    /* --- TOPBAR --- */
-    .topbar {
-        width: 100%; height: 151px;
-        background: linear-gradient(135deg, var(--anguilla-blue) 0%, var(--anguilla-blue-dark) 100%);
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 0 50px; border-bottom: 5px solid var(--anguilla-yellow);
-        box-shadow: 0 8px 32px rgba(0,0,0,0.35);
-        position: relative; z-index: 10;
-    }
-    .logo-main-area img { height: 210px; object-fit: contain; padding-top: 10%; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.25)); }
+        input[type="date"], input[type="text"], input[type="number"], input[type="url"], input[type="time"], textarea {
+            background: #090b12; border: 1px solid var(--card-border); color: #fff;
+            padding: 10px 14px; border-radius: 8px; font-family: inherit;
+            font-size: 0.9rem; width: 100%; box-sizing: border-box;
+            transition: border-color 0.2s ease;
+        }
+        input:focus, textarea:focus { border-color: var(--neon-blue); outline: none; }
+        input::placeholder, textarea::placeholder { color: var(--text-muted); opacity: 0.6; }
 
-    .header-info { display: flex; align-items: center; gap: 40px; }
-    .header-clock {
-        font-size: 61px; font-weight: 900; color: var(--white); line-height: 1;
-        border-right: 4px solid rgba(255, 204, 0, 0.4); padding-right: 40px;
-        font-variant-numeric: tabular-nums; text-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
-    .date-header { text-align: right; }
-    .main-date { font-size: 38px; font-weight: 900; color: var(--anguilla-yellow); text-transform: uppercase; line-height: 1; text-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-    .sub-date { font-size: 19px; font-weight: 700; color: var(--white); opacity: 0.95; letter-spacing: 0.5px; margin-top: 2px; }
+        .btn {
+            padding: 10px 18px; border: none; border-radius: 8px;
+            font-weight: 600; cursor: pointer; transition: all 0.2s ease;
+            font-family: inherit; font-size: 0.85rem;
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            min-height: 38px; white-space: nowrap;
+        }
+        .btn-block { width: 100%; }
+        .btn-primary { background: linear-gradient(135deg, var(--neon-orange), #e06a00); color: white; }
+        .btn-primary:hover { transform: translateY(-1px); }
+        .btn-success { background: linear-gradient(135deg, var(--neon-green), #2ee610); color: #000; }
+        .btn-success:hover { transform: translateY(-1px); }
+        .btn-danger { background: linear-gradient(135deg, var(--neon-red), #bd2c38); color: white; }
+        .btn-danger:hover { transform: translateY(-1px); }
+        .btn-info { background: linear-gradient(135deg, var(--neon-blue), #00a8b3); color: #000; }
+        .btn-info:hover { transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 2px solid var(--card-border); color: var(--text-light); }
+        .btn-outline:hover { border-color: var(--neon-blue); }
 
-    /* --- INDICADOR DE CONEXIÓN --- */
-    .connection-status { display: inline-flex; align-items: center; gap: 8px; margin-left: 15px; cursor: default; position: relative; }
-    .connection-dot { width: 16px; height: 16px; border-radius: 50%; display: inline-block; transition: all 0.3s ease; box-shadow: 0 0 12px rgba(0,0,0,0.3); flex-shrink: 0; }
-    .connection-dot.online { background: #22c55e; box-shadow: 0 0 20px rgba(34, 197, 94, 0.5); animation: pulse-dot-online 2s infinite; }
-    .connection-dot.offline { background: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); animation: pulse-dot-offline 1s infinite; }
-    .connection-dot.checking { background: #f59e0b; box-shadow: 0 0 20px rgba(245, 158, 11, 0.5); animation: pulse-dot-checking 0.8s infinite; }
-    .connection-tooltip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); color: white; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.3s; font-family: 'Inter', sans-serif; z-index: 100; }
-    .connection-status:hover .connection-tooltip { opacity: 1; }
-    .offline-badge { display: none; background: #ef4444; color: white; font-size: 16px; font-weight: 800; padding: 2px 14px; border-radius: 20px; margin-left: 10px; animation: pulse 1s infinite alternate; letter-spacing: 0.5px; }
-    .offline-badge.show { display: inline-block; }
+        .live-active {
+            background: linear-gradient(135deg, var(--neon-red), #bd2c38) !important;
+            animation: pulseLive 1.5s infinite alternate;
+            color: white !important;
+        }
 
-    @keyframes pulse-dot-online { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(0.9); } }
-    @keyframes pulse-dot-offline { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.85); } }
-    @keyframes pulse-dot-checking { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.7); } }
+        .sorteos-container {
+            display: flex; flex-direction: column; gap: 10px;
+            max-height: 55vh; overflow-y: auto; padding-right: 3px;
+        }
+        .sorteos-container::-webkit-scrollbar { width: 3px; }
+        .sorteos-container::-webkit-scrollbar-track { background: var(--bg-dark); border-radius: 10px; }
+        .sorteos-container::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 10px; }
 
-    /* --- TICKER --- */
-    .ticker-bar {
-        width: 100%; height: 54px;
-        background: #090909; border-bottom: 4px solid var(--anguilla-yellow);
-        overflow: hidden; display: flex; align-items: center;
-        position: relative; z-index: 10; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-    }
-    .ticker-text { white-space: nowrap; font-size: 26px; font-weight: 800; color: #fff; animation: marquee 25s linear infinite; padding-left: 100%; letter-spacing: 0.5px; }
-    @keyframes marquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+        .sorteo-item {
+            display: flex; flex-direction: column; gap: 8px;
+            background: linear-gradient(135deg, #171c2e, #1a2035);
+            padding: 12px 16px; border-radius: 10px;
+            border-left: 3px solid var(--neon-blue);
+            transition: border-color 0.2s ease;
+        }
+        .sorteo-item:hover { border-left-color: var(--neon-orange); }
+        @media (min-width: 500px) {
+            .sorteo-item { flex-direction: row; align-items: center; justify-content: space-between; }
+        }
+        .sorteo-time { font-weight: 700; font-size: 0.95rem; color: #cbd5e0; min-width: 70px; }
 
-    /* --- CONTENEDORES CON TRANSICIÓN --- */
-    #view-grid, #view-featured, #view-ads, #view-realenoche {
-        height: 875px; padding: 25px 30px;
-        position: absolute; width: 100%; top: 205px; left: 0;
-        z-index: 1; opacity: 1; transform: scale(1) translateY(0px);
-        visibility: visible;
-        transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1),
-                    transform 0.6s cubic-bezier(0.25, 1, 0.5, 1),
-                    visibility 0.6s;
-    }
-    .hidden { opacity: 0 !important; transform: scale(0.98) translateY(20px) !important; visibility: hidden !important; }
+        .balls-group { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+        .ball-inp {
+            width: 42px; height: 42px; border-radius: 50% !important;
+            border: 2px solid #2d3554 !important; text-align: center;
+            font-size: 1.1rem; font-weight: 800; color: var(--neon-blue);
+            background: #0a0c14; padding: 0 !important;
+            transition: border-color 0.2s ease;
+        }
+        .ball-inp:focus { border-color: var(--neon-orange) !important; }
 
-    /* --- TARJETAS GRID --- */
-    .grid-container { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); gap: 25px; height: 100%; }
-    .card {
-        background: var(--white); border-radius: 24px; border: 1px solid rgba(255, 204, 0, 0.7);
-        display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--shadow-md);
-        position: relative;
-    }
-    .card::before { content: ''; position: absolute; top:0; left:0; right:0; height: 6px; background: var(--anguilla-yellow); }
-    .card-header { padding: 15px 0 10px 0; display: flex; flex-direction: column; align-items: center; background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); }
-    .mini-logo { height: 135px; margin-bottom: 10px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05)); }
-    .time-bar { width: 85%; text-align: center; padding: 5px 0; font-size: 35px; font-weight: 900; border-radius: 50px; background: #1e293b; color: #ffcc00; box-shadow: var(--shadow-sm); }
-    .card-hoy .time-bar { background: #13a705; color: white; }
-    .date-tag { font-size: 16px; font-weight: 800; color: var(--gray-text); text-transform: uppercase; margin-top: 6px; letter-spacing: 0.5px; }
-    .cached-badge { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.8); color: #f59e0b; font-size: 11px; padding: 2px 10px; border-radius: 12px; font-weight: 700; letter-spacing: 0.3px; border: 1px solid rgba(245, 158, 11, 0.3); z-index: 5; }
+        .ad-item {
+            background: linear-gradient(135deg, #171c2e, #1a2035);
+            padding: 14px; border-radius: 10px; margin-bottom: 10px;
+            border: 1px solid var(--card-border);
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .ad-item:hover { border-color: var(--neon-blue); }
+        .ad-row-main { display: flex; gap: 12px; align-items: flex-start; }
+        .ad-preview-box {
+            width: 70px; height: 70px; border-radius: 10px; background: #090b12;
+            border: 1px solid var(--card-border);
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; flex-shrink: 0; position: relative;
+        }
+        .ad-preview-box img, .ad-preview-box video { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .ad-preview-box .no-img { font-size: 0.6rem; color: var(--text-muted); text-align: center; padding: 5px; }
+        .ad-fields { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .form-group { margin-bottom: 0; }
+        .form-group label { font-size: 0.7rem; color: var(--text-muted); display: block; margin-bottom: 2px; font-weight: 500; }
 
-    /* --- BOLOS 3D --- */
-    .ball-base { border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 900; text-shadow: 0 2px 4px rgba(0,0,0,0.3); position: relative; transition: transform 0.2s ease; animation: dropIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.15) both; }
-    .ball-base:hover { transform: scale(1.03); }
+        .switch-container { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .switch { position: relative; display: inline-block; width: 38px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #2d3554; transition: .2s; border-radius: 20px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 14px; width: 14px;
+            left: 3px; bottom: 3px; background-color: white; transition: .2s; border-radius: 50%;
+        }
+        input:checked + .slider { background: linear-gradient(135deg, var(--neon-green), #2ee610); }
+        input:checked + .slider:before { transform: translateX(18px); }
 
-    .ball-small {
-        width: 100px; height: 100px;
-        background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #3b82f6 30%, #2563eb 60%, #1d4ed8 85%, #1e40af 100%);
-        color: white; border-radius: 50%;
-        display: inline-flex; align-items: center; justify-content: center;
-        font-size: 38px; font-weight: 800;
-        box-shadow: inset -6px -6px 16px rgba(0,0,0,0.4), inset 4px 4px 10px rgba(255,255,255,0.5), 0 8px 20px rgba(0,0,0,0.25);
-        border: 2px solid rgba(255,255,255,0.15);
-        text-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        animation: dropIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
-    }
+        .preview-horizontal { width: 100%; }
+        .monitor-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+        .iframe-container {
+            width: 100%; height: 180px; background: #000;
+            border-radius: 10px; overflow: hidden;
+            border: 2px solid var(--card-border); position: relative;
+        }
+        @media (min-width: 580px) { .iframe-container { height: 200px; } }
+        @media (min-width: 900px) { .iframe-container { height: 220px; } }
+        @media (min-width: 1400px) { .iframe-container { height: 250px; } }
+        .iframe-container iframe, .iframe-container video { width: 100%; height: 100%; border: none; display: none; }
+        .iframe-container .active-player { display: block; }
 
-    .ball-flat {
-        width: 125px; height: 125px; border-radius: 50%;
-        display: inline-flex; align-items: center; justify-content: center;
-        font-size: 56px; font-weight: 900;
-        border: 2px solid rgba(255,255,255,0.15);
-        animation: dropIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
-        transition: transform 0.2s;
-    }
-    .ball-flat:hover { transform: scale(1.05); }
-    .card-hoy .ball-flat { background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #3b82f6 30%, #2563eb 60%, #1d4ed8 85%, #1e40af 100%); color: #ffffff; box-shadow: inset -8px -8px 20px rgba(0,0,0,0.4), inset 4px 4px 12px rgba(255,255,255,0.5), 0 12px 25px rgba(0,0,0,0.3); text-shadow: 0 2px 8px rgba(0,0,0,0.4); }
-    .card-ayer .ball-flat { background: radial-gradient(circle at 30% 30%, #f1f5f9 0%, #e2e8f0 30%, #cbd5e1 60%, #94a3b8 85%, #64748b 100%); color: #1e293b; box-shadow: inset -8px -8px 20px rgba(0,0,0,0.2), inset 4px 4px 12px rgba(255,255,255,0.7), 0 12px 25px rgba(0,0,0,0.2); text-shadow: 0 1px 2px rgba(255,255,255,0.5); }
+        .preview-badge {
+            position: absolute; top: 8px; left: 8px;
+            background: rgba(0,0,0,0.85); padding: 4px 12px; border-radius: 6px;
+            font-size: 0.65rem; font-weight: 600; color: var(--neon-blue);
+            border: 1px solid var(--neon-blue);
+            pointer-events: none; z-index: 10; letter-spacing: 0.5px;
+        }
 
-    .ball-big {
-        width: 205px; height: 205px; border-radius: 50%;
-        display: inline-flex; align-items: center; justify-content: center;
-        font-size: 100px; font-weight: 900;
-        border: 3px solid rgba(255,255,255,0.15);
-        animation: dropIn 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
-        transition: transform 0.2s;
-        position: relative;
-    }
-    .ball-big:hover { transform: scale(1.03); }
-    /* Bolo AZUL = HOY */
-    .ball-big.blue { background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #3b82f6 30%, #2563eb 60%, #1d4ed8 85%, #1e40af 100%); color: #ffffff; box-shadow: inset -12px -12px 30px rgba(0,0,0,0.5), inset 6px 6px 18px rgba(255,255,255,0.6), 0 20px 40px rgba(0,0,0,0.4); text-shadow: 0 3px 10px rgba(0,0,0,0.5); }
-    /* Bolo BLANCO = AYER (u otros días) */
-    .ball-big.white {
-        background: radial-gradient(circle at 30% 30%, #ffffff 0%, #f8fafc 40%, #e2e8f0 80%, #cbd5e1 100%);
-        color: #1e293b;
-        border: 3px solid rgba(0,0,0,0.15);
-        box-shadow:
-            inset -12px -12px 30px rgba(0,0,0,0.15),
-            inset 6px 6px 18px rgba(255,255,255,0.9),
-            0 20px 40px rgba(0,0,0,0.25);
-        text-shadow: 0 1px 2px rgba(255,255,255,0.6);
-    }
-    .ball-small.white {
-        background: radial-gradient(circle at 30% 30%, #ffffff 0%, #f8fafc 40%, #e2e8f0 80%, #cbd5e1 100%);
-        color: #1e293b;
-        border: 2px solid rgba(0,0,0,0.15);
-        box-shadow:
-            inset -6px -6px 16px rgba(0,0,0,0.15),
-            inset 4px 4px 10px rgba(255,255,255,0.9),
-            0 8px 20px rgba(0,0,0,0.2);
-        text-shadow: 0 1px 2px rgba(255,255,255,0.6);
-    }
+        .save-feedback {
+            position: fixed; bottom: 20px; right: 20px;
+            background: linear-gradient(135deg, var(--neon-green), #2ee610);
+            color: #000; padding: 10px 20px; border-radius: 10px;
+            font-weight: 700; opacity: 0;
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 999; font-size: 0.85rem;
+        }
+        .save-feedback.show { opacity: 1; transform: translateY(0) scale(1); }
 
-    @keyframes dropIn {
-        0% { opacity: 0; transform: scale(0.4) translateY(-60px) rotate(-10deg); }
-        60% { transform: scale(1.05) translateY(8px) rotate(2deg); }
-        100% { opacity: 1; transform: scale(1) translateY(0) rotate(0deg); }
-    }
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon-blue); }
 
-    /* --- SPLIT CONTAINER --- */
-    .split-container { display: flex; gap: 25px; height: 100%; width: 100%; }
-    .split-main {
-        width: 1190px;
-        background: linear-gradient(145deg, var(--anguilla-blue) 0%, var(--anguilla-blue-dark) 100%);
-        border: 5px solid var(--anguilla-yellow);
-        border-radius: 32px; display: flex; flex-direction: column; align-items: center;
-        justify-content: center; padding: 30px; box-shadow: var(--shadow-lg); overflow: hidden;
-        position: relative;
-    }
-    .side-panel { width: 730px; display: flex; flex-direction: column; gap: 15px; }
-    .side-row {
-        background: white; border-radius: 20px; padding: 0 30px; display: flex;
-        justify-content: space-between; align-items: center; border-left: 12px solid var(--anguilla-blue);
-        box-shadow: var(--shadow-md); flex: 1;
-    }
-    .side-time { color: var(--anguilla-blue); font-size: 34px; font-weight: 900; }
+        @keyframes pulseLive {
+            0% { box-shadow: 0 0 10px var(--neon-red); }
+            100% { box-shadow: 0 0 25px var(--neon-red); }
+        }
 
-    .featured-label { font-size: 26px; background: rgba(255,255,255,0.12); padding: 6px 30px; border-radius: 50px; margin-bottom: 20px; font-weight: 800; color: #fff; letter-spacing: 1px; }
-    .featured-logo-big { height: 275px; margin-bottom: 20px; filter: drop-shadow(0 12px 20px rgba(0,0,0,0.4)); object-fit: contain; }
-    .featured-time-box { font-size: 100px; background: var(--anguilla-yellow); color: var(--anguilla-blue); padding: 4px 70px; border-radius: 24px; font-weight: 900; box-shadow: var(--shadow-md); }
+        .status-badge {
+            display: inline-block; padding: 3px 10px; border-radius: 16px;
+            font-size: 0.6rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .status-active { background: rgba(57, 255, 20, 0.2); color: var(--neon-green); border: 1px solid rgba(57, 255, 20, 0.3); }
+        .status-inactive { background: rgba(230, 57, 70, 0.2); color: var(--neon-red); border: 1px solid rgba(230, 57, 70, 0.3); }
 
-    /* NUEVA: Fecha grande abajo del sorteo destacado */
-    .featured-date-big {
-        font-size: 30px;
-        font-weight: 800;
-        color: var(--white);
-        margin-top: 18px;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        opacity: 0.95;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.4);
-    }
-
-    .balls-container { display: flex; justify-content: center; align-items: center; gap: 18px; padding: 15px; background: transparent; border-radius: 20px; flex-grow: 1; width: 100%; }
-
-    .ad-box { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #000; overflow: hidden; border-radius: 24px; position: relative; }
-    .ad-box img, .ad-box video { width: 100%; height: 100%; object-fit: contain; }
-    .ad-box iframe { width: 100%; height: 100%; border: none; }
-
-    .waiting-text { color: #dc2626; font-size: 26px; font-weight: 900; text-align: center; animation: pulse 1.2s infinite alternate; width: 100%; margin: auto 0; letter-spacing: 0.5px; }
-
-    .live-indicator {
-        position: absolute; top: 25px; left: 25px;
-        background: #e63946; color: #fff;
-        font-family: 'Inter', sans-serif;
-        font-size: 24px; font-weight: 900;
-        padding: 8px 24px; border-radius: 8px;
-        box-shadow: 0 0 20px #e63946;
-        letter-spacing: 1.5px; z-index: 50;
-        animation: pulse 0.8s infinite alternate;
-        display: inline-flex; align-items: center; gap: 8px;
-    }
-
-    #preloader-cache { position: absolute; width: 1px; height: 1px; opacity: 0.01; overflow: hidden; bottom: 0; left: 0; pointer-events: none; }
-
-    @keyframes pulse { 0% { opacity: 0.4; } 100% { opacity: 1; } }
-    @keyframes floating {
-        0% { transform: translateY(0px); }
-        50% { transform: translateY(-15px); }
-        100% { transform: translateY(0px); }
-    }
-
-    /* ============================================
-       REAL NOCHE — MISMO ESTILO ANGUILLA
-       HOY  → bolos azules
-       AYER → bolos blancos
-       ============================================ */
-    .reallogo-main {
-        height: 275px;
-        margin-bottom: 20px;
-        filter: drop-shadow(0 12px 20px rgba(0,0,0,0.4));
-        object-fit: contain;
-    }
-</style>
+        .real-noche-card { border: 1px solid rgba(108, 92, 231, 0.4); }
+        .real-item {
+            display: flex; gap: 8px; align-items: center; justify-content: space-between;
+            background: #0d111c; padding: 10px; border-radius: 10px;
+            border: 1px solid var(--card-border); margin-bottom: 6px;
+        }
+        .real-item .real-info { display: flex; flex-direction: column; gap: 3px; min-width: 130px; }
+        .real-item .real-info .fecha { font-weight: 800; color: #e2e8f0; font-size: 0.8rem; }
+        .real-item .real-info .hora { color: #a29bfe; font-size: 0.7rem; font-weight: 700; }
+        .real-item .real-info .nombre { color: var(--text-muted); font-size: 0.65rem; }
+        .real-item .real-balls { display: flex; gap: 5px; }
+        .real-item .real-balls .rb {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #60a5fa, #2563eb);
+            color: white; font-weight: 900; font-size: 0.85rem;
+            display: inline-flex; align-items: center; justify-content: center;
+            box-shadow: inset -3px -3px 6px rgba(0,0,0,.4), inset 2px 2px 4px rgba(255,255,255,.3);
+        }
+        .real-item .real-actions { display: flex; gap: 5px; }
+        .real-item .real-actions button { padding: 5px 9px; font-size: 0.7rem; min-height: 28px; }
+    </style>
 </head>
 <body>
 
-<div id="splash-screen">
-    <img src="logo.png" class="splash-logo" alt="Logo Empresa">
-    <div class="splash-text">INICIANDO SISTEMA</div>
-    <div class="splash-sub">POR FAVOR ESPERE...</div>
-</div>
+<div class="dashboard">
+    <header>
+        <h1>🏆 Anguilla Master Dashboard Pro</h1>
+        <p>Control optimizado para gestión de sorteos y anuncios</p>
+    </header>
 
-<div id="preloader-cache"></div>
+    <div class="main-layout">
 
-<div id="canvas-master">
-    <div class="topbar">
-        <div class="logo-main-area"><img src="logo.png" alt="Logo"></div>
-        <div class="header-info">
-            <div class="header-clock" id="liveClock">00:00:00</div>
-            <div class="date-header">
-                <div class="main-date" id="currentDay">...</div>
-                <div class="sub-date" id="currentMonth">...</div>
-                <div class="connection-status" id="connectionStatus">
-                    <span class="connection-dot checking" id="connectionDot"></span>
-                    <span class="connection-tooltip" id="connectionTooltip">Verificando...</span>
+        <div class="panel-card preview-horizontal">
+            <div class="monitor-header-flex">
+                <h2 style="margin: 0; font-size: 0.95rem;">📺 Monitor en Tiempo Real</h2>
+                <div class="flex-wrap">
+                    <button class="btn btn-outline" style="min-height:30px; padding: 4px 14px; font-size:0.75rem;" onclick="recargarMonitor()">🔄 Recargar</button>
                 </div>
-                <span class="offline-badge" id="offlineBadge">📡 SIN CONEXIÓN</span>
+            </div>
+            <div class="iframe-container">
+                <div class="preview-badge">📡 VISTA PREVIA</div>
+                <iframe src="index.html" id="monitorFrame" class="active-player"></iframe>
+                <video id="monitorVideo" controls autoplay muted preload="auto"></video>
             </div>
         </div>
-    </div>
 
-    <div class="ticker-bar">
-        <div class="ticker-text" id="marqueeText">CARGANDO INFORMACIÓN...</div>
-    </div>
+        <div class="grid-2col">
+            <div style="display: flex; flex-direction: column; gap: 15px;">
 
-    <div id="view-grid">
-        <div class="grid-container" id="mainGrid"></div>
-    </div>
+                <div class="panel-card">
+                    <h2>⚙️ Configuración General</h2>
+                    <div class="flex-row" style="margin-bottom: 10px;">
+                        <label style="font-size:0.8rem; color:var(--text-muted); min-width:100px; font-weight:500;">Rotación (seg):</label>
+                        <input type="number" id="globalTimeInp" placeholder="15" min="5" style="max-width: 100px;">
+                        <button class="btn btn-primary" onclick="guardarTiempoGlobal()" style="padding: 8px 16px; font-size:0.8rem;">Actualizar</button>
+                    </div>
+                    <div class="flex-row">
+                        <label style="font-size:0.8rem; color:var(--text-muted); min-width:100px; font-weight:500;">Cintillo:</label>
+                        <input type="text" id="marqueeInp" placeholder="Escribe avisos aquí...">
+                        <button class="btn btn-success" onclick="guardarCintillo()" style="padding: 8px 16px; font-size:0.8rem;">Actualizar</button>
+                    </div>
+                </div>
 
-    <div id="view-featured" class="hidden">
-        <div class="split-container">
-            <div class="split-main">
-                <div class="featured-label">ÚLTIMO SORTEO REALIZADO</div>
-                <img src="anguilla.png" class="featured-logo-big" alt="Anguilla">
-                <div class="featured-time-box" id="fTime">--:--</div>
-                <div class="balls-container" style="background:transparent; margin-top:20px;" id="fBalls"></div>
-                <div class="featured-date-big" id="fDate">--</div>
+                <div class="panel-card" style="border: 1px solid rgba(230, 57, 70, 0.2);">
+                    <h2>📡 Transmisión en Vivo</h2>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <input type="url" id="streamingUrlInp" placeholder="https://www.youtube.com/watch?v=... o enlace directo">
+                        <div class="flex-row" style="justify-content: flex-end; gap: 8px;">
+                            <button class="btn btn-danger" id="btnStopLive" onclick="detenerTransmision()" style="display:none; padding: 8px 16px; font-size:0.8rem;">■ Detener</button>
+                            <button class="btn btn-primary" id="btnStartLive" onclick="iniciarTransmision()" style="padding: 8px 16px; font-size:0.8rem;">▶ Lanzar En Vivo</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-card">
+                    <h2>🎯 Resultados Anguilla</h2>
+                    <div class="flex-row" style="margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+                        <input type="date" id="targetDate" onchange="fetchSorteos()" style="max-width: 160px;">
+                        <button class="btn btn-outline" onclick="cambiarDia(-1)" style="padding: 8px 12px; font-size: 0.75rem;">◀ Ayer</button>
+                        <button class="btn btn-outline" onclick="cambiarDia(0)" style="padding: 8px 12px; font-size: 0.75rem;">Hoy</button>
+                        <button class="btn btn-primary" id="btnInit" style="display:none; padding: 8px 16px; font-size:0.8rem;" onclick="crearEstructuraBase()">⚙ Inicializar Día</button>
+                    </div>
+                    <div class="sorteos-container" id="listado"></div>
+                </div>
+
+                <div class="panel-card real-noche-card">
+                    <h2>🌙 Real Noche (Enloteria)</h2>
+                    <p style="color: var(--text-muted); font-size: 0.72rem; margin-bottom: 12px;">
+                        Lee de <code style="color:#a29bfe; background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:3px;">sorteos_enloteria/resultados</code>. Puedes agregar manualmente si el sistema automático falla.
+                    </p>
+
+                    <div class="flex-row" style="gap: 8px; margin-bottom: 10px; flex-wrap: wrap;">
+                        <div style="flex:1; min-width: 130px;">
+                            <label style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; display:block; margin-bottom:3px;">Fecha RD</label>
+                            <input type="date" id="realFecha">
+                        </div>
+                        <div style="flex:1; min-width: 100px;">
+                            <label style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; display:block; margin-bottom:3px;">Hora 24h</label>
+                            <input type="time" id="realHora" value="20:00">
+                        </div>
+                        <div style="flex:1; min-width: 100px;">
+                            <label style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; display:block; margin-bottom:3px;">Hora texto</label>
+                            <input type="text" id="realHoraTexto" placeholder="8:00PM">
+                        </div>
+                        <div style="flex:1; min-width: 80px;">
+                            <label style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; display:block; margin-bottom:3px;">ID</label>
+                            <input type="number" id="realId" value="1577">
+                        </div>
+                    </div>
+
+                    <div class="flex-row" style="gap: 8px; margin-bottom: 10px; flex-wrap: wrap;">
+                        <div style="flex:1; min-width: 160px;">
+                            <label style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; display:block; margin-bottom:3px;">Nombre</label>
+                            <input type="text" id="realNombre" value="Real Noche">
+                        </div>
+                        <div style="display: flex; gap: 6px; align-items: flex-end; flex:1;">
+                            <div>
+                                <label style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; display:block; margin-bottom:3px;">N1</label>
+                                <input type="number" id="realN1" placeholder="00" min="0" max="99" style="width:70px; text-align:center; font-weight:800; color:#60a5fa;">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; display:block; margin-bottom:3px;">N2</label>
+                                <input type="number" id="realN2" placeholder="00" min="0" max="99" style="width:70px; text-align:center; font-weight:800; color:#60a5fa;">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; display:block; margin-bottom:3px;">N3</label>
+                                <input type="number" id="realN3" placeholder="00" min="0" max="99" style="width:70px; text-align:center; font-weight:800; color:#60a5fa;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success btn-block" onclick="guardarRealNoche()" style="padding: 10px; font-size:0.9rem;">
+                        💾 Guardar Sorteo Real Noche
+                    </button>
+
+                    <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--card-border);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">📋 Últimos registros</span>
+                            <span id="realCount" style="font-size:0.7rem; color:#a29bfe; font-weight:700;">0</span>
+                        </div>
+                        <div id="listaRealNoche" style="max-height: 32vh; overflow-y: auto; padding-right: 3px;"></div>
+                    </div>
+                </div>
             </div>
-            <div class="side-panel" id="sidePanelFeatured"></div>
-        </div>
-    </div>
 
-    <div id="view-realenoche" class="hidden">
-        <div class="split-container">
-            <div class="split-main">
-                <div class="featured-label">🌙 REAL NOCHE · ÚLTIMO SORTEO</div>
-                <img src="logoreal.png" class="reallogo-main" alt="Real Noche" onerror="this.src='anguilla.png'">
-                <div class="featured-time-box" id="realTime">--:--</div>
-                <div class="balls-container" style="background:transparent; margin-top:20px;" id="realBalls"></div>
-                <div class="featured-date-big" id="realDate">--</div>
-            </div>
-            <div class="side-panel" id="sidePanelReal"></div>
-        </div>
-    </div>
+            <div style="display: flex; flex-direction: column; gap: 15px;">
 
-    <div id="view-ads" class="hidden">
-        <div class="split-container" id="adsContainerStructure">
-            <div class="split-main" id="adMainBox" style="background: #000; padding: 0; border: none;">
-                <div class="ad-box" id="adDisplay"></div>
+                <div class="panel-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 6px;">
+                        <h2 style="margin: 0; font-size: 0.95rem;">📢 Lista de Anuncios</h2>
+                        <button class="btn btn-primary" style="padding: 6px 14px; font-size: 0.75rem;" onclick="agregarNuevoAnuncioVacio()">+ Añadir</button>
+                    </div>
+                    <div id="contenedorAnuncios" style="max-height: 45vh; overflow-y: auto; padding-right: 3px;"></div>
+                    <button class="btn btn-success btn-block" style="margin-top: 12px; padding: 8px; font-size:0.85rem;" onclick="guardarTodosLosAnuncios()">💾 Guardar Todos</button>
+                </div>
+
+                <div class="panel-card" style="border: 1px solid rgba(255, 204, 0, 0.15);">
+                    <h2>📊 Estadísticas en Pizarra</h2>
+                    <p style="color: var(--text-muted); font-size: 0.8rem; line-height: 1.5;">Los números <span style="color:#ff4500; font-weight:700;">calientes</span> 🔥 y <span style="color:#00bfff; font-weight:700;">fríos</span> ❄️ se muestran automáticamente en la pizarra basados en los últimos sorteos.</p>
+                    <button class="btn btn-info" onclick="forzarActualizarEstadisticas()" style="background: #1e2538; color: #fff; margin-top: 10px; border: 1px solid var(--card-border); padding: 8px 16px; font-size:0.8rem;">🔄 Actualizar Stats</button>
+                </div>
             </div>
-            <div class="side-panel" id="sidePanelAds"></div>
         </div>
+
     </div>
 </div>
+
+<div id="saveFeedback" class="save-feedback">✓ Guardado exitosamente</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
@@ -343,671 +397,615 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    let SORTEOS = [];
-    let REAL_NOCHE_SORTEOS = [];
-    let ANUNCIOS = [];
-    let currentView = 0;
-    let gridPage = 0;
-    let adIndex = 0;
-    let rotationInterval = null;
-    let enTransmisionVivo = false;
-    let sistemaIniciado = false;
-    let tiempoRotacionGlobal = 15000;
-    let usandoCache = false;
-    let isOnline = true;
+    let anunciosLocales = [];
+    let listenerSorteosActual = null;
 
-    // ============================================
-    // CACHE
-    // ============================================
-    function guardarEnCache(clave, datos) {
-        try { localStorage.setItem(`anguilla_${clave}`, JSON.stringify({ data: datos, timestamp: Date.now() })); }
-        catch (e) { console.warn('No se pudo guardar en cache:', e); }
-    }
-    function obtenerDeCache(clave) {
-        try {
-            const item = localStorage.getItem(`anguilla_${clave}`);
-            if (!item) return null;
-            return JSON.parse(item);
-        } catch (e) { return null; }
-    }
-    function cargarDesdeCache() {
-        usandoCache = true;
-        let datosCargados = false;
-        const sorteosCache = obtenerDeCache('sorteos');
-        if (sorteosCache?.data?.length) { SORTEOS = sorteosCache.data; datosCargados = true; }
-        const realCache = obtenerDeCache('realNoche');
-        if (realCache?.data?.length) { REAL_NOCHE_SORTEOS = realCache.data; datosCargados = true; }
-        const anunciosCache = obtenerDeCache('anuncios');
-        if (anunciosCache?.data?.length) { ANUNCIOS = anunciosCache.data.filter(ad => ad.activo !== false); datosCargados = true; }
-        const tickerCache = obtenerDeCache('ticker');
-        if (tickerCache?.data) document.getElementById('marqueeText').innerText = tickerCache.data;
-        const tiempoCache = obtenerDeCache('tiempoRotacion');
-        if (tiempoCache?.data) tiempoRotacionGlobal = tiempoCache.data;
+    const CRONOGRAMA_HORAS = [
+        "08:00AM", "09:00AM", "10:00AM", "11:00AM", "12:00PM",
+        "01:00PM", "02:00PM", "03:00PM", "04:00PM", "05:00PM",
+        "06:00PM", "07:00PM", "08:00PM", "09:00PM", "10:00PM"
+    ];
 
-        if (datosCargados && sistemaIniciado && !enTransmisionVivo) {
-            renderGrid();
-            if (currentView === 88) renderFeatured();
-            if (currentView === 111) renderRealNoche();
-            if (!rotationInterval) rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
-        }
-    }
-
-    // ============================================
-    // CONEXIÓN
-    // ============================================
-    function actualizarIndicadorConexion(estado, mensaje) {
-        const dot = document.getElementById('connectionDot');
-        const tooltip = document.getElementById('connectionTooltip');
-        const badge = document.getElementById('offlineBadge');
-        dot.className = 'connection-dot';
-        if (estado === 'online') { dot.classList.add('online'); tooltip.textContent = mensaje || '✅ Conectado'; badge.classList.remove('show'); isOnline = true; }
-        else if (estado === 'offline') { dot.classList.add('offline'); tooltip.textContent = mensaje || '❌ Sin conexión'; badge.classList.add('show'); isOnline = false; usandoCache = true; }
-        else { dot.classList.add('checking'); tooltip.textContent = mensaje || '⏳ Verificando...'; }
-    }
-    function verificarConexion() {
-        actualizarIndicadorConexion('checking', '⏳ Verificando conexión...');
-        database.ref('.info/connected').once('value', (snap) => {
-            if (snap.val()) {
-                actualizarIndicadorConexion('online', '✅ Conectado a Firebase');
-                isOnline = true;
-                if (usandoCache) { usandoCache = false; cargarDatosFirebase(); }
-            } else {
-                actualizarIndicadorConexion('offline', '❌ Sin conexión a Firebase');
-                isOnline = false; cargarDesdeCache();
-            }
-        }).catch(() => {
-            fetch('https://www.google.com/favicon.ico', { mode: 'no-cors', cache: 'no-cache' })
-                .then(() => { actualizarIndicadorConexion('online', '✅ Conectado a internet'); isOnline = true; })
-                .catch(() => { actualizarIndicadorConexion('offline', '❌ Sin conexión a internet'); isOnline = false; cargarDesdeCache(); });
-        });
-    }
-    function monitorearConexion() {
-        database.ref('.info/connected').on('value', (snap) => {
-            if (snap.val()) {
-                actualizarIndicadorConexion('online', '✅ Conectado a Firebase');
-                isOnline = true;
-                if (usandoCache) { usandoCache = false; cargarDatosFirebase(); }
-            } else {
-                actualizarIndicadorConexion('offline', '❌ Sin conexión a Firebase');
-                isOnline = false; cargarDesdeCache();
-            }
-        });
-    }
-
-    // ============================================
+    // ============================================================
     // HELPERS
-    // ============================================
-    function convertirHoraAminutos(horaStr) {
-        if (!horaStr) return 0;
-        const match = horaStr.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
-        if (!match) return 0;
-        let h = parseInt(match[1]);
-        const m = parseInt(match[2]);
-        const ampm = match[3].toUpperCase();
-        if (ampm === 'PM' && h !== 12) h += 12;
-        if (ampm === 'AM' && h === 12) h = 0;
-        return h * 60 + m;
-    }
-    function ordenarSorteosCronologicamente(sorteos) {
-        const hoy = sorteos.filter(s => s.day === 'hoy');
-        const ayer = sorteos.filter(s => s.day === 'ayer');
-        const ordenarPorHora = (arr) => arr.sort((a, b) => convertirHoraAminutos(a.hour) - convertirHoraAminutos(b.hour));
-        return [...ordenarPorHora(hoy), ...ordenarPorHora(ayer)];
-    }
-    function getFormatDate(offsetDays = 0) {
+    // ============================================================
+    function hoyISO() {
         const d = new Date();
-        d.setDate(d.getDate() - offsetDays);
-        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
-    // Formato legible: "JUEVES 10 SEPTIEMBRE 2026"
-    function formatearFechaLarga(isoOrOffset) {
-        let d;
-        if (typeof isoOrOffset === 'number') {
-            d = new Date();
-            d.setDate(d.getDate() - isoOrOffset);
-        } else if (typeof isoOrOffset === 'string' && isoOrOffset.includes('-')) {
-            d = new Date(isoOrOffset + 'T12:00:00');
-        } else {
-            d = new Date();
+
+    function cambiarDia(offset) {
+        const input = document.getElementById('targetDate');
+        if (!input.value) input.value = hoyISO();
+        const d = new Date(input.value + 'T12:00:00');
+        d.setDate(d.getDate() + offset);
+        input.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        fetchSorteos();
+    }
+
+    function normalizarHora(h) {
+        if (!h) return '';
+        h = String(h).trim().toUpperCase();
+        const m = h.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/);
+        if (!m) return h;
+        return `${m[1].padStart(2,'0')}:${m[2]}${m[3]}`;
+    }
+
+    function mostrarFeedback(mensaje = '✓ Guardado exitosamente') {
+        const fb = document.getElementById('saveFeedback');
+        fb.textContent = mensaje;
+        fb.classList.add('show');
+        clearTimeout(fb._timeout);
+        fb._timeout = setTimeout(() => fb.classList.remove('show'), 2500);
+    }
+
+    // ============================================================
+    // INICIALIZACIÓN
+    // ============================================================
+    window.onload = () => {
+        document.getElementById('targetDate').value = hoyISO();
+        document.getElementById('realFecha').value = hoyISO();
+        fetchSorteos();
+        escucharCintillo();
+        escucharAnuncios();
+        escucharEstadoTransmision();
+        fetchConfiguracionGlobal();
+        escucharRealNoche();
+    };
+
+    // ============================================================
+    // SORTEOS ANGUILLA — CORREGIDO
+    // ============================================================
+    function fetchSorteos() {
+        const fecha = document.getElementById('targetDate').value;
+        if (!fecha) return;
+
+        const listado = document.getElementById('listado');
+        listado.innerHTML = "<p style='color:#a0aec0; font-size:0.9rem; padding:10px;'>⏳ Cargando registros...</p>";
+        document.getElementById('btnInit').style.display = 'none';
+
+        // Detach listener anterior
+        if (listenerSorteosActual) {
+            listenerSorteosActual.ref.off('value', listenerSorteosActual.cb);
+            listenerSorteosActual = null;
         }
-        const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO'];
-        const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
-        return `${dias[d.getDay()]} ${d.getDate()} ${meses[d.getMonth()]} ${d.getFullYear()}`;
+
+        const ref = database.ref(`sorteos/${fecha}`);
+        const cb = (snapshot) => {
+            const focused = document.activeElement;
+            if (focused && focused.classList && focused.classList.contains('ball-inp')) return;
+
+            const data = snapshot.val();
+            listado.innerHTML = "";
+
+            if (!data) {
+                listado.innerHTML = "<p style='color:#718096; font-size:0.9rem; padding:10px;'>📭 No hay datos para esta fecha.<br><small style='color:#4a5568;'>Usa '⚙ Inicializar Día' para crear la estructura.</small></p>";
+                document.getElementById('btnInit').style.display = 'block';
+                return;
+            }
+
+            // Convertir a array (Firebase puede devolver Array u Object)
+            let items = [];
+            if (Array.isArray(data)) {
+                items = data.map((v, i) => ({ idx: i, data: v }));
+            } else {
+                items = Object.keys(data).map(k => ({ idx: k, data: data[k] }));
+            }
+
+            // Ordenar por hora
+            items.sort((a, b) => {
+                const ha = normalizarHora(a.data?.hora || '');
+                const hb = normalizarHora(b.data?.hora || '');
+                return ha.localeCompare(hb);
+            });
+
+            if (items.length === 0) {
+                listado.innerHTML = "<p style='color:#718096; font-size:0.9rem; padding:10px;'>📭 El día está vacío.</p>";
+                document.getElementById('btnInit').style.display = 'block';
+                return;
+            }
+
+            items.forEach(({ idx, data: s }) => {
+                if (!s) return;
+                const premios = s.premios || [];
+                const tienePremios = premios[0] !== undefined && premios[0] !== null && premios[0] !== '';
+                const div = document.createElement('div');
+                div.className = 'sorteo-item';
+                div.innerHTML = `
+                    <div class="sorteo-time">${s.hora || '--'}</div>
+                    <div class="balls-group">
+                        <input type="number" inputmode="numeric" class="ball-inp" id="n_${idx}_0" value="${premios[0] ?? ''}" oninput="if(this.value.length > 2) this.value = this.value.slice(0,2)" placeholder="0">
+                        <input type="number" inputmode="numeric" class="ball-inp" id="n_${idx}_1" value="${premios[1] ?? ''}" oninput="if(this.value.length > 2) this.value = this.value.slice(0,2)" placeholder="0">
+                        <input type="number" inputmode="numeric" class="ball-inp" id="n_${idx}_2" value="${premios[2] ?? ''}" oninput="if(this.value.length > 2) this.value = this.value.slice(0,2)" placeholder="0">
+                    </div>
+                    <button class="btn btn-success" id="btn_ok_${idx}" style="min-width: 50px; padding: 6px 12px; font-size:0.8rem;" onclick="actualizarSorteo('${idx}')">${tienePremios ? '✓' : 'Ok'}</button>
+                `;
+                listado.appendChild(div);
+            });
+        };
+
+        ref.on('value', cb);
+        listenerSorteosActual = { ref, cb };
     }
+
+    function crearEstructuraBase() {
+        const fecha = document.getElementById('targetDate').value;
+        if (!fecha) { alert('Selecciona una fecha'); return; }
+        const nuevaData = CRONOGRAMA_HORAS.map(hora => ({
+            fecha,
+            hora,
+            noche: false,
+            premios: [null, null, null]  // null explícito, Firebase SÍ lo persiste
+        }));
+        database.ref(`sorteos/${fecha}`).set(nuevaData, (err) => {
+            if (err) { alert('Error: ' + err.message); return; }
+            fetchSorteos();
+            mostrarFeedback('✓ Estructura creada');
+        });
+    }
+
+    function actualizarSorteo(idx) {
+        const fecha = document.getElementById('targetDate').value;
+        const p0 = document.getElementById(`n_${idx}_0`).value;
+        const p1 = document.getElementById(`n_${idx}_1`).value;
+        const p2 = document.getElementById(`n_${idx}_2`).value;
+
+        const btn = document.getElementById(`btn_ok_${idx}`);
+        btn.innerText = "⏳";
+        btn.disabled = true;
+
+        database.ref(`sorteos/${fecha}/${idx}/premios`).set([p0 || null, p1 || null, p2 || null], (err) => {
+            btn.innerText = "✓";
+            btn.disabled = false;
+            if (!err) {
+                setTimeout(() => { btn.innerText = "Ok"; }, 800);
+                mostrarFeedback('✓ Sorteo actualizado');
+                database.ref('stats/update').set({ timestamp: Date.now() });
+            } else {
+                alert("Error al guardar: " + err.message);
+                btn.innerText = "Ok";
+            }
+        });
+    }
+
+    // ============================================================
+    // REAL NOCHE — LEER DE sorteos_enloteria/resultados
+    // ============================================================
+    function escucharRealNoche() {
+        database.ref('sorteos_enloteria/resultados').on('value', snap => {
+            const contenedor = document.getElementById('listaRealNoche');
+            const countEl = document.getElementById('realCount');
+            contenedor.innerHTML = "";
+            const items = [];
+
+            snap.forEach(child => {
+                const v = child.val();
+                if (!v) return;
+                const nombre = String(v.nombre || '').toLowerCase();
+                if (!nombre.includes('real noche') && !nombre.includes('real_noche')) return;
+                items.push({ key: child.key, ...v });
+            });
+
+            countEl.textContent = items.length;
+
+            if (!items.length) {
+                contenedor.innerHTML = "<p style='color:#a0aec0; font-size:0.8rem; text-align:center; padding:10px;'>No hay sorteos de Real Noche.</p>";
+                return;
+            }
+
+            // Ordenar por enviadoEn descendente (más reciente primero)
+            items.sort((a, b) => String(b.enviadoEn || '').localeCompare(String(a.enviadoEn || '')));
+
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'real-item';
+                const numeros = item.numeros || ['--','--','--'];
+                div.innerHTML = `
+                    <div class="real-info">
+                        <span class="fecha">${item.fecha || item.fechaRD || ''}</span>
+                        <span class="hora">${item.hora || ''}</span>
+                        <span class="nombre">${item.nombre || ''}</span>
+                    </div>
+                    <div class="real-balls">
+                        <span class="rb">${numeros[0] || '--'}</span>
+                        <span class="rb">${numeros[1] || '--'}</span>
+                        <span class="rb">${numeros[2] || '--'}</span>
+                    </div>
+                    <div class="real-actions">
+                        <button class="btn btn-danger" onclick="eliminarRealNoche('${item.key}')" title="Eliminar">🗑️</button>
+                    </div>
+                `;
+                contenedor.appendChild(div);
+            });
+        });
+    }
+
+    function construirClaveReal(fechaRD, id, nombre, horaTexto) {
+        const nombreKey = (nombre || 'Real_Noche').trim().replace(/\s+/g, '_');
+        return `${fechaRD}_${id}_${nombreKey}_${horaTexto}`;
+    }
+
+    function formatearHoraTexto(hora24) {
+        if (!hora24) return '8:00PM';
+        let [h, m] = hora24.split(":").map(Number);
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        let h12 = h % 12 || 12;
+        return `${h12}:${String(m).padStart(2, '0')}${ampm}`;
+    }
+
+    function formatearFechaLegible(fechaRD) {
+        const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+        const [y, m, d] = fechaRD.split('-');
+        return `${d} ${meses[parseInt(m)-1]}, ${y}`;
+    }
+
+    async function guardarRealNoche() {
+        const fechaRD = document.getElementById('realFecha').value;
+        const hora24 = document.getElementById('realHora').value;
+        const id = document.getElementById('realId').value || "0";
+        const nombre = document.getElementById('realNombre').value.trim() || "Real Noche";
+        const horaTextoInput = document.getElementById('realHoraTexto').value.trim();
+        const horaTexto = horaTextoInput || formatearHoraTexto(hora24);
+        const n1 = document.getElementById('realN1').value;
+        const n2 = document.getElementById('realN2').value;
+        const n3 = document.getElementById('realN3').value;
+
+        if (!fechaRD || !hora24 || n1 === '' || n2 === '' || n3 === '') {
+            alert("Completa fecha, hora y los 3 números");
+            return;
+        }
+
+        const clave = construirClaveReal(fechaRD, id, nombre, horaTexto);
+        const payload = {
+            categoria: "dominicana",
+            enviadoEn: new Date().toISOString(),
+            fecha: formatearFechaLegible(fechaRD),
+            fechaRD: fechaRD,
+            hora: horaTexto,
+            id: String(id),
+            nombre: nombre,
+            numeros: [
+                String(n1).padStart(2, '0'),
+                String(n2).padStart(2, '0'),
+                String(n3).padStart(2, '0')
+            ]
+        };
+
+        try {
+            await database.ref(`sorteos_enloteria/resultados/${clave}`).set(payload);
+            mostrarFeedback('✓ Real Noche guardado correctamente');
+            document.getElementById('realN1').value = '';
+            document.getElementById('realN2').value = '';
+            document.getElementById('realN3').value = '';
+        } catch (e) {
+            alert("Error al guardar: " + e.message);
+        }
+    }
+
+    async function eliminarRealNoche(key) {
+        if (!confirm('¿Eliminar este sorteo de Real Noche?')) return;
+        try {
+            await database.ref(`sorteos_enloteria/resultados/${key}`).remove();
+            mostrarFeedback('✓ Eliminado');
+        } catch (e) {
+            alert("Error al eliminar: " + e.message);
+        }
+    }
+
+    // ============================================================
+    // CONFIG / CINTILLO / TRANSMISIÓN
+    // ============================================================
+    function recargarMonitor() {
+        const frame = document.getElementById('monitorFrame');
+        const video = document.getElementById('monitorVideo');
+        if (frame.classList.contains('active-player')) {
+            frame.src = frame.src;
+        } else {
+            video.load();
+            video.play().catch(e => console.log("Auto-play prevenido:", e));
+        }
+    }
+
+    function forzarActualizarEstadisticas() {
+        database.ref('stats/update').set({ timestamp: Date.now() }, err => {
+            if (!err) mostrarFeedback('✓ Estadísticas actualizadas');
+        });
+    }
+
+    function fetchConfiguracionGlobal() {
+        database.ref('configuracion/tiempoPantalla').on('value', snap => {
+            if (snap.val()) document.getElementById('globalTimeInp').value = snap.val();
+        });
+    }
+
+    function guardarTiempoGlobal() {
+        const tiempo = document.getElementById('globalTimeInp').value.trim();
+        if (!tiempo || tiempo < 5) { alert("Introduce un tiempo válido (mín 5 segundos)"); return; }
+        database.ref('configuracion/tiempoPantalla').set(parseInt(tiempo), err => {
+            if (!err) mostrarFeedback('✓ Tiempo actualizado');
+        });
+    }
+
+    function escucharCintillo() {
+        database.ref('ticker').on('value', snap => {
+            if (snap.val() !== null && document.activeElement !== document.getElementById('marqueeInp')) {
+                document.getElementById('marqueeInp').value = snap.val();
+            }
+        });
+    }
+
+    function guardarCintillo() {
+        const texto = document.getElementById('marqueeInp').value;
+        database.ref('ticker').set(texto, err => {
+            if (!err) mostrarFeedback('✓ Texto actualizado');
+        });
+    }
+
+    function escucharEstadoTransmision() {
+        database.ref('transmisionVivo').on('value', snap => {
+            const data = snap.val();
+            const btnStart = document.getElementById('btnStartLive');
+            const btnStop = document.getElementById('btnStopLive');
+            const inpUrl = document.getElementById('streamingUrlInp');
+            const frame = document.getElementById('monitorFrame');
+            const videoPlayer = document.getElementById('monitorVideo');
+
+            if (data && data.activo === true) {
+                btnStart.innerText = "● EN VIVO";
+                btnStart.classList.add('live-active');
+                if (document.activeElement !== inpUrl) inpUrl.value = data.url || "";
+                btnStop.style.display = "inline-flex";
+
+                let url = data.url || "";
+                if (esVideoDirecto(url) || esImagen(url)) {
+                    frame.classList.remove('active-player');
+                    videoPlayer.classList.add('active-player');
+                    videoPlayer.src = convertirLinkGitHub(url);
+                    videoPlayer.load();
+                    videoPlayer.play().catch(e => console.log("Esperando interacción:", e));
+                } else {
+                    videoPlayer.classList.remove('active-player');
+                    frame.classList.add('active-player');
+                    frame.src = obtenerEmbedYouTube(url);
+                }
+            } else {
+                btnStart.innerText = "▶ Lanzar En Vivo";
+                btnStart.classList.remove('live-active');
+                btnStop.style.display = "none";
+                if (data && data.url && document.activeElement !== inpUrl) inpUrl.value = data.url;
+
+                videoPlayer.classList.remove('active-player');
+                videoPlayer.src = "";
+                frame.classList.add('active-player');
+                if (!frame.src.includes('index.html')) frame.src = "index.html";
+            }
+        });
+    }
+
+    function iniciarTransmision() {
+        const urlValue = document.getElementById('streamingUrlInp').value.trim();
+        if (!urlValue) { alert("Introduce un enlace válido."); return; }
+        database.ref('transmisionVivo').set({ activo: true, url: urlValue }, err => {
+            if (!err) mostrarFeedback('✓ Transmisión activada');
+        });
+    }
+
+    function detenerTransmision() {
+        const urlValue = document.getElementById('streamingUrlInp').value.trim();
+        database.ref('transmisionVivo').set({ activo: false, url: urlValue }, err => {
+            if (!err) mostrarFeedback('✓ Transmisión finalizada');
+        });
+    }
+
     function esVideoDirecto(url) {
         if (!url) return false;
-        return url.includes('github.com') || url.includes('raw.githubusercontent') || /\.(mp4|webm|ogg|mov)$/i.test(url);
+        const u = url.toLowerCase();
+        return u.includes('.mp4') || u.includes('.webm') || u.includes('.ogg') || u.includes('.mov') || u.includes('.avi') || u.includes('.mkv');
     }
+
     function esImagen(url) {
         if (!url) return false;
-        return /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)$/i.test(url);
+        const u = url.toLowerCase();
+        return u.includes('.jpg') || u.includes('.jpeg') || u.includes('.png') || u.includes('.gif') || u.includes('.webp') || u.includes('.bmp') || u.includes('.svg') || u.includes('.ico');
     }
+
     function convertirLinkGitHub(url) {
         if (!url) return url;
-        url = url.trim();
-        if (url.includes('raw.githubusercontent.com')) return url;
-        if (url.includes('github.com') && url.includes('/blob/')) return url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
-        if (url.includes('github.com') && url.includes('?raw=true')) return url.replace('github.com', 'raw.githubusercontent.com');
         if (url.includes('github.com') && !url.includes('raw.githubusercontent.com')) {
-            const match = url.match(/github\.com\/([^\/]+\/[^\/]+\/blob\/[^?]+)/);
-            if (match) return 'https://raw.githubusercontent.com/' + match[1].replace('/blob/', '/');
+            if (url.includes('/blob/')) {
+                return url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
+            }
+            if (!url.includes('?raw=true')) return url + '?raw=true';
         }
         return url;
     }
 
-    // ============================================
-    // CARGA DE DATOS
-    // ============================================
-    function procesarSorteosData(dataHoy, dataAyer) {
-        let finalSorteos = [];
-        const ahora = new Date();
-        const horaAct = { hrs: ahora.getHours(), mins: ahora.getMinutes() };
-        if (!dataHoy || dataHoy.length === 0) return finalSorteos;
-
-        dataHoy.forEach((sHoy, index) => {
-            if (!sHoy) return;
-            let [h, mP] = sHoy.hora.split(":");
-            let mSor = parseInt(mP.substring(0, 2));
-            let ampm = mP.substring(2).trim();
-            let hSor = parseInt(h);
-            if (ampm === "PM" && hSor !== 12) hSor += 12;
-            if (ampm === "AM" && hSor === 12) hSor = 0;
-
-            const tieneHoy = sHoy.premios && sHoy.premios[0] !== "" && sHoy.premios[0] !== undefined && sHoy.premios[0] !== null;
-            const yaPasoHora = (horaAct.hrs > hSor || (horaAct.hrs === hSor && horaAct.mins >= mSor + 5));
-
-            let sorteoFinal = { hour: sHoy.hora.replace(/(AM|PM)/, ' $1'), key: index };
-
-            if (tieneHoy) {
-                sorteoFinal.day = "hoy"; sorteoFinal.date = "HOY";
-                sorteoFinal.nums = [sHoy.premios[0], sHoy.premios[1], sHoy.premios[2]];
-                sorteoFinal.isWaiting = false;
-            } else if (yaPasoHora) {
-                sorteoFinal.day = "hoy"; sorteoFinal.date = "HOY";
-                sorteoFinal.nums = null; sorteoFinal.isWaiting = true;
-            } else {
-                const sAyer = dataAyer && dataAyer[index] ? dataAyer[index] : null;
-                sorteoFinal.day = "ayer"; sorteoFinal.date = "AYER";
-                sorteoFinal.nums = (sAyer?.premios?.[0] !== "" && sAyer?.premios?.[0] != null) ? [sAyer.premios[0], sAyer.premios[1], sAyer.premios[2]] : null;
-                sorteoFinal.isWaiting = false;
-            }
-            finalSorteos.push(sorteoFinal);
-        });
-        return finalSorteos;
+    function obtenerEmbedYouTube(url) {
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        if (match && match[2] && match[2].length === 11) {
+            return `https://www.youtube.com/embed/${match[2]}?autoplay=1&mute=1`;
+        }
+        return url;
     }
 
-    function cargarDatosFirebase() {
-        const hoyStr = getFormatDate(0);
-        const ayerStr = getFormatDate(1);
-
-        database.ref('ticker').once('value', snap => {
-            const tickerText = snap.val() || "BIENVENIDOS A ANGUILLA LOTTERY";
-            document.getElementById('marqueeText').innerText = tickerText;
-            guardarEnCache('ticker', tickerText);
-        });
-
-        database.ref(`sorteos/${hoyStr}`).once('value', snapHoy => {
-            const dataHoy = snapHoy.val() || [];
-            database.ref(`sorteos/${ayerStr}`).once('value', snapAyer => {
-                const dataAyer = snapAyer.val() || [];
-                const procesados = procesarSorteosData(dataHoy, dataAyer);
-                if (procesados?.length) {
-                    SORTEOS = ordenarSorteosCronologicamente(procesados);
-                    guardarEnCache('sorteos', SORTEOS);
-                    if (sistemaIniciado && !enTransmisionVivo) {
-                        renderGrid();
-                        if (currentView === 88) renderFeatured();
-                    }
-                }
-            });
-        });
-
-        database.ref('anunciosList').once('value', snap => {
-            const anuncios = [];
-            if (snap.exists()) snap.forEach(child => {
-                let item = child.val();
-                if (item?.activo !== false && item?.url?.trim()) anuncios.push(item);
-            });
-            if (anuncios.length) { ANUNCIOS = anuncios; guardarEnCache('anuncios', ANUNCIOS); }
-        });
-
-        database.ref('configuracion/tiempoPantalla').once('value', snap => {
-            if (snap.val()) {
-                tiempoRotacionGlobal = parseInt(snap.val()) * 1000;
-                guardarEnCache('tiempoRotacion', tiempoRotacionGlobal);
-                if (rotationInterval && !enTransmisionVivo) {
-                    clearInterval(rotationInterval);
-                    rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
-                }
-            }
-        });
+    function obtenerMiniaturaUrl(url) {
+        if (!url) return "";
+        url = url.trim();
+        if (esVideoDirecto(url)) return convertirLinkGitHub(url);
+        if (esImagen(url)) return convertirLinkGitHub(url);
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        if (match && match[2] && match[2].length === 11) {
+            return `https://img.youtube.com/vi/${match[2]}/mqdefault.jpg`;
+        }
+        return url;
     }
 
-    // ============================================
-    // REAL NOCHE — desde sorteos_enloteria/resultados
-    // ============================================
-    function procesarRealNoche(data) {
-        const arr = [];
-        if (!data) return arr;
-        const items = Array.isArray(data) ? data : Object.values(data);
-        for (const s of items) {
-            if (!s) continue;
-            const nombre = (s.nombre || '').toLowerCase();
-            if (!nombre.includes('real noche') && !nombre.includes('real_noche')) continue;
-            if (!s.numeros || !Array.isArray(s.numeros) || s.numeros.length < 3) continue;
-            if (!s.numeros[0] || s.numeros[0] === "") continue;
-            arr.push({
-                nombre: s.nombre,
-                hora: (s.hora || '').replace(/(AM|PM)/i, ' $1').trim(),
-                fechaRD: s.fechaRD || '',
-                fecha: s.fecha || '',
-                numeros: [s.numeros[0], s.numeros[1], s.numeros[2]],
-                enviadoEn: s.enviadoEn || '',
-                timestamp: s.enviadoEn ? new Date(s.enviadoEn).getTime() : 0
-            });
-        }
-        arr.sort((a, b) => b.timestamp - a.timestamp);
-        return arr;
-    }
-
-    function renderRealNoche() {
-        const timeEl = document.getElementById('realTime');
-        const ballsEl = document.getElementById('realBalls');
-        const sidePanel = document.getElementById('sidePanelReal');
-        const dateEl = document.getElementById('realDate');
-
-        if (!REAL_NOCHE_SORTEOS.length) {
-            timeEl.innerText = '--:--';
-            dateEl.innerText = '--';
-            ballsEl.innerHTML = '<div class="waiting-text">ESPERANDO SORTEO DE REAL NOCHE...</div>';
-            sidePanel.innerHTML = '<div class="waiting-text">NO HAY SORTEOS REGISTRADOS</div>';
-            return;
-        }
-
-        const last = REAL_NOCHE_SORTEOS[0];
-        const hoy = getFormatDate(0);
-        const esHoy = last.fechaRD === hoy;
-
-        timeEl.innerText = last.hora || '--:--';
-
-        // Fecha grande abajo del sorteo principal
-        if (last.fechaRD && last.fechaRD.includes('-')) {
-            dateEl.innerText = formatearFechaLarga(last.fechaRD);
-        } else {
-            dateEl.innerText = last.fecha || '--';
-        }
-
-        // HOY → bolos AZULES | AYER/otro → bolos BLANCOS
-        const ballClass = esHoy ? 'blue' : 'white';
-        ballsEl.innerHTML = last.numeros.map((n, i) =>
-            `<div class="ball-big ${ballClass}" style="animation-delay: ${i * 0.2}s">${n}</div>`
-        ).join('');
-
-        const historial = REAL_NOCHE_SORTEOS.slice(1, 6);
-        if (!historial.length) {
-            sidePanel.innerHTML = '<div class="waiting-text" style="color:white;">SOLO HAY UN SORTEO REGISTRADO</div>';
-        } else {
-            sidePanel.innerHTML = historial.map((s, idx) => {
-                let label = s.fecha || '';
-                if (s.fechaRD === hoy) label = 'HOY';
-                else if (s.fechaRD === getFormatDate(1)) label = 'AYER';
-                else if (s.fechaRD) {
-                    const [y, m, d] = s.fechaRD.split('-');
-                    label = `${d}/${m}/${y}`;
-                }
-                const smallClass = s.fechaRD === hoy ? '' : 'white';
-                return `
-                    <div class="side-row">
-                        <div class="side-time">
-                            ${s.hora}
-                            <small style="font-size:18px; display:block; color:#64748b; font-weight:700; margin-top:2px;">${label}</small>
-                        </div>
-                        <div style="display:flex; gap:10px;">
-                            <div class="ball-small ${smallClass}" style="animation-delay: ${idx * 0.1}s">${s.numeros[0]}</div>
-                            <div class="ball-small ${smallClass}" style="animation-delay: ${idx * 0.1 + 0.15}s">${s.numeros[1]}</div>
-                            <div class="ball-small ${smallClass}" style="animation-delay: ${idx * 0.1 + 0.30}s">${s.numeros[2]}</div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-    }
-
-    // ============================================
-    // INICIALIZACIÓN DE DATOS
-    // ============================================
-    function inicializarDatos() {
-        database.ref('ticker').on('value', snap => {
-            const texto = snap.val() || "BIENVENIDOS A ANGUILLA LOTTERY";
-            document.getElementById('marqueeText').innerText = texto;
-            guardarEnCache('ticker', texto);
-        });
-
-        database.ref('configuracion/tiempoPantalla').on('value', snap => {
-            if (snap.val()) {
-                tiempoRotacionGlobal = parseInt(snap.val()) * 1000;
-                guardarEnCache('tiempoRotacion', tiempoRotacionGlobal);
-            }
-        });
-
+    // ============================================================
+    // ANUNCIOS
+    // ============================================================
+    function escucharAnuncios() {
         database.ref('anunciosList').on('value', snap => {
-            ANUNCIOS = [];
-            const cacheContainer = document.getElementById('preloader-cache');
-            cacheContainer.innerHTML = "";
-            if (snap.exists()) snap.forEach(child => {
-                let item = child.val();
-                if (item?.activo !== false && item?.url?.trim()) {
-                    ANUNCIOS.push(item);
-                    let imgPre = new Image();
-                    imgPre.src = convertirLinkGitHub(item.url.trim());
-                    cacheContainer.appendChild(imgPre);
-                }
+            const container = document.getElementById('contenedorAnuncios');
+            container.innerHTML = "";
+            anunciosLocales = [];
+            let contador = 0;
+
+            snap.forEach(child => {
+                const data = child.val();
+                const isActivo = data.activo !== undefined ? data.activo : true;
+                anunciosLocales.push({ url: data.url || "", tiempo: data.tiempo || 15, activo: isActivo });
+                inyectarEstructuraAnuncio(contador, data.url || "", data.tiempo || 15, isActivo);
+                contador++;
             });
-            guardarEnCache('anuncios', ANUNCIOS);
-            if (adIndex >= ANUNCIOS.length) adIndex = 0;
-        });
-
-        const hoyStr = getFormatDate(0);
-        const ayerStr = getFormatDate(1);
-
-        database.ref(`sorteos/${hoyStr}`).on('value', snapHoy => {
-            const dataHoy = snapHoy.val() || [];
-            database.ref(`sorteos/${ayerStr}`).once('value', snapAyer => {
-                const dataAyer = snapAyer.val() || [];
-                const procesados = procesarSorteosData(dataHoy, dataAyer);
-                if (procesados.length > 0) {
-                    SORTEOS = ordenarSorteosCronologicamente(procesados);
-                    guardarEnCache('sorteos', SORTEOS);
-                }
-                if (sistemaIniciado && !enTransmisionVivo) {
-                    renderGrid();
-                    if (currentView === 88) renderFeatured();
-                }
-            });
-        });
-
-        // REAL NOCHE — desde sorteos_enloteria/resultados
-        database.ref('sorteos_enloteria/resultados').on('value', snap => {
-            const data = snap.val();
-            const procesados = procesarRealNoche(data);
-            REAL_NOCHE_SORTEOS = procesados;
-            guardarEnCache('realNoche', REAL_NOCHE_SORTEOS);
-            console.log('🌙 Real Noche sorteos:', REAL_NOCHE_SORTEOS.length);
-            if (sistemaIniciado && !enTransmisionVivo && currentView === 111) {
-                renderRealNoche();
-            }
-        });
-
-        database.ref('transmisionVivo').on('value', snap => {
-            if (!sistemaIniciado) return;
-            const live = snap.val();
-            const vGrid = document.getElementById('view-grid');
-            const vFeat = document.getElementById('view-featured');
-            const vReal = document.getElementById('view-realenoche');
-            const vAds = document.getElementById('view-ads');
-            const boxAd = document.getElementById('adDisplay');
-            const mainBoxArea = document.getElementById('adMainBox');
-            const sidePanelAds = document.getElementById('sidePanelAds');
-
-            if (live && live.activo === true) {
-                enTransmisionVivo = true;
-                clearInterval(rotationInterval);
-                vGrid.classList.add('hidden');
-                vFeat.classList.add('hidden');
-                vReal.classList.add('hidden');
-                vAds.classList.remove('hidden');
-
-                sidePanelAds.style.display = "none";
-                mainBoxArea.style.width = "100%";
-
-                let rawUrl = live.url || "";
-                if (esVideoDirecto(rawUrl)) {
-                    let directUrl = convertirLinkGitHub(rawUrl);
-                    boxAd.innerHTML = `<div class="live-indicator">● EN VIVO</div><video src="${directUrl}" autoplay muted playsinline controls style="width:100%; height:100%; background:#000;"></video>`;
-                } else {
-                    let embedUrl = rawUrl.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/");
-                    if (embedUrl.includes("?")) embedUrl = embedUrl.split("?")[0];
-                    boxAd.innerHTML = `<div class="live-indicator">● EN VIVO</div><iframe src="${embedUrl}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;"></iframe>`;
-                }
-            } else if (enTransmisionVivo) {
-                enTransmisionVivo = false;
-                boxAd.innerHTML = "";
-                gridPage = 0; currentView = 0;
-                sidePanelAds.style.display = "flex";
-                mainBoxArea.style.width = "1190px";
-                vGrid.classList.remove('hidden');
-                vFeat.classList.add('hidden');
-                vReal.classList.add('hidden');
-                vAds.classList.add('hidden');
-                renderGrid();
-                clearInterval(rotationInterval);
-                rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
-            }
         });
     }
 
-    // ============================================
-    // RENDER GRID / FEATURED / ADS
-    // ============================================
-    function renderGrid() {
-        const grid = document.getElementById('mainGrid');
-        grid.innerHTML = '';
-        if (SORTEOS.length === 0) {
-            grid.innerHTML = `<div style="grid-column:1/-1; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-size:32px; font-weight:800; gap:20px;">
-                <span>${usandoCache ? '📡 MODO OFFLINE' : '📡 ESPERANDO DATOS'}</span>
-                <span style="font-size:20px; font-weight:400; opacity:0.7;">${usandoCache ? 'Cargando desde caché...' : 'No hay sorteos disponibles'}</span>
-            </div>`;
-            return;
-        }
-        const start = gridPage * 8;
-        const pageItems = SORTEOS.slice(start, start + 8);
+    function inyectarEstructuraAnuncio(id, url = "", tiempo = "15", activo = true) {
+        const div = document.createElement('div');
+        div.className = "ad-item";
+        div.id = `ad_box_${id}`;
 
-        pageItems.forEach((s, idx) => {
-            const card = document.createElement('div');
-            card.className = `card ${s.day === 'hoy' ? 'card-hoy' : 'card-ayer'}`;
-            let bottom = s.isWaiting
-                ? `<div class="waiting-text">ESPERANDO RESULTADOS...</div>`
-                : `<div class="balls-container">
-                    <div class="ball-flat" style="animation-delay: ${(idx * 0.1)}s">${s.nums ? s.nums[0] : '--'}</div>
-                    <div class="ball-flat" style="animation-delay: ${(idx * 0.1 + 0.15)}s">${s.nums ? s.nums[1] : '--'}</div>
-                    <div class="ball-flat" style="animation-delay: ${(idx * 0.1 + 0.30)}s">${s.nums ? s.nums[2] : '--'}</div>
-                   </div>`;
-            const cacheBadge = usandoCache ? `<div class="cached-badge">📦 CACHÉ</div>` : '';
-            card.innerHTML = `<div class="card-header"><img class="mini-logo" src="anguilla.png"><div class="time-bar">${s.hour}</div><div class="date-tag">${s.date}</div></div>${bottom}${cacheBadge}`;
-            grid.appendChild(card);
-        });
-    }
+        let srcProcessed = "";
+        let isVid = false;
+        let hasPreview = false;
 
-    function generarPanelLateral(contenedorId) {
-        let jugados = SORTEOS.filter(s => s.nums?.length > 0);
-        const panel = document.getElementById(contenedorId);
-        if (jugados.length === 0) {
-            panel.innerHTML = '<div class="waiting-text">NO HAY SORTEOS PREVIOS</div>';
-            return SORTEOS[0] || { hour: '--:--', date: 'HOY', nums: null };
+        if (url && url.trim() !== "") {
+            srcProcessed = obtenerMiniaturaUrl(url.trim());
+            isVid = esVideoDirecto(url);
+            hasPreview = srcProcessed !== "" && srcProcessed !== url;
         }
-        jugados.sort((a, b) => {
-            if (a.day === b.day) return convertirHoraAminutos(b.hour) - convertirHoraAminutos(a.hour);
-            return a.day === 'hoy' ? -1 : 1;
-        });
-        let last = jugados[0];
-        const historial = jugados.slice(1, 6);
-        panel.innerHTML = historial.map((s, idx) => `
-            <div class="side-row">
-                <div class="side-time">${s.hour} <small style="font-size:18px; display:block; color:#64748b; font-weight:700; margin-top:2px;">${s.date}</small></div>
-                <div style="display:flex; gap:10px;">
-                    <div class="ball-small" style="animation-delay: ${idx * 0.1}s">${s.nums[0]}</div>
-                    <div class="ball-small" style="animation-delay: ${idx * 0.1 + 0.15}s">${s.nums[1]}</div>
-                    <div class="ball-small" style="animation-delay: ${idx * 0.1 + 0.30}s">${s.nums[2]}</div>
+
+        div.innerHTML = `
+            <div class="ad-row-main">
+                <div class="ad-preview-box" id="preview_img_box_${id}">
+                    ${hasPreview ? (isVid ?
+                        `<video src="${srcProcessed}" preload="metadata" muted playsinline style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'; document.getElementById('no_img_${id}').style.display='block';">` :
+                        `<img src="${srcProcessed}" style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'; document.getElementById('no_img_${id}').style.display='block';">`
+                    ) : ''}
+                    ${!hasPreview ? `<div class="no-img" id="no_img_${id}">Sin preview</div>` : `<div class="no-img" id="no_img_${id}" style="display:none;">Sin preview</div>`}
                 </div>
-            </div>`).join('');
-        return last;
+                <div class="ad-fields">
+                    <div class="form-group">
+                        <label>URL (Imagen, YouTube o GitHub MP4):</label>
+                        <input type="url" class="input-ad-url" value="${url}" placeholder="https://..." oninput="actualizarMiniaturaDinamica(${id}, this.value)">
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center; justify-content: space-between; flex-wrap: wrap;">
+                <div class="flex-wrap">
+                    <div style="width: 70px;">
+                        <label class="form-group"><span style="font-size: 0.7rem; color: var(--text-muted);">Segundos:</span></label>
+                        <input type="number" class="input-ad-time" value="${tiempo}" min="3" style="padding: 4px 8px; width: 60px; font-size:0.8rem;">
+                    </div>
+                    <div>
+                        <label class="switch-container">
+                            <div class="switch">
+                                <input type="checkbox" class="input-ad-status" ${activo ? 'checked' : ''}>
+                                <span class="slider"></span>
+                            </div>
+                            <span style="font-size: 0.7rem; color: var(--text-muted);">Activo</span>
+                        </label>
+                    </div>
+                    <span class="status-badge ${activo ? 'status-active' : 'status-inactive'}">${activo ? 'Activo' : 'Inactivo'}</span>
+                </div>
+                <button class="btn btn-danger" style="min-height: 30px; padding: 4px 12px; font-size:0.75rem;" onclick="eliminarNodoAd(${id})">🗑️</button>
+            </div>`;
+        document.getElementById('contenedorAnuncios').appendChild(div);
     }
 
-    function renderFeatured() {
-        let last = generarPanelLateral('sidePanelFeatured');
-        document.getElementById('fTime').innerText = last.hour;
-        const fBalls = document.getElementById('fBalls');
-        const fDate = document.getElementById('fDate');
+    function actualizarMiniaturaDinamica(id, url) {
+        const box = document.getElementById(`preview_img_box_${id}`);
+        const noImgLabel = document.getElementById(`no_img_${id}`);
+        url = url.trim();
+        const src = obtenerMiniaturaUrl(url);
 
-        if (last.nums) {
-            const esHoy = last.day === 'hoy';
-            fBalls.innerHTML = last.nums.map((n, i) => `<div class="ball-big ${esHoy ? 'blue' : 'gray'}" style="animation-delay: ${i * 0.2}s">${n}</div>`).join('');
-            // Fecha grande abajo
-            if (esHoy) {
-                fDate.innerText = formatearFechaLarga(0);
+        const imgExistente = box.querySelector('img');
+        const vidExistente = box.querySelector('video');
+        if (imgExistente) imgExistente.remove();
+        if (vidExistente) vidExistente.remove();
+
+        if (src && src !== url) {
+            if (esVideoDirecto(url)) {
+                const nuevoVid = document.createElement('video');
+                nuevoVid.src = src;
+                nuevoVid.preload = "metadata";
+                nuevoVid.muted = true;
+                nuevoVid.playsInline = true;
+                nuevoVid.style.width = "100%";
+                nuevoVid.style.height = "100%";
+                nuevoVid.style.objectFit = "cover";
+                nuevoVid.onerror = () => { nuevoVid.style.display = 'none'; noImgLabel.style.display = 'block'; };
+                box.insertBefore(nuevoVid, noImgLabel);
             } else {
-                fDate.innerText = formatearFechaLarga(1);
+                const nuevaImg = document.createElement('img');
+                nuevaImg.src = src;
+                nuevaImg.style.width = "100%";
+                nuevaImg.style.height = "100%";
+                nuevaImg.style.objectFit = "cover";
+                nuevaImg.onerror = () => { nuevaImg.style.display = 'none'; noImgLabel.style.display = 'block'; };
+                box.insertBefore(nuevaImg, noImgLabel);
             }
+            noImgLabel.style.display = 'none';
         } else {
-            fBalls.innerHTML = '<div class="waiting-text">PROXIMO SORTEO</div>';
-            fDate.innerText = formatearFechaLarga(0);
+            noImgLabel.style.display = 'block';
         }
     }
 
-    function renderMediaAd() {
-        generarPanelLateral('sidePanelAds');
-        const box = document.getElementById('adDisplay');
-        box.innerHTML = "";
-        const activos = ANUNCIOS.filter(ad => ad.activo !== false);
-        if (activos.length === 0) {
-            const msg = usandoCache ? '📡 MODO OFFLINE - ANGUILLA LOTTERY' : 'ANGUILLA LOTTERY';
-            box.innerHTML = `<div style='color:white; font-size:40px; font-weight:800; letter-spacing:1px;'>${msg}</div>`;
-            return tiempoRotacionGlobal;
-        }
-        if (adIndex >= activos.length) adIndex = 0;
-        const ad = activos[adIndex];
-        let urlTarget = ad.url ? ad.url.trim() : "";
-        let urlProcesada = convertirLinkGitHub(urlTarget);
-
-        if (esVideoDirecto(urlTarget) && (urlTarget.includes('.mp4') || urlTarget.includes('.webm') || urlTarget.includes('.ogg') || urlTarget.includes('.mov') || urlTarget.includes('raw.githubusercontent'))) {
-            box.innerHTML = `<video src="${urlProcesada}" autoplay muted playsinline style="width:100%; height:100%; object-fit:contain;"></video>`;
-        } else if (urlTarget.includes('youtube.com') || urlTarget.includes('youtu.be')) {
-            let embed = urlTarget.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/");
-            if (embed.includes("?")) embed = embed.split("?")[0];
-            box.innerHTML = `<iframe src="${embed}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;"></iframe>`;
-        } else if (urlTarget !== "") {
-            box.innerHTML = `<img src="${urlProcesada}" style="width:100%; height:100%; object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'color:white; font-size:40px; font-weight:800; letter-spacing:1px;\\'>ANGUILLA LOTTERY</div>';">`;
-        } else {
-            box.innerHTML = "<div style='color:white; font-size:40px; font-weight:800; letter-spacing:1px;'>ANGUILLA LOTTERY</div>";
-        }
-
-        let tiempoAsignado = (parseInt(ad.tiempo) || 15) * 1000;
-        adIndex++;
-        return tiempoAsignado;
+    function agregarNuevoAnuncioVacio() {
+        let idSiguiente = document.querySelectorAll('.ad-item').length;
+        inyectarEstructuraAnuncio(idSiguiente, "", "15", true);
     }
 
-    // ============================================
-    // ROTACIÓN
-    // ============================================
-    function rotateDisplay() {
-        if (SORTEOS.length === 0 || enTransmisionVivo || !sistemaIniciado) return;
-        clearInterval(rotationInterval);
-
-        const vGrid = document.getElementById('view-grid');
-        const vFeat = document.getElementById('view-featured');
-        const vReal = document.getElementById('view-realenoche');
-        const vAds = document.getElementById('view-ads');
-        const totalPages = Math.max(1, Math.ceil(SORTEOS.length / 8));
-
-        vGrid.classList.add('hidden');
-        vFeat.classList.add('hidden');
-        vReal.classList.add('hidden');
-        vAds.classList.add('hidden');
-
-        setTimeout(() => {
-            let nextTime = tiempoRotacionGlobal;
-
-            if (currentView < totalPages - 1) {
-                gridPage++; currentView++;
-                renderGrid();
-                vGrid.classList.remove('hidden');
-            } else if (currentView === totalPages - 1) {
-                currentView = 88;
-                renderFeatured();
-                vFeat.classList.remove('hidden');
-            } else if (currentView === 88) {
-                currentView = 111;
-                renderRealNoche();
-                vReal.classList.remove('hidden');
-            } else if (currentView === 111) {
-                currentView = 99;
-                nextTime = renderMediaAd();
-                vAds.classList.remove('hidden');
-            } else {
-                gridPage = 0; currentView = 0;
-                renderGrid();
-                vGrid.classList.remove('hidden');
-            }
-
-            rotationInterval = setInterval(rotateDisplay, Math.max(1000, nextTime - 450));
-        }, 450);
+    function eliminarNodoAd(id) {
+        const el = document.getElementById(`ad_box_${id}`);
+        if (el) el.remove();
     }
 
-    function updateDateTime() {
-        const now = new Date();
-        const hrs = now.getHours() % 12 || 12;
-        const mins = now.getMinutes().toString().padStart(2, '0');
-        const secs = now.getSeconds().toString().padStart(2, '0');
-        const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
-        document.getElementById('liveClock').innerText = `${hrs}:${mins}:${secs} ${ampm}`;
-        const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO'];
-        const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
-        document.getElementById('currentDay').innerText = `${dias[now.getDay()]} ${now.getDate()}`;
-        document.getElementById('currentMonth').innerText = `${meses[now.getMonth()]} ${now.getFullYear()}`;
-    }
+    function guardarTodosLosAnuncios() {
+        let lista = [];
+        const boxes = document.querySelectorAll('.ad-item');
 
-    window.onload = () => {
-        dimensionarPantalla();
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
+        boxes.forEach((box) => {
+            const urlInput = box.querySelector('.input-ad-url');
+            const timeInput = box.querySelector('.input-ad-time');
+            const statusInput = box.querySelector('.input-ad-status');
 
-        verificarConexion();
-        monitorearConexion();
-        cargarDesdeCache();
-        inicializarDatos();
-
-        setTimeout(() => { cargarDatosFirebase(); }, 1000);
-        activarMantenerPantallaEncendida();
-
-        setTimeout(() => {
-            const splash = document.getElementById('splash-screen');
-            splash.style.opacity = '0';
-            splash.style.visibility = 'hidden';
-            sistemaIniciado = true;
-            if (SORTEOS.length === 0) cargarDesdeCache();
-
-            database.ref('transmisionVivo').once('value', snap => {
-                const live = snap.val();
-                if (live && live.activo === true) {
-                    // mantener vista
-                } else {
-                    renderGrid();
-                    rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
-                }
-            });
-        }, 2000);
-    };
-
-    function dimensionarPantalla() {
-        const baseWidth = 1920, baseHeight = 1080;
-        const elScale = Math.min(window.innerWidth / baseWidth, window.innerHeight / baseHeight);
-        document.getElementById('canvas-master').style.transform = `translate(-50%, -50%) scale(${elScale})`;
-    }
-    window.addEventListener('resize', dimensionarPantalla);
-
-    let wakeLock = null;
-    async function activarMantenerPantallaEncendida() {
-        try {
-            if ('wakeLock' in navigator) {
-                wakeLock = await navigator.wakeLock.request('screen');
-                document.addEventListener('visibilitychange', async () => {
-                    if (wakeLock !== null && document.visibilityState === 'visible') {
-                        wakeLock = await navigator.wakeLock.request('screen');
-                    }
+            if (urlInput && urlInput.value.trim() !== "") {
+                lista.push({
+                    url: urlInput.value.trim(),
+                    tiempo: timeInput.value || "15",
+                    activo: statusInput.checked
                 });
             }
-        } catch (err) { console.error("WakeLock Error: ", err); }
+        });
+
+        database.ref('anunciosList').set(lista, err => {
+            if (err) alert("Fallo al guardar anuncios");
+            else mostrarFeedback('✓ Anuncios guardados');
+        });
     }
+
+    // ============================================================
+    // EXPONER FUNCIONES GLOBALES
+    // ============================================================
+    window.recargarMonitor = recargarMonitor;
+    window.guardarTiempoGlobal = guardarTiempoGlobal;
+    window.guardarCintillo = guardarCintillo;
+    window.iniciarTransmision = iniciarTransmision;
+    window.detenerTransmision = detenerTransmision;
+    window.agregarNuevoAnuncioVacio = agregarNuevoAnuncioVacio;
+    window.eliminarNodoAd = eliminarNodoAd;
+    window.guardarTodosLosAnuncios = guardarTodosLosAnuncios;
+    window.actualizarMiniaturaDinamica = actualizarMiniaturaDinamica;
+    window.crearEstructuraBase = crearEstructuraBase;
+    window.actualizarSorteo = actualizarSorteo;
+    window.fetchSorteos = fetchSorteos;
+    window.cambiarDia = cambiarDia;
+    window.forzarActualizarEstadisticas = forzarActualizarEstadisticas;
+    window.guardarRealNoche = guardarRealNoche;
+    window.eliminarRealNoche = eliminarRealNoche;
 </script>
 </body>
 </html>
