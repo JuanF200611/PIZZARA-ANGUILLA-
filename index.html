@@ -28,7 +28,7 @@
     /* --- SPLASH --- */
     #splash-screen {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: radial-gradient(circle at 50% 50%, var(--anguilla-blue) 0%, var(--anguilla-blue-dark) 100%);
+        background: url('fondo.png') center center / cover no-repeat, #0b1f4b;
         z-index: 99999;
         display: flex; flex-direction: column;
         align-items: center; justify-content: center;
@@ -38,35 +38,141 @@
     .splash-text { color: var(--white); font-family: 'Inter', sans-serif; font-size: 42px; font-weight: 800; margin-top: 40px; letter-spacing: 2px; text-shadow: 0 4px 10px rgba(0,0,0,0.4); }
     .splash-sub { color: var(--anguilla-yellow); font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 700; margin-top: 10px; letter-spacing: 4px; animation: pulse 1.5s infinite alternate; }
 
+    /* ✅ FONDO VISIBLE EN TODA LA PIZARRA */
     #canvas-master {
         width: 1920px; height: 1080px;
-        background: radial-gradient(circle at 50% 20%, #173b78 0%, #0b1f4b 42%, #06132f 100%);
+        background: url('fondo.png') center center / cover no-repeat, #0b1f4b;
         position: absolute; top: 50%; left: 50%;
         transform: translate(-50%, -50%);
         transform-origin: center center;
         overflow: hidden;
     }
 
-    /* --- TOPBAR --- */
+    /* --- TOPBAR sin fondo azul oscuro --- */
     .topbar {
         width: 100%; height: 151px;
-        background: linear-gradient(135deg, var(--anguilla-blue) 0%, var(--anguilla-blue-dark) 100%);
+        background: transparent;
         display: flex; align-items: center; justify-content: space-between;
         padding: 0 50px; border-bottom: 5px solid var(--anguilla-yellow);
-        box-shadow: 0 8px 32px rgba(0,0,0,0.35);
         position: relative; z-index: 10;
+        filter: drop-shadow(0 8px 20px rgba(0,0,0,0.5));
     }
-    .logo-main-area img { height: 210px; object-fit: contain; padding-top: 10%; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.25)); }
 
-    .header-info { display: flex; align-items: center; gap: 40px; }
+    /* ✅ Área del logo + mensajes al lado */
+    .logo-area-with-msg {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        height: 100%;
+        flex: 1;
+        max-width: 1150px;
+        overflow: hidden;
+    }
+
+    .logo-main-area {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        flex-shrink: 0;
+    }
+    .logo-main-area img {
+        height: 120px;
+        max-width: 280px;
+        object-fit: contain;
+        filter: drop-shadow(0 8px 20px rgba(0,0,0,0.6));
+    }
+
+    /* ✅ Caja de mensajes GRANDE al lado del logo */
+    .header-message-box {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 14px 34px;
+        background: rgba(6, 19, 47, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 3px solid var(--anguilla-yellow);
+        border-radius: 60px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 40px rgba(251, 191, 36, 0.3);
+        animation: msgPulse 3s ease-in-out infinite;
+        flex: 1;
+        min-width: 500px;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    @keyframes msgPulse {
+        0%, 100% { box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 40px rgba(251, 191, 36, 0.3); }
+        50%      { box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 60px rgba(251, 191, 36, 0.55); }
+    }
+
+    .header-msg-icon {
+        font-size: 48px;
+        filter: drop-shadow(0 2px 8px rgba(251, 191, 36, 0.6));
+        flex-shrink: 0;
+    }
+
+    .header-msg-text {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow: hidden;
+        flex: 1;
+    }
+
+    .header-msg-main {
+        font-size: 30px;
+        font-weight: 900;
+        color: var(--white);
+        letter-spacing: 0.5px;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+        line-height: 1.1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .header-msg-sub {
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--anguilla-yellow);
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-top: 4px;
+        text-shadow: 0 1px 6px rgba(0,0,0,0.6);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .header-msg-refresh {
+        animation: fadeSwap 0.6s ease-in-out both;
+    }
+
+    @keyframes fadeSwap {
+        0% { opacity: 0; transform: translateY(15px) scale(0.95); }
+        100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .header-info { display: flex; align-items: center; gap: 40px; flex-shrink: 0; }
     .header-clock {
         font-size: 61px; font-weight: 900; color: var(--white); line-height: 1;
         border-right: 4px solid rgba(255, 204, 0, 0.4); padding-right: 40px;
-        font-variant-numeric: tabular-nums; text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        font-variant-numeric: tabular-nums;
+        text-shadow: 0 4px 12px rgba(0,0,0,0.8), 0 0 30px rgba(0,180,255,0.4);
     }
     .date-header { text-align: right; }
-    .main-date { font-size: 38px; font-weight: 900; color: var(--anguilla-yellow); text-transform: uppercase; line-height: 1; text-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-    .sub-date { font-size: 19px; font-weight: 700; color: var(--white); opacity: 0.95; letter-spacing: 0.5px; margin-top: 2px; }
+    .main-date {
+        font-size: 38px; font-weight: 900; color: var(--anguilla-yellow);
+        text-transform: uppercase; line-height: 1;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    }
+    .sub-date {
+        font-size: 19px; font-weight: 700; color: var(--white);
+        opacity: 0.95; letter-spacing: 0.5px; margin-top: 2px;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+    }
 
     /* --- INDICADOR DE CONEXIÓN --- */
     .connection-status { display: inline-flex; align-items: center; gap: 8px; margin-left: 15px; cursor: default; position: relative; }
@@ -83,18 +189,24 @@
     @keyframes pulse-dot-offline { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.85); } }
     @keyframes pulse-dot-checking { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.7); } }
 
-    /* --- TICKER --- */
+    /* --- TICKER sin fondo oscuro --- */
     .ticker-bar {
         width: 100%; height: 54px;
-        background: #090909; border-bottom: 4px solid var(--anguilla-yellow);
+        background: transparent;
+        border-bottom: 4px solid var(--anguilla-yellow);
         overflow: hidden; display: flex; align-items: center;
-        position: relative; z-index: 10; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        position: relative; z-index: 10;
+        filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
     }
-    .ticker-text { white-space: nowrap; font-size: 26px; font-weight: 800; color: #fff; animation: marquee 25s linear infinite; padding-left: 100%; letter-spacing: 0.5px; }
+    .ticker-text {
+        white-space: nowrap; font-size: 26px; font-weight: 800; color: #fff;
+        animation: marquee 25s linear infinite; padding-left: 100%; letter-spacing: 0.5px;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,180,255,0.3);
+    }
     @keyframes marquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
     /* --- CONTENEDORES CON TRANSICIÓN --- */
-    #view-grid, #view-featured, #view-ads, #view-realenoche {
+    #view-grid, #view-featured, #view-ads, #view-realenoche, #view-loteka {
         height: 875px; padding: 25px 30px;
         position: absolute; width: 100%; top: 205px; left: 0;
         z-index: 1; opacity: 1; transform: scale(1) translateY(0px);
@@ -104,6 +216,9 @@
                     visibility 0.6s;
     }
     .hidden { opacity: 0 !important; transform: scale(0.98) translateY(20px) !important; visibility: hidden !important; }
+
+    /* ✅ ANUNCIOS A PANTALLA COMPLETA (sin padding) */
+    #view-ads { padding: 0; }
 
     /* --- TARJETAS GRID --- */
     .grid-container { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); gap: 25px; height: 100%; }
@@ -158,27 +273,19 @@
         position: relative;
     }
     .ball-big:hover { transform: scale(1.03); }
-    /* Bolo AZUL = HOY */
     .ball-big.blue { background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #3b82f6 30%, #2563eb 60%, #1d4ed8 85%, #1e40af 100%); color: #ffffff; box-shadow: inset -12px -12px 30px rgba(0,0,0,0.5), inset 6px 6px 18px rgba(255,255,255,0.6), 0 20px 40px rgba(0,0,0,0.4); text-shadow: 0 3px 10px rgba(0,0,0,0.5); }
-    /* Bolo BLANCO = AYER (u otros días) */
     .ball-big.white {
         background: radial-gradient(circle at 30% 30%, #ffffff 0%, #f8fafc 40%, #e2e8f0 80%, #cbd5e1 100%);
         color: #1e293b;
         border: 3px solid rgba(0,0,0,0.15);
-        box-shadow:
-            inset -12px -12px 30px rgba(0,0,0,0.15),
-            inset 6px 6px 18px rgba(255,255,255,0.9),
-            0 20px 40px rgba(0,0,0,0.25);
+        box-shadow: inset -12px -12px 30px rgba(0,0,0,0.15), inset 6px 6px 18px rgba(255,255,255,0.9), 0 20px 40px rgba(0,0,0,0.25);
         text-shadow: 0 1px 2px rgba(255,255,255,0.6);
     }
     .ball-small.white {
         background: radial-gradient(circle at 30% 30%, #ffffff 0%, #f8fafc 40%, #e2e8f0 80%, #cbd5e1 100%);
         color: #1e293b;
         border: 2px solid rgba(0,0,0,0.15);
-        box-shadow:
-            inset -6px -6px 16px rgba(0,0,0,0.15),
-            inset 4px 4px 10px rgba(255,255,255,0.9),
-            0 8px 20px rgba(0,0,0,0.2);
+        box-shadow: inset -6px -6px 16px rgba(0,0,0,0.15), inset 4px 4px 10px rgba(255,255,255,0.9), 0 8px 20px rgba(0,0,0,0.2);
         text-shadow: 0 1px 2px rgba(255,255,255,0.6);
     }
 
@@ -192,10 +299,14 @@
     .split-container { display: flex; gap: 25px; height: 100%; width: 100%; }
     .split-main {
         width: 1190px;
-        background: linear-gradient(145deg, var(--anguilla-blue) 0%, var(--anguilla-blue-dark) 100%);
+        background: rgba(6, 19, 47, 0.35);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         border: 5px solid var(--anguilla-yellow);
         border-radius: 32px; display: flex; flex-direction: column; align-items: center;
-        justify-content: center; padding: 30px; box-shadow: var(--shadow-lg); overflow: hidden;
+        justify-content: center; padding: 30px;
+        box-shadow: var(--shadow-lg), 0 0 40px rgba(0, 180, 255, 0.15);
+        overflow: hidden;
         position: relative;
     }
     .side-panel { width: 730px; display: flex; flex-direction: column; gap: 15px; }
@@ -206,11 +317,44 @@
     }
     .side-time { color: var(--anguilla-blue); font-size: 34px; font-weight: 900; }
 
-    .featured-label { font-size: 26px; background: rgba(255,255,255,0.12); padding: 6px 30px; border-radius: 50px; margin-bottom: 20px; font-weight: 800; color: #fff; letter-spacing: 1px; }
+    .featured-label { font-size: 26px; background: rgba(255,255,255,0.15); padding: 6px 30px; border-radius: 50px; margin-bottom: 20px; font-weight: 800; color: #fff; letter-spacing: 1px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
     .featured-logo-big { height: 275px; margin-bottom: 20px; filter: drop-shadow(0 12px 20px rgba(0,0,0,0.4)); object-fit: contain; }
-    .featured-time-box { font-size: 100px; background: var(--anguilla-yellow); color: var(--anguilla-blue); padding: 4px 70px; border-radius: 24px; font-weight: 900; box-shadow: var(--shadow-md); }
 
-    /* NUEVA: Fecha grande abajo del sorteo destacado */
+    /* ✅ HORA DEL ÚLTIMO SORTEO — CON GRADIENTE Y GLOW PULSANTE */
+    .featured-time-box {
+        font-size: 100px;
+        background: linear-gradient(135deg, #fbbf24 0%, #f97316 50%, #fbbf24 100%);
+        background-size: 200% 200%;
+        color: #ffffff;
+        padding: 4px 70px;
+        border-radius: 24px;
+        font-weight: 900;
+        letter-spacing: 2px;
+        text-shadow: 0 4px 12px rgba(0,0,0,0.5), 0 0 30px rgba(251, 191, 36, 0.6);
+        box-shadow:
+            0 10px 30px rgba(0,0,0,0.5),
+            0 0 40px rgba(251, 191, 36, 0.7),
+            inset 0 2px 0 rgba(255,255,255,0.3);
+        border: 3px solid rgba(255, 255, 255, 0.4);
+        animation: timeGlow 2.5s ease-in-out infinite;
+    }
+
+    @keyframes timeGlow {
+        0%, 100% {
+            box-shadow:
+                0 10px 30px rgba(0,0,0,0.5),
+                0 0 40px rgba(251, 191, 36, 0.7),
+                inset 0 2px 0 rgba(255,255,255,0.3);
+        }
+        50% {
+            box-shadow:
+                0 10px 30px rgba(0,0,0,0.5),
+                0 0 70px rgba(251, 191, 36, 1),
+                0 0 100px rgba(249, 115, 22, 0.6),
+                inset 0 2px 0 rgba(255,255,255,0.4);
+        }
+    }
+
     .featured-date-big {
         font-size: 30px;
         font-weight: 800;
@@ -219,12 +363,19 @@
         letter-spacing: 1.5px;
         text-transform: uppercase;
         opacity: 0.95;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        text-shadow: 0 2px 8px rgba(0,0,0,0.6);
     }
 
     .balls-container { display: flex; justify-content: center; align-items: center; gap: 18px; padding: 15px; background: transparent; border-radius: 20px; flex-grow: 1; width: 100%; }
 
-    .ad-box { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #000; overflow: hidden; border-radius: 24px; position: relative; }
+    /* ✅ AD BOX — PANTALLA COMPLETA SIN BORDES */
+    .ad-box {
+        width: 100%; height: 100%;
+        display: flex; align-items: center; justify-content: center;
+        background: #000; overflow: hidden;
+        border-radius: 0;
+        position: relative;
+    }
     .ad-box img, .ad-box video { width: 100%; height: 100%; object-fit: contain; }
     .ad-box iframe { width: 100%; height: 100%; border: none; }
 
@@ -251,23 +402,28 @@
         100% { transform: translateY(0px); }
     }
 
-    /* ============================================
-       REAL NOCHE — MISMO ESTILO ANGUILLA
-       HOY  → bolos azules
-       AYER → bolos blancos
-       ============================================ */
-    .reallogo-main {
+    .reallogo-main,
+    .lotekalogo-main {
         height: 275px;
         margin-bottom: 20px;
         filter: drop-shadow(0 12px 20px rgba(0,0,0,0.4));
         object-fit: contain;
     }
+
+    #adMainBox {
+        width: 100% !important;
+        border: none !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        background: #000 !important;
+    }
+    #adsContainerStructure { gap: 0 !important; }
 </style>
 </head>
 <body>
 
 <div id="splash-screen">
-    <img src="logo.png" class="splash-logo" alt="Logo Empresa">
+    <img src="nuevologo.png" class="splash-logo" alt="Logo Empresa">
     <div class="splash-text">INICIANDO SISTEMA</div>
     <div class="splash-sub">POR FAVOR ESPERE...</div>
 </div>
@@ -276,7 +432,16 @@
 
 <div id="canvas-master">
     <div class="topbar">
-        <div class="logo-main-area"><img src="logo.png" alt="Logo"></div>
+        <div class="logo-area-with-msg">
+            <div class="logo-main-area"><img src="nuevologo.png" alt="Logo"></div>
+            <div class="header-message-box" id="headerMessageBox">
+                <div class="header-msg-icon" id="headerMsgIcon">🍀</div>
+                <div class="header-msg-text">
+                    <div class="header-msg-main" id="headerMsgMain">¡LA SUERTE TE ESPERA!</div>
+                    <div class="header-msg-sub" id="headerMsgSub">Juega con responsabilidad</div>
+                </div>
+            </div>
+        </div>
         <div class="header-info">
             <div class="header-clock" id="liveClock">00:00:00</div>
             <div class="date-header">
@@ -302,8 +467,8 @@
     <div id="view-featured" class="hidden">
         <div class="split-container">
             <div class="split-main">
-                <div class="featured-label">ÚLTIMO SORTEO REALIZADO</div>
-                <img src="anguilla.png" class="featured-logo-big" alt="Anguilla">
+                <div class="featured-label" id="fLabel">ÚLTIMO SORTEO REALIZADO</div>
+                <img src="anguilla.png" class="featured-logo-big" id="fLogo" alt="Anguilla" onerror="this.src='anguilla.png'">
                 <div class="featured-time-box" id="fTime">--:--</div>
                 <div class="balls-container" style="background:transparent; margin-top:20px;" id="fBalls"></div>
                 <div class="featured-date-big" id="fDate">--</div>
@@ -325,12 +490,25 @@
         </div>
     </div>
 
+    <div id="view-loteka" class="hidden">
+        <div class="split-container">
+            <div class="split-main">
+                <div class="featured-label">🎰 LOTEKA TARDE · 1:30 PM · ÚLTIMO SORTEO</div>
+                <img src="lotekalogo.png" class="lotekalogo-main" alt="Loteka Tarde" onerror="this.src='anguilla.png'">
+                <div class="featured-time-box" id="lotekaTime">--:--</div>
+                <div class="balls-container" style="background:transparent; margin-top:20px;" id="lotekaBalls"></div>
+                <div class="featured-date-big" id="lotekaDate">--</div>
+            </div>
+            <div class="side-panel" id="sidePanelLoteka"></div>
+        </div>
+    </div>
+
+    <!-- ✅ ANUNCIOS A PANTALLA COMPLETA -->
     <div id="view-ads" class="hidden">
         <div class="split-container" id="adsContainerStructure">
-            <div class="split-main" id="adMainBox" style="background: #000; padding: 0; border: none;">
+            <div class="split-main" id="adMainBox">
                 <div class="ad-box" id="adDisplay"></div>
             </div>
-            <div class="side-panel" id="sidePanelAds"></div>
         </div>
     </div>
 </div>
@@ -345,6 +523,7 @@
 
     let SORTEOS = [];
     let REAL_NOCHE_SORTEOS = [];
+    let LOTEKA_TARDE_SORTEOS = [];
     let ANUNCIOS = [];
     let currentView = 0;
     let gridPage = 0;
@@ -355,6 +534,27 @@
     let tiempoRotacionGlobal = 15000;
     let usandoCache = false;
     let isOnline = true;
+
+    // ============================================
+    // ✅ MAPEO DE LOGOS POR LOTERÍA
+    // ============================================
+    const LOGO_MAP = [
+        { keys: ['loteka'],                       logo: 'lotekalogo.png' },
+        { keys: ['real noche', 'real_noche', 'real'],  logo: 'logoreal.png' },
+        { keys: ['anguilla'],                     logo: 'anguilla.png' }
+    ];
+    const LOGO_DEFAULT = 'anguilla.png';
+
+    function getLogoByNombre(nombre) {
+        if (!nombre) return LOGO_DEFAULT;
+        const n = nombre.toLowerCase().trim();
+        for (const entry of LOGO_MAP) {
+            if (entry.keys.some(k => n.includes(k))) {
+                return entry.logo;
+            }
+        }
+        return LOGO_DEFAULT;
+    }
 
     // ============================================
     // CACHE
@@ -377,6 +577,8 @@
         if (sorteosCache?.data?.length) { SORTEOS = sorteosCache.data; datosCargados = true; }
         const realCache = obtenerDeCache('realNoche');
         if (realCache?.data?.length) { REAL_NOCHE_SORTEOS = realCache.data; datosCargados = true; }
+        const lotekaCache = obtenerDeCache('lotekaTarde');
+        if (lotekaCache?.data?.length) { LOTEKA_TARDE_SORTEOS = lotekaCache.data; datosCargados = true; }
         const anunciosCache = obtenerDeCache('anuncios');
         if (anunciosCache?.data?.length) { ANUNCIOS = anunciosCache.data.filter(ad => ad.activo !== false); datosCargados = true; }
         const tickerCache = obtenerDeCache('ticker');
@@ -388,6 +590,7 @@
             renderGrid();
             if (currentView === 88) renderFeatured();
             if (currentView === 111) renderRealNoche();
+            if (currentView === 122) renderLotekaTarde();
             if (!rotationInterval) rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
         }
     }
@@ -459,7 +662,6 @@
         d.setDate(d.getDate() - offsetDays);
         return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     }
-    // Formato legible: "JUEVES 10 SEPTIEMBRE 2026"
     function formatearFechaLarga(isoOrOffset) {
         let d;
         if (typeof isoOrOffset === 'number') {
@@ -477,10 +679,6 @@
     function esVideoDirecto(url) {
         if (!url) return false;
         return url.includes('github.com') || url.includes('raw.githubusercontent') || /\.(mp4|webm|ogg|mov)$/i.test(url);
-    }
-    function esImagen(url) {
-        if (!url) return false;
-        return /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)$/i.test(url);
     }
     function convertirLinkGitHub(url) {
         if (!url) return url;
@@ -516,7 +714,11 @@
             const tieneHoy = sHoy.premios && sHoy.premios[0] !== "" && sHoy.premios[0] !== undefined && sHoy.premios[0] !== null;
             const yaPasoHora = (horaAct.hrs > hSor || (horaAct.hrs === hSor && horaAct.mins >= mSor + 5));
 
-            let sorteoFinal = { hour: sHoy.hora.replace(/(AM|PM)/, ' $1'), key: index };
+            let sorteoFinal = { 
+                hour: sHoy.hora.replace(/(AM|PM)/, ' $1'), 
+                key: index,
+                nombre: sHoy.nombre || sHoy.name || sHoy.loteria || ''
+            };
 
             if (tieneHoy) {
                 sorteoFinal.day = "hoy"; sorteoFinal.date = "HOY";
@@ -528,6 +730,7 @@
             } else {
                 const sAyer = dataAyer && dataAyer[index] ? dataAyer[index] : null;
                 sorteoFinal.day = "ayer"; sorteoFinal.date = "AYER";
+                sorteoFinal.nombre = sHoy.nombre || sAyer?.nombre || '';
                 sorteoFinal.nums = (sAyer?.premios?.[0] !== "" && sAyer?.premios?.[0] != null) ? [sAyer.premios[0], sAyer.premios[1], sAyer.premios[2]] : null;
                 sorteoFinal.isWaiting = false;
             }
@@ -584,24 +787,25 @@
     }
 
     // ============================================
-    // REAL NOCHE — desde sorteos_enloteria/resultados
+    // PROCESADORES GENÉRICOS
     // ============================================
-    function procesarRealNoche(data) {
+    function procesarSorteoPorNombre(data, filtroNombre) {
         const arr = [];
         if (!data) return arr;
         const items = Array.isArray(data) ? data : Object.values(data);
         for (const s of items) {
             if (!s) continue;
             const nombre = (s.nombre || '').toLowerCase();
-            if (!nombre.includes('real noche') && !nombre.includes('real_noche')) continue;
-            if (!s.numeros || !Array.isArray(s.numeros) || s.numeros.length < 3) continue;
-            if (!s.numeros[0] || s.numeros[0] === "") continue;
+            if (!filtroNombre(nombre)) continue;
+            const nums = s.numeros || s.premios;
+            if (!nums || !Array.isArray(nums) || nums.length < 3) continue;
+            if (!nums[0] || nums[0] === "") continue;
             arr.push({
                 nombre: s.nombre,
                 hora: (s.hora || '').replace(/(AM|PM)/i, ' $1').trim(),
                 fechaRD: s.fechaRD || '',
                 fecha: s.fecha || '',
-                numeros: [s.numeros[0], s.numeros[1], s.numeros[2]],
+                numeros: [nums[0], nums[1], nums[2]],
                 enviadoEn: s.enviadoEn || '',
                 timestamp: s.enviadoEn ? new Date(s.enviadoEn).getTime() : 0
             });
@@ -610,44 +814,54 @@
         return arr;
     }
 
-    function renderRealNoche() {
-        const timeEl = document.getElementById('realTime');
-        const ballsEl = document.getElementById('realBalls');
-        const sidePanel = document.getElementById('sidePanelReal');
-        const dateEl = document.getElementById('realDate');
+    function procesarRealNoche(data) {
+        return procesarSorteoPorNombre(data, (n) => n.includes('real noche') || n.includes('real_noche'));
+    }
 
-        if (!REAL_NOCHE_SORTEOS.length) {
-            timeEl.innerText = '--:--';
-            dateEl.innerText = '--';
-            ballsEl.innerHTML = '<div class="waiting-text">ESPERANDO SORTEO DE REAL NOCHE...</div>';
-            sidePanel.innerHTML = '<div class="waiting-text">NO HAY SORTEOS REGISTRADOS</div>';
+    function procesarLotekaTarde(data) {
+        return procesarSorteoPorNombre(data, (n) => n.includes('loteka') && n.includes('tarde'));
+    }
+
+    // ============================================
+    // RENDER: VISTA GENÉRICA
+    // ============================================
+    function renderVistaSorteo(config) {
+        const { sorteos, timeEl, ballsEl, sidePanelEl, dateEl, emptyMsg } = config;
+        const timeNode = document.getElementById(timeEl);
+        const ballsNode = document.getElementById(ballsEl);
+        const sideNode = document.getElementById(sidePanelEl);
+        const dateNode = document.getElementById(dateEl);
+
+        if (!sorteos.length) {
+            timeNode.innerText = '--:--';
+            dateNode.innerText = '--';
+            ballsNode.innerHTML = `<div class="waiting-text">${emptyMsg}</div>`;
+            sideNode.innerHTML = '<div class="waiting-text">NO HAY SORTEOS REGISTRADOS</div>';
             return;
         }
 
-        const last = REAL_NOCHE_SORTEOS[0];
+        const last = sorteos[0];
         const hoy = getFormatDate(0);
         const esHoy = last.fechaRD === hoy;
 
-        timeEl.innerText = last.hora || '--:--';
+        timeNode.innerText = last.hora || '--:--';
 
-        // Fecha grande abajo del sorteo principal
         if (last.fechaRD && last.fechaRD.includes('-')) {
-            dateEl.innerText = formatearFechaLarga(last.fechaRD);
+            dateNode.innerText = formatearFechaLarga(last.fechaRD);
         } else {
-            dateEl.innerText = last.fecha || '--';
+            dateNode.innerText = last.fecha || '--';
         }
 
-        // HOY → bolos AZULES | AYER/otro → bolos BLANCOS
         const ballClass = esHoy ? 'blue' : 'white';
-        ballsEl.innerHTML = last.numeros.map((n, i) =>
+        ballsNode.innerHTML = last.numeros.map((n, i) =>
             `<div class="ball-big ${ballClass}" style="animation-delay: ${i * 0.2}s">${n}</div>`
         ).join('');
 
-        const historial = REAL_NOCHE_SORTEOS.slice(1, 6);
+        const historial = sorteos.slice(1, 6);
         if (!historial.length) {
-            sidePanel.innerHTML = '<div class="waiting-text" style="color:white;">SOLO HAY UN SORTEO REGISTRADO</div>';
+            sideNode.innerHTML = '<div class="waiting-text" style="color:white;">SOLO HAY UN SORTEO REGISTRADO</div>';
         } else {
-            sidePanel.innerHTML = historial.map((s, idx) => {
+            sideNode.innerHTML = historial.map((s, idx) => {
                 let label = s.fecha || '';
                 if (s.fechaRD === hoy) label = 'HOY';
                 else if (s.fechaRD === getFormatDate(1)) label = 'AYER';
@@ -656,11 +870,15 @@
                     label = `${d}/${m}/${y}`;
                 }
                 const smallClass = s.fechaRD === hoy ? '' : 'white';
+                const logoHist = getLogoByNombre(s.nombre);
                 return `
                     <div class="side-row">
-                        <div class="side-time">
-                            ${s.hora}
-                            <small style="font-size:18px; display:block; color:#64748b; font-weight:700; margin-top:2px;">${label}</small>
+                        <div style="display:flex; align-items:center; gap:12px; flex-shrink:0;">
+                            <img src="${logoHist}" style="height:60px; object-fit:contain;" onerror="this.src='anguilla.png'">
+                            <div class="side-time">
+                                ${s.hora}
+                                <small style="font-size:18px; display:block; color:#64748b; font-weight:700; margin-top:2px;">${label}</small>
+                            </div>
                         </div>
                         <div style="display:flex; gap:10px;">
                             <div class="ball-small ${smallClass}" style="animation-delay: ${idx * 0.1}s">${s.numeros[0]}</div>
@@ -673,8 +891,30 @@
         }
     }
 
+    function renderRealNoche() {
+        renderVistaSorteo({
+            sorteos: REAL_NOCHE_SORTEOS,
+            timeEl: 'realTime',
+            ballsEl: 'realBalls',
+            sidePanelEl: 'sidePanelReal',
+            dateEl: 'realDate',
+            emptyMsg: 'ESPERANDO SORTEO DE REAL NOCHE...'
+        });
+    }
+
+    function renderLotekaTarde() {
+        renderVistaSorteo({
+            sorteos: LOTEKA_TARDE_SORTEOS,
+            timeEl: 'lotekaTime',
+            ballsEl: 'lotekaBalls',
+            sidePanelEl: 'sidePanelLoteka',
+            dateEl: 'lotekaDate',
+            emptyMsg: 'ESPERANDO SORTEO DE LOTEKA TARDE...'
+        });
+    }
+
     // ============================================
-    // INICIALIZACIÓN DE DATOS
+    // INICIALIZACIÓN
     // ============================================
     function inicializarDatos() {
         database.ref('ticker').on('value', snap => {
@@ -726,15 +966,16 @@
             });
         });
 
-        // REAL NOCHE — desde sorteos_enloteria/resultados
         database.ref('sorteos_enloteria/resultados').on('value', snap => {
             const data = snap.val();
-            const procesados = procesarRealNoche(data);
-            REAL_NOCHE_SORTEOS = procesados;
+            REAL_NOCHE_SORTEOS = procesarRealNoche(data);
             guardarEnCache('realNoche', REAL_NOCHE_SORTEOS);
-            console.log('🌙 Real Noche sorteos:', REAL_NOCHE_SORTEOS.length);
-            if (sistemaIniciado && !enTransmisionVivo && currentView === 111) {
-                renderRealNoche();
+            LOTEKA_TARDE_SORTEOS = procesarLotekaTarde(data);
+            guardarEnCache('lotekaTarde', LOTEKA_TARDE_SORTEOS);
+            console.log('🌙 Real Noche:', REAL_NOCHE_SORTEOS.length, '| 🎰 Loteka Tarde:', LOTEKA_TARDE_SORTEOS.length);
+            if (sistemaIniciado && !enTransmisionVivo) {
+                if (currentView === 111) renderRealNoche();
+                if (currentView === 122) renderLotekaTarde();
             }
         });
 
@@ -744,10 +985,9 @@
             const vGrid = document.getElementById('view-grid');
             const vFeat = document.getElementById('view-featured');
             const vReal = document.getElementById('view-realenoche');
+            const vLot = document.getElementById('view-loteka');
             const vAds = document.getElementById('view-ads');
             const boxAd = document.getElementById('adDisplay');
-            const mainBoxArea = document.getElementById('adMainBox');
-            const sidePanelAds = document.getElementById('sidePanelAds');
 
             if (live && live.activo === true) {
                 enTransmisionVivo = true;
@@ -755,10 +995,8 @@
                 vGrid.classList.add('hidden');
                 vFeat.classList.add('hidden');
                 vReal.classList.add('hidden');
+                vLot.classList.add('hidden');
                 vAds.classList.remove('hidden');
-
-                sidePanelAds.style.display = "none";
-                mainBoxArea.style.width = "100%";
 
                 let rawUrl = live.url || "";
                 if (esVideoDirecto(rawUrl)) {
@@ -773,11 +1011,10 @@
                 enTransmisionVivo = false;
                 boxAd.innerHTML = "";
                 gridPage = 0; currentView = 0;
-                sidePanelAds.style.display = "flex";
-                mainBoxArea.style.width = "1190px";
                 vGrid.classList.remove('hidden');
                 vFeat.classList.add('hidden');
                 vReal.classList.add('hidden');
+                vLot.classList.add('hidden');
                 vAds.classList.add('hidden');
                 renderGrid();
                 clearInterval(rotationInterval);
@@ -813,7 +1050,12 @@
                     <div class="ball-flat" style="animation-delay: ${(idx * 0.1 + 0.30)}s">${s.nums ? s.nums[2] : '--'}</div>
                    </div>`;
             const cacheBadge = usandoCache ? `<div class="cached-badge">📦 CACHÉ</div>` : '';
-            card.innerHTML = `<div class="card-header"><img class="mini-logo" src="anguilla.png"><div class="time-bar">${s.hour}</div><div class="date-tag">${s.date}</div></div>${bottom}${cacheBadge}`;
+            const logoUrl = getLogoByNombre(s.nombre);
+            card.innerHTML = `<div class="card-header">
+                <img class="mini-logo" src="${logoUrl}" onerror="this.src='anguilla.png'" alt="${s.nombre || 'Sorteo'}">
+                <div class="time-bar">${s.hour}</div>
+                <div class="date-tag">${s.nombre ? s.nombre + ' · ' : ''}${s.date}</div>
+            </div>${bottom}${cacheBadge}`;
             grid.appendChild(card);
         });
     }
@@ -823,7 +1065,7 @@
         const panel = document.getElementById(contenedorId);
         if (jugados.length === 0) {
             panel.innerHTML = '<div class="waiting-text">NO HAY SORTEOS PREVIOS</div>';
-            return SORTEOS[0] || { hour: '--:--', date: 'HOY', nums: null };
+            return SORTEOS[0] || { hour: '--:--', date: 'HOY', nums: null, nombre: '' };
         }
         jugados.sort((a, b) => {
             if (a.day === b.day) return convertirHoraAminutos(b.hour) - convertirHoraAminutos(a.hour);
@@ -831,15 +1073,24 @@
         });
         let last = jugados[0];
         const historial = jugados.slice(1, 6);
-        panel.innerHTML = historial.map((s, idx) => `
+        panel.innerHTML = historial.map((s, idx) => {
+            const logoUrl = getLogoByNombre(s.nombre);
+            return `
             <div class="side-row">
-                <div class="side-time">${s.hour} <small style="font-size:18px; display:block; color:#64748b; font-weight:700; margin-top:2px;">${s.date}</small></div>
+                <div style="display:flex; align-items:center; gap:12px; flex-shrink:0;">
+                    <img src="${logoUrl}" style="height:60px; object-fit:contain;" onerror="this.src='anguilla.png'">
+                    <div class="side-time">
+                        ${s.hour}
+                        <small style="font-size:18px; display:block; color:#64748b; font-weight:700; margin-top:2px;">${s.nombre ? s.nombre + ' · ' : ''}${s.date}</small>
+                    </div>
+                </div>
                 <div style="display:flex; gap:10px;">
                     <div class="ball-small" style="animation-delay: ${idx * 0.1}s">${s.nums[0]}</div>
                     <div class="ball-small" style="animation-delay: ${idx * 0.1 + 0.15}s">${s.nums[1]}</div>
                     <div class="ball-small" style="animation-delay: ${idx * 0.1 + 0.30}s">${s.nums[2]}</div>
                 </div>
-            </div>`).join('');
+            </div>`;
+        }).join('');
         return last;
     }
 
@@ -848,16 +1099,16 @@
         document.getElementById('fTime').innerText = last.hour;
         const fBalls = document.getElementById('fBalls');
         const fDate = document.getElementById('fDate');
+        const fLogo = document.getElementById('fLogo');
+        const fLabel = document.getElementById('fLabel');
+
+        fLogo.src = getLogoByNombre(last.nombre);
+        fLabel.innerText = last.nombre ? `ÚLTIMO SORTEO · ${last.nombre.toUpperCase()}` : 'ÚLTIMO SORTEO REALIZADO';
 
         if (last.nums) {
             const esHoy = last.day === 'hoy';
-            fBalls.innerHTML = last.nums.map((n, i) => `<div class="ball-big ${esHoy ? 'blue' : 'gray'}" style="animation-delay: ${i * 0.2}s">${n}</div>`).join('');
-            // Fecha grande abajo
-            if (esHoy) {
-                fDate.innerText = formatearFechaLarga(0);
-            } else {
-                fDate.innerText = formatearFechaLarga(1);
-            }
+            fBalls.innerHTML = last.nums.map((n, i) => `<div class="ball-big ${esHoy ? 'blue' : 'white'}" style="animation-delay: ${i * 0.2}s">${n}</div>`).join('');
+            fDate.innerText = esHoy ? formatearFechaLarga(0) : formatearFechaLarga(1);
         } else {
             fBalls.innerHTML = '<div class="waiting-text">PROXIMO SORTEO</div>';
             fDate.innerText = formatearFechaLarga(0);
@@ -865,13 +1116,12 @@
     }
 
     function renderMediaAd() {
-        generarPanelLateral('sidePanelAds');
         const box = document.getElementById('adDisplay');
         box.innerHTML = "";
         const activos = ANUNCIOS.filter(ad => ad.activo !== false);
         if (activos.length === 0) {
             const msg = usandoCache ? '📡 MODO OFFLINE - ANGUILLA LOTTERY' : 'ANGUILLA LOTTERY';
-            box.innerHTML = `<div style='color:white; font-size:40px; font-weight:800; letter-spacing:1px;'>${msg}</div>`;
+            box.innerHTML = `<div style='color:white; font-size:60px; font-weight:800; letter-spacing:2px;'>${msg}</div>`;
             return tiempoRotacionGlobal;
         }
         if (adIndex >= activos.length) adIndex = 0;
@@ -880,20 +1130,68 @@
         let urlProcesada = convertirLinkGitHub(urlTarget);
 
         if (esVideoDirecto(urlTarget) && (urlTarget.includes('.mp4') || urlTarget.includes('.webm') || urlTarget.includes('.ogg') || urlTarget.includes('.mov') || urlTarget.includes('raw.githubusercontent'))) {
-            box.innerHTML = `<video src="${urlProcesada}" autoplay muted playsinline style="width:100%; height:100%; object-fit:contain;"></video>`;
+            box.innerHTML = `<video src="${urlProcesada}" autoplay muted playsinline style="width:100%; height:100%; object-fit:cover;"></video>`;
         } else if (urlTarget.includes('youtube.com') || urlTarget.includes('youtu.be')) {
             let embed = urlTarget.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/");
             if (embed.includes("?")) embed = embed.split("?")[0];
             box.innerHTML = `<iframe src="${embed}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;"></iframe>`;
         } else if (urlTarget !== "") {
-            box.innerHTML = `<img src="${urlProcesada}" style="width:100%; height:100%; object-fit:contain;" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'color:white; font-size:40px; font-weight:800; letter-spacing:1px;\\'>ANGUILLA LOTTERY</div>';">`;
+            box.innerHTML = `<img src="${urlProcesada}" style="width:100%; height:100%; object-fit:contain; background:#000;" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'color:white; font-size:60px; font-weight:800;\\'>ANGUILLA LOTTERY</div>';">`;
         } else {
-            box.innerHTML = "<div style='color:white; font-size:40px; font-weight:800; letter-spacing:1px;'>ANGUILLA LOTTERY</div>";
+            box.innerHTML = "<div style='color:white; font-size:60px; font-weight:800; letter-spacing:2px;'>ANGUILLA LOTTERY</div>";
         }
 
         let tiempoAsignado = (parseInt(ad.tiempo) || 15) * 1000;
         adIndex++;
         return tiempoAsignado;
+    }
+
+    // ============================================
+    // ✅ MENSAJES ANIMADOS EN EL HEADER (al lado del logo)
+    // ============================================
+    const HEADER_MESSAGES = [
+        { icon: '🍀', msg: '¡LA SUERTE TE ESPERA!',   sub: 'Juega con responsabilidad' },
+        { icon: '💰', msg: 'PAGAMOS A TIEMPO',         sub: 'Tu dinero está seguro' },
+        { icon: '🎰', msg: 'MÁS SORTEOS EN VIVO',      sub: 'Síguenos cada día' },
+        { icon: '⭐', msg: 'ANGUILLA LOTTERY',         sub: 'La mejor del país' },
+        { icon: '📢', msg: '¡NO TE LO PIERDAS!',       sub: 'Resultados al instante' },
+        { icon: '🔥', msg: 'JUGADAS AL MOMENTO',       sub: 'Atención personalizada' },
+        { icon: '🏆', msg: 'GRANDES PREMIOS',          sub: 'Tú puedes ser el ganador' },
+        { icon: '📱', msg: 'SÍGUENOS EN REDES',        sub: '@AnguillaLottery' },
+        { icon: '⏰', msg: 'RESULTADOS AL INSTANTE',   sub: 'Sin esperas' },
+        { icon: '🎯', msg: 'AQUÍ NO JUGAMOS',          sub: 'Con tu dinero' }
+    ];
+    let headerMessageIndex = 0;
+    let headerMessageInterval = null;
+
+    function cambiarMensajeHeader() {
+        const m = HEADER_MESSAGES[headerMessageIndex % HEADER_MESSAGES.length];
+        const iconEl = document.getElementById('headerMsgIcon');
+        const mainEl = document.getElementById('headerMsgMain');
+        const subEl = document.getElementById('headerMsgSub');
+
+        if (!iconEl) return;
+
+        iconEl.classList.remove('header-msg-refresh');
+        mainEl.classList.remove('header-msg-refresh');
+        subEl.classList.remove('header-msg-refresh');
+        void iconEl.offsetWidth;
+
+        iconEl.textContent = m.icon;
+        mainEl.textContent = m.msg;
+        subEl.textContent = m.sub;
+
+        iconEl.classList.add('header-msg-refresh');
+        mainEl.classList.add('header-msg-refresh');
+        subEl.classList.add('header-msg-refresh');
+
+        headerMessageIndex++;
+    }
+
+    function iniciarMensajesHeader() {
+        if (headerMessageInterval) clearInterval(headerMessageInterval);
+        cambiarMensajeHeader();
+        headerMessageInterval = setInterval(cambiarMensajeHeader, 4000);
     }
 
     // ============================================
@@ -906,12 +1204,14 @@
         const vGrid = document.getElementById('view-grid');
         const vFeat = document.getElementById('view-featured');
         const vReal = document.getElementById('view-realenoche');
+        const vLot = document.getElementById('view-loteka');
         const vAds = document.getElementById('view-ads');
         const totalPages = Math.max(1, Math.ceil(SORTEOS.length / 8));
 
         vGrid.classList.add('hidden');
         vFeat.classList.add('hidden');
         vReal.classList.add('hidden');
+        vLot.classList.add('hidden');
         vAds.classList.add('hidden');
 
         setTimeout(() => {
@@ -930,6 +1230,10 @@
                 renderRealNoche();
                 vReal.classList.remove('hidden');
             } else if (currentView === 111) {
+                currentView = 122;
+                renderLotekaTarde();
+                vLot.classList.remove('hidden');
+            } else if (currentView === 122) {
                 currentView = 99;
                 nextTime = renderMediaAd();
                 vAds.classList.remove('hidden');
@@ -974,6 +1278,7 @@
             splash.style.opacity = '0';
             splash.style.visibility = 'hidden';
             sistemaIniciado = true;
+            iniciarMensajesHeader();
             if (SORTEOS.length === 0) cargarDesdeCache();
 
             database.ref('transmisionVivo').once('value', snap => {
@@ -990,8 +1295,11 @@
 
     function dimensionarPantalla() {
         const baseWidth = 1920, baseHeight = 1080;
-        const elScale = Math.min(window.innerWidth / baseWidth, window.innerHeight / baseHeight);
-        document.getElementById('canvas-master').style.transform = `translate(-50%, -50%) scale(${elScale})`;
+        const winW = window.innerWidth;
+        const winH = window.innerHeight;
+        // ✅ Cover: la pizarra llena toda la pantalla sin distorsión
+        const scale = Math.max(winW / baseWidth, winH / baseHeight);
+        document.getElementById('canvas-master').style.transform = `translate(-50%, -50%) scale(${scale})`;
     }
     window.addEventListener('resize', dimensionarPantalla);
 
