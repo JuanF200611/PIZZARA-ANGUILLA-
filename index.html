@@ -55,7 +55,6 @@
         display: flex; align-items: center; justify-content: space-between;
         padding: 0 50px; border-bottom: 5px solid var(--anguilla-yellow);
         position: relative; z-index: 10;
-        filter: drop-shadow(0 8px 20px rgba(0,0,0,0.5));
     }
 
     /* ✅ Área del logo + mensajes al lado */
@@ -80,7 +79,7 @@
         height: 120px;
         max-width: 280px;
         object-fit: contain;
-        filter: drop-shadow(0 8px 20px rgba(0,0,0,0.6));
+        filter: drop-shadow(0 6px 15px rgba(0,0,0,0.6));
     }
 
     /* ✅ Caja de mensajes GRANDE al lado del logo */
@@ -90,26 +89,19 @@
         gap: 20px;
         padding: 14px 34px;
         background: rgba(6, 19, 47, 0.6);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         border: 3px solid var(--anguilla-yellow);
         border-radius: 60px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 40px rgba(251, 191, 36, 0.3);
-        animation: msgPulse 3s ease-in-out infinite;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         flex: 1;
         min-width: 500px;
         max-width: 100%;
         overflow: hidden;
     }
 
-    @keyframes msgPulse {
-        0%, 100% { box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 40px rgba(251, 191, 36, 0.3); }
-        50%      { box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 60px rgba(251, 191, 36, 0.55); }
-    }
-
     .header-msg-icon {
         font-size: 48px;
-        filter: drop-shadow(0 2px 8px rgba(251, 191, 36, 0.6));
         flex-shrink: 0;
     }
 
@@ -146,21 +138,12 @@
         text-overflow: ellipsis;
     }
 
-    .header-msg-refresh {
-        animation: fadeSwap 0.6s ease-in-out both;
-    }
-
-    @keyframes fadeSwap {
-        0% { opacity: 0; transform: translateY(15px) scale(0.95); }
-        100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
     .header-info { display: flex; align-items: center; gap: 40px; flex-shrink: 0; }
     .header-clock {
         font-size: 61px; font-weight: 900; color: var(--white); line-height: 1;
         border-right: 4px solid rgba(255, 204, 0, 0.4); padding-right: 40px;
         font-variant-numeric: tabular-nums;
-        text-shadow: 0 4px 12px rgba(0,0,0,0.8), 0 0 30px rgba(0,180,255,0.4);
+        text-shadow: 0 4px 12px rgba(0,0,0,0.8);
     }
     .date-header { text-align: right; }
     .main-date {
@@ -177,17 +160,13 @@
     /* --- INDICADOR DE CONEXIÓN --- */
     .connection-status { display: inline-flex; align-items: center; gap: 8px; margin-left: 15px; cursor: default; position: relative; }
     .connection-dot { width: 16px; height: 16px; border-radius: 50%; display: inline-block; transition: all 0.3s ease; box-shadow: 0 0 12px rgba(0,0,0,0.3); flex-shrink: 0; }
-    .connection-dot.online { background: #22c55e; box-shadow: 0 0 20px rgba(34, 197, 94, 0.5); animation: pulse-dot-online 2s infinite; }
-    .connection-dot.offline { background: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); animation: pulse-dot-offline 1s infinite; }
-    .connection-dot.checking { background: #f59e0b; box-shadow: 0 0 20px rgba(245, 158, 11, 0.5); animation: pulse-dot-checking 0.8s infinite; }
+    .connection-dot.online { background: #22c55e; box-shadow: 0 0 20px rgba(34, 197, 94, 0.5); }
+    .connection-dot.offline { background: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
+    .connection-dot.checking { background: #f59e0b; box-shadow: 0 0 20px rgba(245, 158, 11, 0.5); }
     .connection-tooltip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); color: white; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.3s; font-family: 'Inter', sans-serif; z-index: 100; }
     .connection-status:hover .connection-tooltip { opacity: 1; }
-    .offline-badge { display: none; background: #ef4444; color: white; font-size: 16px; font-weight: 800; padding: 2px 14px; border-radius: 20px; margin-left: 10px; animation: pulse 1s infinite alternate; letter-spacing: 0.5px; }
+    .offline-badge { display: none; background: #ef4444; color: white; font-size: 16px; font-weight: 800; padding: 2px 14px; border-radius: 20px; margin-left: 10px; letter-spacing: 0.5px; }
     .offline-badge.show { display: inline-block; }
-
-    @keyframes pulse-dot-online { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(0.9); } }
-    @keyframes pulse-dot-offline { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.85); } }
-    @keyframes pulse-dot-checking { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.7); } }
 
     /* --- TICKER sin fondo oscuro --- */
     .ticker-bar {
@@ -196,26 +175,25 @@
         border-bottom: 4px solid var(--anguilla-yellow);
         overflow: hidden; display: flex; align-items: center;
         position: relative; z-index: 10;
-        filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
     }
     .ticker-text {
         white-space: nowrap; font-size: 26px; font-weight: 800; color: #fff;
         animation: marquee 25s linear infinite; padding-left: 100%; letter-spacing: 0.5px;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,180,255,0.3);
+        text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+        will-change: transform;
     }
     @keyframes marquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-    /* --- CONTENEDORES CON TRANSICIÓN --- */
+    /* --- CONTENEDORES CON TRANSICIÓN (más suave) --- */
     #view-grid, #view-featured, #view-ads, #view-realenoche, #view-loteka {
         height: 875px; padding: 25px 30px;
         position: absolute; width: 100%; top: 205px; left: 0;
         z-index: 1; opacity: 1; transform: scale(1) translateY(0px);
         visibility: visible;
-        transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1),
-                    transform 0.6s cubic-bezier(0.25, 1, 0.5, 1),
-                    visibility 0.6s;
+        transition: opacity 0.4s ease, visibility 0.4s;
+        will-change: opacity;
     }
-    .hidden { opacity: 0 !important; transform: scale(0.98) translateY(20px) !important; visibility: hidden !important; }
+    .hidden { opacity: 0 !important; visibility: hidden !important; }
 
     /* ✅ ANUNCIOS A PANTALLA COMPLETA (sin padding) */
     #view-ads { padding: 0; }
@@ -229,16 +207,13 @@
     }
     .card::before { content: ''; position: absolute; top:0; left:0; right:0; height: 6px; background: var(--anguilla-yellow); }
     .card-header { padding: 15px 0 10px 0; display: flex; flex-direction: column; align-items: center; background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); }
-    .mini-logo { height: 135px; margin-bottom: 10px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05)); }
+    .mini-logo { height: 135px; margin-bottom: 10px; object-fit: contain; }
     .time-bar { width: 85%; text-align: center; padding: 5px 0; font-size: 35px; font-weight: 900; border-radius: 50px; background: #1e293b; color: #ffcc00; box-shadow: var(--shadow-sm); }
     .card-hoy .time-bar { background: #13a705; color: white; }
     .date-tag { font-size: 16px; font-weight: 800; color: var(--gray-text); text-transform: uppercase; margin-top: 6px; letter-spacing: 0.5px; }
     .cached-badge { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.8); color: #f59e0b; font-size: 11px; padding: 2px 10px; border-radius: 12px; font-weight: 700; letter-spacing: 0.3px; border: 1px solid rgba(245, 158, 11, 0.3); z-index: 5; }
 
     /* --- BOLOS 3D --- */
-    .ball-base { border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 900; text-shadow: 0 2px 4px rgba(0,0,0,0.3); position: relative; transition: transform 0.2s ease; animation: dropIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.15) both; }
-    .ball-base:hover { transform: scale(1.03); }
-
     .ball-small {
         width: 100px; height: 100px;
         background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #3b82f6 30%, #2563eb 60%, #1d4ed8 85%, #1e40af 100%);
@@ -248,7 +223,6 @@
         box-shadow: inset -6px -6px 16px rgba(0,0,0,0.4), inset 4px 4px 10px rgba(255,255,255,0.5), 0 8px 20px rgba(0,0,0,0.25);
         border: 2px solid rgba(255,255,255,0.15);
         text-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        animation: dropIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
     }
 
     .ball-flat {
@@ -256,10 +230,8 @@
         display: inline-flex; align-items: center; justify-content: center;
         font-size: 56px; font-weight: 900;
         border: 2px solid rgba(255,255,255,0.15);
-        animation: dropIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
-        transition: transform 0.2s;
+        animation: dropIn 0.4s ease-out both;
     }
-    .ball-flat:hover { transform: scale(1.05); }
     .card-hoy .ball-flat { background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #3b82f6 30%, #2563eb 60%, #1d4ed8 85%, #1e40af 100%); color: #ffffff; box-shadow: inset -8px -8px 20px rgba(0,0,0,0.4), inset 4px 4px 12px rgba(255,255,255,0.5), 0 12px 25px rgba(0,0,0,0.3); text-shadow: 0 2px 8px rgba(0,0,0,0.4); }
     .card-ayer .ball-flat { background: radial-gradient(circle at 30% 30%, #f1f5f9 0%, #e2e8f0 30%, #cbd5e1 60%, #94a3b8 85%, #64748b 100%); color: #1e293b; box-shadow: inset -8px -8px 20px rgba(0,0,0,0.2), inset 4px 4px 12px rgba(255,255,255,0.7), 0 12px 25px rgba(0,0,0,0.2); text-shadow: 0 1px 2px rgba(255,255,255,0.5); }
 
@@ -268,11 +240,9 @@
         display: inline-flex; align-items: center; justify-content: center;
         font-size: 100px; font-weight: 900;
         border: 3px solid rgba(255,255,255,0.15);
-        animation: dropIn 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
-        transition: transform 0.2s;
+        animation: dropIn 0.5s ease-out both;
         position: relative;
     }
-    .ball-big:hover { transform: scale(1.03); }
     .ball-big.blue { background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #3b82f6 30%, #2563eb 60%, #1d4ed8 85%, #1e40af 100%); color: #ffffff; box-shadow: inset -12px -12px 30px rgba(0,0,0,0.5), inset 6px 6px 18px rgba(255,255,255,0.6), 0 20px 40px rgba(0,0,0,0.4); text-shadow: 0 3px 10px rgba(0,0,0,0.5); }
     .ball-big.white {
         background: radial-gradient(circle at 30% 30%, #ffffff 0%, #f8fafc 40%, #e2e8f0 80%, #cbd5e1 100%);
@@ -290,9 +260,8 @@
     }
 
     @keyframes dropIn {
-        0% { opacity: 0; transform: scale(0.4) translateY(-60px) rotate(-10deg); }
-        60% { transform: scale(1.05) translateY(8px) rotate(2deg); }
-        100% { opacity: 1; transform: scale(1) translateY(0) rotate(0deg); }
+        0% { opacity: 0; transform: scale(0.6) translateY(-20px); }
+        100% { opacity: 1; transform: scale(1) translateY(0); }
     }
 
     /* --- SPLIT CONTAINER --- */
@@ -300,12 +269,10 @@
     .split-main {
         width: 1190px;
         background: rgba(6, 19, 47, 0.35);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
         border: 5px solid var(--anguilla-yellow);
         border-radius: 32px; display: flex; flex-direction: column; align-items: center;
         justify-content: center; padding: 30px;
-        box-shadow: var(--shadow-lg), 0 0 40px rgba(0, 180, 255, 0.15);
+        box-shadow: var(--shadow-lg);
         overflow: hidden;
         position: relative;
     }
@@ -317,42 +284,24 @@
     }
     .side-time { color: var(--anguilla-blue); font-size: 34px; font-weight: 900; }
 
-    .featured-label { font-size: 26px; background: rgba(255,255,255,0.15); padding: 6px 30px; border-radius: 50px; margin-bottom: 20px; font-weight: 800; color: #fff; letter-spacing: 1px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+    .featured-label { font-size: 26px; background: rgba(255,255,255,0.15); padding: 6px 30px; border-radius: 50px; margin-bottom: 20px; font-weight: 800; color: #fff; letter-spacing: 1px; }
     .featured-logo-big { height: 275px; margin-bottom: 20px; filter: drop-shadow(0 12px 20px rgba(0,0,0,0.4)); object-fit: contain; }
 
-    /* ✅ HORA DEL ÚLTIMO SORTEO — CON GRADIENTE Y GLOW PULSANTE */
+    /* ✅ HORA DEL ÚLTIMO SORTEO — COLOR MÁS VISIBLE SIN ANIMACIÓN */
     .featured-time-box {
         font-size: 100px;
         background: linear-gradient(135deg, #fbbf24 0%, #f97316 50%, #fbbf24 100%);
-        background-size: 200% 200%;
         color: #ffffff;
         padding: 4px 70px;
         border-radius: 24px;
         font-weight: 900;
         letter-spacing: 2px;
-        text-shadow: 0 4px 12px rgba(0,0,0,0.5), 0 0 30px rgba(251, 191, 36, 0.6);
+        text-shadow: 0 4px 12px rgba(0,0,0,0.6);
         box-shadow:
             0 10px 30px rgba(0,0,0,0.5),
-            0 0 40px rgba(251, 191, 36, 0.7),
+            0 0 40px rgba(251, 191, 36, 0.6),
             inset 0 2px 0 rgba(255,255,255,0.3);
         border: 3px solid rgba(255, 255, 255, 0.4);
-        animation: timeGlow 2.5s ease-in-out infinite;
-    }
-
-    @keyframes timeGlow {
-        0%, 100% {
-            box-shadow:
-                0 10px 30px rgba(0,0,0,0.5),
-                0 0 40px rgba(251, 191, 36, 0.7),
-                inset 0 2px 0 rgba(255,255,255,0.3);
-        }
-        50% {
-            box-shadow:
-                0 10px 30px rgba(0,0,0,0.5),
-                0 0 70px rgba(251, 191, 36, 1),
-                0 0 100px rgba(249, 115, 22, 0.6),
-                inset 0 2px 0 rgba(255,255,255,0.4);
-        }
     }
 
     .featured-date-big {
@@ -368,18 +317,17 @@
 
     .balls-container { display: flex; justify-content: center; align-items: center; gap: 18px; padding: 15px; background: transparent; border-radius: 20px; flex-grow: 1; width: 100%; }
 
-    /* ✅ AD BOX — PANTALLA COMPLETA SIN BORDES */
+    /* ✅ AD BOX */
     .ad-box {
         width: 100%; height: 100%;
         display: flex; align-items: center; justify-content: center;
         background: #000; overflow: hidden;
-        border-radius: 0;
         position: relative;
     }
     .ad-box img, .ad-box video { width: 100%; height: 100%; object-fit: contain; }
     .ad-box iframe { width: 100%; height: 100%; border: none; }
 
-    .waiting-text { color: #dc2626; font-size: 26px; font-weight: 900; text-align: center; animation: pulse 1.2s infinite alternate; width: 100%; margin: auto 0; letter-spacing: 0.5px; }
+    .waiting-text { color: #dc2626; font-size: 26px; font-weight: 900; text-align: center; width: 100%; margin: auto 0; letter-spacing: 0.5px; }
 
     .live-indicator {
         position: absolute; top: 25px; left: 25px;
@@ -389,13 +337,12 @@
         padding: 8px 24px; border-radius: 8px;
         box-shadow: 0 0 20px #e63946;
         letter-spacing: 1.5px; z-index: 50;
-        animation: pulse 0.8s infinite alternate;
         display: inline-flex; align-items: center; gap: 8px;
     }
 
     #preloader-cache { position: absolute; width: 1px; height: 1px; opacity: 0.01; overflow: hidden; bottom: 0; left: 0; pointer-events: none; }
 
-    @keyframes pulse { 0% { opacity: 0.4; } 100% { opacity: 1; } }
+    @keyframes pulse { 0% { opacity: 0.5; } 100% { opacity: 1; } }
     @keyframes floating {
         0% { transform: translateY(0px); }
         50% { transform: translateY(-15px); }
@@ -503,7 +450,6 @@
         </div>
     </div>
 
-    <!-- ✅ ANUNCIOS A PANTALLA COMPLETA -->
     <div id="view-ads" class="hidden">
         <div class="split-container" id="adsContainerStructure">
             <div class="split-main" id="adMainBox">
@@ -557,7 +503,24 @@
     }
 
     // ============================================
-    // CACHE
+    // ✅ PRECARGA DE IMÁGENES EN CACHÉ (evita trabas)
+    // ============================================
+    const IMAGENES_A_PRECARGAR = [
+        'nuevologo.png', 'fondo.png',
+        'anguilla.png', 'logoreal.png', 'lotekalogo.png'
+    ];
+
+    function precargarImagenes() {
+        IMAGENES_A_PRECARGAR.forEach(src => {
+            const img = new Image();
+            img.decoding = 'async';
+            img.loading = 'eager';
+            img.src = src;
+        });
+    }
+
+    // ============================================
+    // CACHE (datos)
     // ============================================
     function guardarEnCache(clave, datos) {
         try { localStorage.setItem(`anguilla_${clave}`, JSON.stringify({ data: datos, timestamp: Date.now() })); }
@@ -854,7 +817,7 @@
 
         const ballClass = esHoy ? 'blue' : 'white';
         ballsNode.innerHTML = last.numeros.map((n, i) =>
-            `<div class="ball-big ${ballClass}" style="animation-delay: ${i * 0.2}s">${n}</div>`
+            `<div class="ball-big ${ballClass}" style="animation-delay: ${i * 0.1}s">${n}</div>`
         ).join('');
 
         const historial = sorteos.slice(1, 6);
@@ -881,9 +844,9 @@
                             </div>
                         </div>
                         <div style="display:flex; gap:10px;">
-                            <div class="ball-small ${smallClass}" style="animation-delay: ${idx * 0.1}s">${s.numeros[0]}</div>
-                            <div class="ball-small ${smallClass}" style="animation-delay: ${idx * 0.1 + 0.15}s">${s.numeros[1]}</div>
-                            <div class="ball-small ${smallClass}" style="animation-delay: ${idx * 0.1 + 0.30}s">${s.numeros[2]}</div>
+                            <div class="ball-small ${smallClass}" style="animation-delay: ${idx * 0.05}s">${s.numeros[0]}</div>
+                            <div class="ball-small ${smallClass}" style="animation-delay: ${idx * 0.05 + 0.08}s">${s.numeros[1]}</div>
+                            <div class="ball-small ${smallClass}" style="animation-delay: ${idx * 0.05 + 0.16}s">${s.numeros[2]}</div>
                         </div>
                     </div>
                 `;
@@ -939,6 +902,7 @@
                 if (item?.activo !== false && item?.url?.trim()) {
                     ANUNCIOS.push(item);
                     let imgPre = new Image();
+                    imgPre.decoding = 'async';
                     imgPre.src = convertirLinkGitHub(item.url.trim());
                     cacheContainer.appendChild(imgPre);
                 }
@@ -972,7 +936,6 @@
             guardarEnCache('realNoche', REAL_NOCHE_SORTEOS);
             LOTEKA_TARDE_SORTEOS = procesarLotekaTarde(data);
             guardarEnCache('lotekaTarde', LOTEKA_TARDE_SORTEOS);
-            console.log('🌙 Real Noche:', REAL_NOCHE_SORTEOS.length, '| 🎰 Loteka Tarde:', LOTEKA_TARDE_SORTEOS.length);
             if (sistemaIniciado && !enTransmisionVivo) {
                 if (currentView === 111) renderRealNoche();
                 if (currentView === 122) renderLotekaTarde();
@@ -1045,9 +1008,9 @@
             let bottom = s.isWaiting
                 ? `<div class="waiting-text">ESPERANDO RESULTADOS...</div>`
                 : `<div class="balls-container">
-                    <div class="ball-flat" style="animation-delay: ${(idx * 0.1)}s">${s.nums ? s.nums[0] : '--'}</div>
-                    <div class="ball-flat" style="animation-delay: ${(idx * 0.1 + 0.15)}s">${s.nums ? s.nums[1] : '--'}</div>
-                    <div class="ball-flat" style="animation-delay: ${(idx * 0.1 + 0.30)}s">${s.nums ? s.nums[2] : '--'}</div>
+                    <div class="ball-flat" style="animation-delay: ${(idx * 0.05)}s">${s.nums ? s.nums[0] : '--'}</div>
+                    <div class="ball-flat" style="animation-delay: ${(idx * 0.05 + 0.08)}s">${s.nums ? s.nums[1] : '--'}</div>
+                    <div class="ball-flat" style="animation-delay: ${(idx * 0.05 + 0.16)}s">${s.nums ? s.nums[2] : '--'}</div>
                    </div>`;
             const cacheBadge = usandoCache ? `<div class="cached-badge">📦 CACHÉ</div>` : '';
             const logoUrl = getLogoByNombre(s.nombre);
@@ -1085,9 +1048,9 @@
                     </div>
                 </div>
                 <div style="display:flex; gap:10px;">
-                    <div class="ball-small" style="animation-delay: ${idx * 0.1}s">${s.nums[0]}</div>
-                    <div class="ball-small" style="animation-delay: ${idx * 0.1 + 0.15}s">${s.nums[1]}</div>
-                    <div class="ball-small" style="animation-delay: ${idx * 0.1 + 0.30}s">${s.nums[2]}</div>
+                    <div class="ball-small" style="animation-delay: ${idx * 0.05}s">${s.nums[0]}</div>
+                    <div class="ball-small" style="animation-delay: ${idx * 0.05 + 0.08}s">${s.nums[1]}</div>
+                    <div class="ball-small" style="animation-delay: ${idx * 0.05 + 0.16}s">${s.nums[2]}</div>
                 </div>
             </div>`;
         }).join('');
@@ -1107,7 +1070,7 @@
 
         if (last.nums) {
             const esHoy = last.day === 'hoy';
-            fBalls.innerHTML = last.nums.map((n, i) => `<div class="ball-big ${esHoy ? 'blue' : 'white'}" style="animation-delay: ${i * 0.2}s">${n}</div>`).join('');
+            fBalls.innerHTML = last.nums.map((n, i) => `<div class="ball-big ${esHoy ? 'blue' : 'white'}" style="animation-delay: ${i * 0.1}s">${n}</div>`).join('');
             fDate.innerText = esHoy ? formatearFechaLarga(0) : formatearFechaLarga(1);
         } else {
             fBalls.innerHTML = '<div class="waiting-text">PROXIMO SORTEO</div>';
@@ -1130,13 +1093,13 @@
         let urlProcesada = convertirLinkGitHub(urlTarget);
 
         if (esVideoDirecto(urlTarget) && (urlTarget.includes('.mp4') || urlTarget.includes('.webm') || urlTarget.includes('.ogg') || urlTarget.includes('.mov') || urlTarget.includes('raw.githubusercontent'))) {
-            box.innerHTML = `<video src="${urlProcesada}" autoplay muted playsinline style="width:100%; height:100%; object-fit:cover;"></video>`;
+            box.innerHTML = `<video src="${urlProcesada}" autoplay muted playsinline preload="auto" style="width:100%; height:100%; object-fit:cover;"></video>`;
         } else if (urlTarget.includes('youtube.com') || urlTarget.includes('youtu.be')) {
             let embed = urlTarget.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/");
             if (embed.includes("?")) embed = embed.split("?")[0];
-            box.innerHTML = `<iframe src="${embed}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;"></iframe>`;
+            box.innerHTML = `<iframe src="${embed}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;" loading="lazy"></iframe>`;
         } else if (urlTarget !== "") {
-            box.innerHTML = `<img src="${urlProcesada}" style="width:100%; height:100%; object-fit:contain; background:#000;" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'color:white; font-size:60px; font-weight:800;\\'>ANGUILLA LOTTERY</div>';">`;
+            box.innerHTML = `<img src="${urlProcesada}" loading="eager" style="width:100%; height:100%; object-fit:contain; background:#000;" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'color:white; font-size:60px; font-weight:800;\\'>ANGUILLA LOTTERY</div>';">`;
         } else {
             box.innerHTML = "<div style='color:white; font-size:60px; font-weight:800; letter-spacing:2px;'>ANGUILLA LOTTERY</div>";
         }
@@ -1147,7 +1110,7 @@
     }
 
     // ============================================
-    // ✅ MENSAJES ANIMADOS EN EL HEADER (al lado del logo)
+    // ✅ MENSAJES EN EL HEADER (sin animaciones pesadas)
     // ============================================
     const HEADER_MESSAGES = [
         { icon: '🍀', msg: '¡LA SUERTE TE ESPERA!',   sub: 'Juega con responsabilidad' },
@@ -1169,29 +1132,17 @@
         const iconEl = document.getElementById('headerMsgIcon');
         const mainEl = document.getElementById('headerMsgMain');
         const subEl = document.getElementById('headerMsgSub');
-
         if (!iconEl) return;
-
-        iconEl.classList.remove('header-msg-refresh');
-        mainEl.classList.remove('header-msg-refresh');
-        subEl.classList.remove('header-msg-refresh');
-        void iconEl.offsetWidth;
-
         iconEl.textContent = m.icon;
         mainEl.textContent = m.msg;
         subEl.textContent = m.sub;
-
-        iconEl.classList.add('header-msg-refresh');
-        mainEl.classList.add('header-msg-refresh');
-        subEl.classList.add('header-msg-refresh');
-
         headerMessageIndex++;
     }
 
     function iniciarMensajesHeader() {
         if (headerMessageInterval) clearInterval(headerMessageInterval);
         cambiarMensajeHeader();
-        headerMessageInterval = setInterval(cambiarMensajeHeader, 4000);
+        headerMessageInterval = setInterval(cambiarMensajeHeader, 5000);
     }
 
     // ============================================
@@ -1243,8 +1194,8 @@
                 vGrid.classList.remove('hidden');
             }
 
-            rotationInterval = setInterval(rotateDisplay, Math.max(1000, nextTime - 450));
-        }, 450);
+            rotationInterval = setInterval(rotateDisplay, Math.max(1000, nextTime - 300));
+        }, 300);
     }
 
     function updateDateTime() {
@@ -1261,6 +1212,9 @@
     }
 
     window.onload = () => {
+        // ✅ Precargar imágenes en caché antes que nada
+        precargarImagenes();
+
         dimensionarPantalla();
         updateDateTime();
         setInterval(updateDateTime, 1000);
@@ -1290,15 +1244,17 @@
                     rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
                 }
             });
-        }, 2000);
+        }, 1500);
     };
 
+    // ✅ Escala con CONTAIN y cap de 1.6 (vuelve al tamaño original)
     function dimensionarPantalla() {
         const baseWidth = 1920, baseHeight = 1080;
         const winW = window.innerWidth;
         const winH = window.innerHeight;
-        // ✅ Cover: la pizarra llena toda la pantalla sin distorsión
-        const scale = Math.max(winW / baseWidth, winH / baseHeight);
+        let scale = Math.min(winW / baseWidth, winH / baseHeight);
+        // Cap para que en pantallas grandes no se vea gigante
+        if (scale > 1.6) scale = 1.6;
         document.getElementById('canvas-master').style.transform = `translate(-50%, -50%) scale(${scale})`;
     }
     window.addEventListener('resize', dimensionarPantalla);
