@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>Anguilla Lottery | Sistema Multipantalla Premium</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -20,14 +20,20 @@
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    /* ✅ FONDO AZUL EN TODA LA PANTALLA (sin franjas) */
     html, body {
-        background: #000; height: 100%; width: 100%;
-        overflow: hidden; margin: 0; padding: 0;
+        height: 100%;
+        width: 100%;
+        height: 100dvh;   /* ✅ usa dynamic viewport height */
+        width: 100dvw;
+        overflow: hidden;
+        margin: 0; padding: 0;
+        background: #0b1f4b url('fondo.png') center center / cover no-repeat;
     }
 
     /* --- SPLASH --- */
     #splash-screen {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        position: fixed; top: 0; left: 0; width: 100dvw; height: 100dvh;
         background: url('fondo.png') center center / cover no-repeat, #0b1f4b;
         z-index: 99999;
         display: flex; flex-direction: column;
@@ -38,14 +44,20 @@
     .splash-text { color: var(--white); font-family: 'Inter', sans-serif; font-size: 42px; font-weight: 800; margin-top: 40px; letter-spacing: 2px; text-shadow: 0 4px 10px rgba(0,0,0,0.4); }
     .splash-sub { color: var(--anguilla-yellow); font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 700; margin-top: 10px; letter-spacing: 4px; animation: pulse 1.5s infinite alternate; }
 
-    /* ✅ FONDO VISIBLE EN TODA LA PIZARRA */
+    /* ✅ PIZARRA: SIEMPRE completa, centrada, sin recortes */
     #canvas-master {
-        width: 1920px; height: 1080px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 1920px;
+        height: 1080px;
         background: url('fondo.png') center center / cover no-repeat, #0b1f4b;
-        position: absolute; top: 50%; left: 50%;
         transform: translate(-50%, -50%);
         transform-origin: center center;
         overflow: hidden;
+        will-change: transform;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
     }
 
     /* --- TOPBAR sin fondo azul oscuro --- */
@@ -89,8 +101,6 @@
         gap: 20px;
         padding: 14px 34px;
         background: rgba(6, 19, 47, 0.6);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
         border: 3px solid var(--anguilla-yellow);
         border-radius: 60px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.5);
@@ -168,7 +178,7 @@
     .offline-badge { display: none; background: #ef4444; color: white; font-size: 16px; font-weight: 800; padding: 2px 14px; border-radius: 20px; margin-left: 10px; letter-spacing: 0.5px; }
     .offline-badge.show { display: inline-block; }
 
-    /* --- TICKER sin fondo oscuro --- */
+    /* --- TICKER --- */
     .ticker-bar {
         width: 100%; height: 54px;
         background: transparent;
@@ -184,18 +194,18 @@
     }
     @keyframes marquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-    /* --- CONTENEDORES CON TRANSICIÓN (más suave) --- */
+    /* --- CONTENEDORES CON TRANSICIÓN --- */
     #view-grid, #view-featured, #view-ads, #view-realenoche, #view-loteka {
         height: 875px; padding: 25px 30px;
         position: absolute; width: 100%; top: 205px; left: 0;
-        z-index: 1; opacity: 1; transform: scale(1) translateY(0px);
+        z-index: 1; opacity: 1;
         visibility: visible;
         transition: opacity 0.4s ease, visibility 0.4s;
         will-change: opacity;
     }
     .hidden { opacity: 0 !important; visibility: hidden !important; }
 
-    /* ✅ ANUNCIOS A PANTALLA COMPLETA (sin padding) */
+    /* ✅ ANUNCIOS A PANTALLA COMPLETA */
     #view-ads { padding: 0; }
 
     /* --- TARJETAS GRID --- */
@@ -287,7 +297,7 @@
     .featured-label { font-size: 26px; background: rgba(255,255,255,0.15); padding: 6px 30px; border-radius: 50px; margin-bottom: 20px; font-weight: 800; color: #fff; letter-spacing: 1px; }
     .featured-logo-big { height: 275px; margin-bottom: 20px; filter: drop-shadow(0 12px 20px rgba(0,0,0,0.4)); object-fit: contain; }
 
-    /* ✅ HORA DEL ÚLTIMO SORTEO — COLOR MÁS VISIBLE SIN ANIMACIÓN */
+    /* ✅ HORA DEL ÚLTIMO SORTEO — COLOR MÁS VISIBLE */
     .featured-time-box {
         font-size: 100px;
         background: linear-gradient(135deg, #fbbf24 0%, #f97316 50%, #fbbf24 100%);
@@ -503,7 +513,7 @@
     }
 
     // ============================================
-    // ✅ PRECARGA DE IMÁGENES EN CACHÉ (evita trabas)
+    // ✅ PRECARGA DE IMÁGENES EN CACHÉ
     // ============================================
     const IMAGENES_A_PRECARGAR = [
         'nuevologo.png', 'fondo.png',
@@ -1110,7 +1120,7 @@
     }
 
     // ============================================
-    // ✅ MENSAJES EN EL HEADER (sin animaciones pesadas)
+    // ✅ MENSAJES EN EL HEADER
     // ============================================
     const HEADER_MESSAGES = [
         { icon: '🍀', msg: '¡LA SUERTE TE ESPERA!',   sub: 'Juega con responsabilidad' },
@@ -1212,7 +1222,6 @@
     }
 
     window.onload = () => {
-        // ✅ Precargar imágenes en caché antes que nada
         precargarImagenes();
 
         dimensionarPantalla();
@@ -1247,17 +1256,23 @@
         }, 1500);
     };
 
-    // ✅ Escala con CONTAIN y cap de 1.6 (vuelve al tamaño original)
+    // ✅ Escalado CONTAIN usando dvw/dvh (no resta barra navegador)
     function dimensionarPantalla() {
         const baseWidth = 1920, baseHeight = 1080;
+        // ✅ usar dvw/dvh (dynamic viewport) para no restar barra
         const winW = window.innerWidth;
         const winH = window.innerHeight;
-        let scale = Math.min(winW / baseWidth, winH / baseHeight);
-        // Cap para que en pantallas grandes no se vea gigante
-        if (scale > 1.6) scale = 1.6;
-        document.getElementById('canvas-master').style.transform = `translate(-50%, -50%) scale(${scale})`;
+        const scale = Math.min(winW / baseWidth, winH / baseHeight);
+        const el = document.getElementById('canvas-master');
+        el.style.transform = `translate(-50%, -50%) scale(${scale})`;
     }
     window.addEventListener('resize', dimensionarPantalla);
+    window.addEventListener('orientationchange', dimensionarPantalla);
+    // ✅ detectar cambios de tamaño de viewport (cuando aparece/desaparece barra del navegador)
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', dimensionarPantalla);
+        window.visualViewport.addEventListener('scroll', dimensionarPantalla);
+    }
 
     let wakeLock = null;
     async function activarMantenerPantallaEncendida() {
