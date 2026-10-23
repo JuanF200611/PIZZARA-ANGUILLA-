@@ -2,391 +2,354 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-<title>Anguilla Lottery | Sistema Multipantalla Premium</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>Pizarra Anguilla | Bancas Kiko</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800;900&display=swap" rel="stylesheet">
 <style>
     :root {
-        --anguilla-orange: #f97316;
-        --anguilla-blue: #0b1f4b;
-        --anguilla-blue-dark: #06132f;
-        --anguilla-yellow: #fbbf24;
-        --white: #ffffff;
-        --gray-text: #475569;
-        --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
-        --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+        --azul-rey: #0033a0;
+        --azul-oscuro: #001a4d;
+        --rojo: #d90000;
+        --dorado: #ffcc00;
+        --blanco: #ffffff;
+        --gris-fondo: #f4f7f6;
+        --texto-oscuro: #1e293b;
+        --texto-gris: #64748b;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
     html, body {
-        background: #000; height: 100%; width: 100%;
-        overflow: hidden; margin: 0; padding: 0;
+        height: 100dvh; width: 100dvw;
+        overflow: hidden;
+        background: radial-gradient(circle at 50% 0%, #0d2b6b 0%, #021133 100%);
     }
 
-    /* --- SPLASH --- */
+    /* NIEVE */
+    #snow-container {
+        position: fixed; inset: 0;
+        pointer-events: none; z-index: 100000;
+        overflow: hidden; display: none;
+    }
+    .snowflake {
+        position: absolute; top: -20px; color: white;
+        opacity: 0.85;
+        animation: fall linear infinite;
+        text-shadow: 0 0 6px rgba(255,255,255,0.6);
+    }
+    @keyframes fall { to { transform: translateY(110vh); } }
+
+    /* SPLASH */
     #splash-screen {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: url('fondo.png') center center / cover no-repeat, #0b1f4b;
-        z-index: 99999;
-        display: flex; flex-direction: column;
-        align-items: center; justify-content: center;
+        position: fixed; inset: 0;
+        background: radial-gradient(circle at 50% 0%, #0d2b6b 0%, #021133 100%);
+        z-index: 999999;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
         transition: opacity 1s ease-in-out, visibility 1s;
     }
-    .splash-logo { height: 320px; object-fit: contain; animation: floating 3s ease-in-out infinite; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5)); }
-    .splash-text { color: var(--white); font-family: 'Inter', sans-serif; font-size: 42px; font-weight: 800; margin-top: 40px; letter-spacing: 2px; text-shadow: 0 4px 10px rgba(0,0,0,0.4); }
-    .splash-sub { color: var(--anguilla-yellow); font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 700; margin-top: 10px; letter-spacing: 4px; animation: pulse 1.5s infinite alternate; }
+    .splash-logo { height: min(320px, 40vh); object-fit: contain; animation: floating 3s ease-in-out infinite; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5)); }
+    .splash-text { color: var(--blanco); font-size: clamp(24px, 3vw, 42px); font-weight: 900; margin-top: 40px; letter-spacing: 2px; }
+    .splash-sub { color: var(--dorado); font-size: clamp(16px, 1.6vw, 24px); font-weight: 700; margin-top: 10px; letter-spacing: 4px; animation: pulse 1.5s alternate infinite; }
 
-    /* ✅ FONDO VISIBLE EN TODA LA PIZARRA */
+    /* CANVAS MASTER */
     #canvas-master {
-        width: 1920px; height: 1080px;
-        background: url('fondo.png') center center / cover no-repeat, #0b1f4b;
         position: absolute; top: 50%; left: 50%;
-        transform: translate(-50%, -50%);
+        width: 1920px; height: 1080px;
+        background: transparent;
+        transform: translate(-50%, -50%) scale(1);
         transform-origin: center center;
         overflow: hidden;
+        will-change: transform;
+        display: flex; flex-direction: column;
     }
 
-    /* --- TOPBAR sin fondo azul oscuro --- */
+    /* HEADER */
     .topbar {
-        width: 100%; height: 151px;
-        background: transparent;
+        width: calc(100% - 30px);
+        margin: 10px 15px 0 15px;
+        height: 100px;
         display: flex; align-items: center; justify-content: space-between;
-        padding: 0 50px; border-bottom: 5px solid var(--anguilla-yellow);
-        position: relative; z-index: 10;
-    }
-
-    /* ✅ Área del logo + mensajes al lado */
-    .logo-area-with-msg {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        height: 100%;
-        flex: 1;
-        max-width: 1150px;
-        overflow: hidden;
-    }
-
-    .logo-main-area {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
+        padding: 0 30px;
+        background: linear-gradient(90deg, rgba(0, 26, 77, 0.95) 0%, rgba(0, 51, 160, 0.95) 100%);
+        border-radius: 20px;
+        border-bottom: 4px solid var(--dorado);
+        position: relative; z-index: 5;
         flex-shrink: 0;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.45);
+        backdrop-filter: blur(10px);
     }
-    .logo-main-area img {
-        height: 120px;
-        max-width: 280px;
-        object-fit: contain;
-        filter: drop-shadow(0 6px 15px rgba(0,0,0,0.6));
-    }
+    .brand-area { display: flex; align-items: center; gap: 16px; height: 100%; }
+    .brand-area img { height: 72px; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.55)); }
+    .brand-text { display: flex; flex-direction: column; justify-content: center; line-height: 1; }
+    .brand-title { font-size: 26px; font-weight: 900; color: var(--blanco); letter-spacing: 0.5px; text-transform: uppercase; text-shadow: 0 2px 8px rgba(0,0,0,0.5); white-space: nowrap; }
+    .brand-title span { color: var(--dorado); }
+    .brand-slogan { font-size: 12px; font-weight: 600; color: #cbd5e1; letter-spacing: 1.6px; text-transform: uppercase; margin-top: 5px; white-space: nowrap; }
 
-    /* ✅ Caja de mensajes GRANDE al lado del logo */
-    .header-message-box {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        padding: 14px 34px;
-        background: rgba(6, 19, 47, 0.6);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        border: 3px solid var(--anguilla-yellow);
-        border-radius: 60px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        flex: 1;
-        min-width: 500px;
-        max-width: 100%;
-        overflow: hidden;
-    }
-
-    .header-msg-icon {
-        font-size: 48px;
-        flex-shrink: 0;
-    }
-
-    .header-msg-text {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        overflow: hidden;
-        flex: 1;
-    }
-
-    .header-msg-main {
-        font-size: 30px;
-        font-weight: 900;
-        color: var(--white);
-        letter-spacing: 0.5px;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.7);
-        line-height: 1.1;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .header-msg-sub {
-        font-size: 17px;
-        font-weight: 700;
-        color: var(--anguilla-yellow);
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        margin-top: 4px;
-        text-shadow: 0 1px 6px rgba(0,0,0,0.6);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .header-info { display: flex; align-items: center; gap: 40px; flex-shrink: 0; }
-    .header-clock {
-        font-size: 61px; font-weight: 900; color: var(--white); line-height: 1;
-        border-right: 4px solid rgba(255, 204, 0, 0.4); padding-right: 40px;
-        font-variant-numeric: tabular-nums;
-        text-shadow: 0 4px 12px rgba(0,0,0,0.8);
-    }
+    .header-info { display: flex; align-items: center; gap: 25px; }
+    .header-clock { font-size: 52px; font-weight: 900; color: var(--blanco); border-right: 4px solid rgba(255, 204, 0, 0.4); padding-right: 25px; font-variant-numeric: tabular-nums; }
     .date-header { text-align: right; }
-    .main-date {
-        font-size: 38px; font-weight: 900; color: var(--anguilla-yellow);
-        text-transform: uppercase; line-height: 1;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.8);
-    }
-    .sub-date {
-        font-size: 19px; font-weight: 700; color: var(--white);
-        opacity: 0.95; letter-spacing: 0.5px; margin-top: 2px;
-        text-shadow: 0 2px 6px rgba(0,0,0,0.8);
-    }
+    .main-date { font-size: 26px; font-weight: 900; color: var(--dorado); text-transform: uppercase; }
+    .sub-date { font-size: 15px; font-weight: 700; color: var(--blanco); }
 
-    /* --- INDICADOR DE CONEXIÓN --- */
-    .connection-status { display: inline-flex; align-items: center; gap: 8px; margin-left: 15px; cursor: default; position: relative; }
-    .connection-dot { width: 16px; height: 16px; border-radius: 50%; display: inline-block; transition: all 0.3s ease; box-shadow: 0 0 12px rgba(0,0,0,0.3); flex-shrink: 0; }
-    .connection-dot.online { background: #22c55e; box-shadow: 0 0 20px rgba(34, 197, 94, 0.5); }
-    .connection-dot.offline { background: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
-    .connection-dot.checking { background: #f59e0b; box-shadow: 0 0 20px rgba(245, 158, 11, 0.5); }
-    .connection-tooltip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); color: white; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.3s; font-family: 'Inter', sans-serif; z-index: 100; }
-    .connection-status:hover .connection-tooltip { opacity: 1; }
-    .offline-badge { display: none; background: #ef4444; color: white; font-size: 16px; font-weight: 800; padding: 2px 14px; border-radius: 20px; margin-left: 10px; letter-spacing: 0.5px; }
-    .offline-badge.show { display: inline-block; }
-
-    /* --- TICKER sin fondo oscuro --- */
+    /* TICKER */
     .ticker-bar {
-        width: 100%; height: 54px;
-        background: transparent;
-        border-bottom: 4px solid var(--anguilla-yellow);
+        width: calc(100% - 30px);
+        margin: 8px 15px 0 15px;
+        height: 52px;
+        background: var(--rojo);
+        border-radius: 14px;
         overflow: hidden; display: flex; align-items: center;
-        position: relative; z-index: 10;
+        border-bottom: 4px solid var(--dorado);
+        flex-shrink: 0;
+        position: relative; z-index: 5;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.35);
     }
     .ticker-text {
-        white-space: nowrap; font-size: 26px; font-weight: 800; color: #fff;
-        animation: marquee 25s linear infinite; padding-left: 100%; letter-spacing: 0.5px;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.8);
-        will-change: transform;
+        white-space: nowrap; font-size: 24px; font-weight: 800; color: var(--blanco);
+        animation: marquee 25s linear infinite; padding-left: 100%;
     }
-    @keyframes marquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+    @keyframes marquee { 0% { transform: translate3d(0,0,0); } 100% { transform: translate3d(-100%,0,0); } }
 
-    /* --- CONTENEDORES CON TRANSICIÓN (más suave) --- */
-    #view-grid, #view-featured, #view-ads, #view-realenoche, #view-loteka {
-        height: 875px; padding: 25px 30px;
-        position: absolute; width: 100%; top: 205px; left: 0;
-        z-index: 1; opacity: 1; transform: scale(1) translateY(0px);
-        visibility: visible;
+    /* VISTAS */
+    #view-grid, #view-featured, #view-ads, #view-live {
+        flex: 1; padding: 15px 25px;
+        position: relative; opacity: 1; visibility: visible;
         transition: opacity 0.4s ease, visibility 0.4s;
-        will-change: opacity;
+        overflow: hidden;
     }
-    .hidden { opacity: 0 !important; visibility: hidden !important; }
+    .hidden { opacity: 0 !important; visibility: hidden !important; position: absolute !important; inset: 0 !important; pointer-events: none; }
+    #view-ads, #view-live { padding: 0; background: #000; }
 
-    /* ✅ ANUNCIOS A PANTALLA COMPLETA (sin padding) */
-    #view-ads { padding: 0; }
+    /* ============================================================
+       BRANDING
+       ============================================================ */
+    #view-branding {
+        position: absolute !important;
+        inset: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 99999 !important;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        background: radial-gradient(circle at 50% 30%, #0d2b6b 0%, #021133 100%);
+        padding: 20px; text-align: center;
+        opacity: 1; visibility: visible; transition: opacity 0.4s ease, visibility 0.4s;
+    }
+    #view-branding.hidden { opacity: 0 !important; visibility: hidden !important; pointer-events: none; }
+    .branding-logo { height: min(450px, 50vh); max-width: 90vw; object-fit: contain; animation: floating 3.5s ease-in-out infinite; filter: drop-shadow(0 25px 50px rgba(0,0,0,0.7)); }
+    .branding-title { font-size: clamp(42px, 6vw, 96px); font-weight: 900; color: var(--blanco); margin-top: 30px; letter-spacing: 4px; text-shadow: 0 6px 20px rgba(0,0,0,0.7); line-height: 1; }
+    .branding-title span { color: var(--dorado); }
+    .branding-slogan { font-size: clamp(18px, 2.4vw, 38px); font-weight: 700; color: var(--dorado); margin-top: 20px; letter-spacing: 8px; animation: pulse 2s infinite alternate; text-align: center; }
+    .branding-tag { margin-top: 40px; font-size: clamp(16px, 1.8vw, 28px); font-weight: 800; color: #cbd5e1; background: rgba(0,0,0,0.4); padding: 16px 50px; border-radius: 50px; border: 2px solid rgba(255,204,0,0.5); text-align: center; backdrop-filter: blur(4px); }
 
-    /* --- TARJETAS GRID --- */
-    .grid-container { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); gap: 25px; height: 100%; }
+    /* GRID (Ajustado para que no se desborde) */
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 20px;
+        height: 100%;
+    }
     .card {
-        background: var(--white); border-radius: 24px; border: 1px solid rgba(255, 204, 0, 0.7);
-        display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--shadow-md);
+        background: var(--blanco);
+        border-radius: 25px;
+        padding: 15px;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: space-between;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        border-top: 8px solid var(--dorado);
         position: relative;
-    }
-    .card::before { content: ''; position: absolute; top:0; left:0; right:0; height: 6px; background: var(--anguilla-yellow); }
-    .card-header { padding: 15px 0 10px 0; display: flex; flex-direction: column; align-items: center; background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); }
-    .mini-logo { height: 135px; margin-bottom: 10px; object-fit: contain; }
-    .time-bar { width: 85%; text-align: center; padding: 5px 0; font-size: 35px; font-weight: 900; border-radius: 50px; background: #1e293b; color: #ffcc00; box-shadow: var(--shadow-sm); }
-    .card-hoy .time-bar { background: #13a705; color: white; }
-    .date-tag { font-size: 16px; font-weight: 800; color: var(--gray-text); text-transform: uppercase; margin-top: 6px; letter-spacing: 0.5px; }
-    .cached-badge { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.8); color: #f59e0b; font-size: 11px; padding: 2px 10px; border-radius: 12px; font-weight: 700; letter-spacing: 0.3px; border: 1px solid rgba(245, 158, 11, 0.3); z-index: 5; }
-
-    /* --- BOLOS 3D --- */
-    .ball-small {
-        width: 100px; height: 100px;
-        background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #3b82f6 30%, #2563eb 60%, #1d4ed8 85%, #1e40af 100%);
-        color: white; border-radius: 50%;
-        display: inline-flex; align-items: center; justify-content: center;
-        font-size: 38px; font-weight: 800;
-        box-shadow: inset -6px -6px 16px rgba(0,0,0,0.4), inset 4px 4px 10px rgba(255,255,255,0.5), 0 8px 20px rgba(0,0,0,0.25);
-        border: 2px solid rgba(255,255,255,0.15);
-        text-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    }
-
-    .ball-flat {
-        width: 125px; height: 125px; border-radius: 50%;
-        display: inline-flex; align-items: center; justify-content: center;
-        font-size: 56px; font-weight: 900;
-        border: 2px solid rgba(255,255,255,0.15);
-        animation: dropIn 0.4s ease-out both;
-    }
-    .card-hoy .ball-flat { background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #3b82f6 30%, #2563eb 60%, #1d4ed8 85%, #1e40af 100%); color: #ffffff; box-shadow: inset -8px -8px 20px rgba(0,0,0,0.4), inset 4px 4px 12px rgba(255,255,255,0.5), 0 12px 25px rgba(0,0,0,0.3); text-shadow: 0 2px 8px rgba(0,0,0,0.4); }
-    .card-ayer .ball-flat { background: radial-gradient(circle at 30% 30%, #f1f5f9 0%, #e2e8f0 30%, #cbd5e1 60%, #94a3b8 85%, #64748b 100%); color: #1e293b; box-shadow: inset -8px -8px 20px rgba(0,0,0,0.2), inset 4px 4px 12px rgba(255,255,255,0.7), 0 12px 25px rgba(0,0,0,0.2); text-shadow: 0 1px 2px rgba(255,255,255,0.5); }
-
-    .ball-big {
-        width: 205px; height: 205px; border-radius: 50%;
-        display: inline-flex; align-items: center; justify-content: center;
-        font-size: 100px; font-weight: 900;
-        border: 3px solid rgba(255,255,255,0.15);
         animation: dropIn 0.5s ease-out both;
-        position: relative;
+        overflow: hidden;
     }
-    .ball-big.blue { background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #3b82f6 30%, #2563eb 60%, #1d4ed8 85%, #1e40af 100%); color: #ffffff; box-shadow: inset -12px -12px 30px rgba(0,0,0,0.5), inset 6px 6px 18px rgba(255,255,255,0.6), 0 20px 40px rgba(0,0,0,0.4); text-shadow: 0 3px 10px rgba(0,0,0,0.5); }
-    .ball-big.white {
-        background: radial-gradient(circle at 30% 30%, #ffffff 0%, #f8fafc 40%, #e2e8f0 80%, #cbd5e1 100%);
-        color: #1e293b;
-        border: 3px solid rgba(0,0,0,0.15);
-        box-shadow: inset -12px -12px 30px rgba(0,0,0,0.15), inset 6px 6px 18px rgba(255,255,255,0.9), 0 20px 40px rgba(0,0,0,0.25);
-        text-shadow: 0 1px 2px rgba(255,255,255,0.6);
+    .card.proximo {
+        border-top-color: var(--rojo);
+        box-shadow: 0 0 40px rgba(217, 0, 0, 0.6);
+        transform: scale(1.02);
+        z-index: 5;
     }
-    .ball-small.white {
-        background: radial-gradient(circle at 30% 30%, #ffffff 0%, #f8fafc 40%, #e2e8f0 80%, #cbd5e1 100%);
-        color: #1e293b;
-        border: 2px solid rgba(0,0,0,0.15);
-        box-shadow: inset -6px -6px 16px rgba(0,0,0,0.15), inset 4px 4px 10px rgba(255,255,255,0.9), 0 8px 20px rgba(0,0,0,0.2);
-        text-shadow: 0 1px 2px rgba(255,255,255,0.6);
+    
+    .card-logo { height: 85px; object-fit: contain; margin-bottom: 5px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+
+    .card-nombre-hora {
+        display: flex; align-items: baseline; justify-content: center;
+        gap: 10px; flex-wrap: wrap; margin-bottom: 5px;
+    }
+    .card-nombre {
+        font-weight: 900; font-size: 24px; color: var(--azul-rey);
+        text-transform: uppercase; text-align: center; line-height: 1;
+    }
+    .card-hora-inline {
+        font-weight: 900; font-size: 22px; color: var(--rojo);
+        background: #fee2e2; padding: 2px 12px; border-radius: 12px;
+        line-height: 1.2; white-space: nowrap;
     }
 
-    @keyframes dropIn {
-        0% { opacity: 0; transform: scale(0.6) translateY(-20px); }
-        100% { opacity: 1; transform: scale(1) translateY(0); }
+    .card-fecha {
+        font-size: 17px; font-weight: 900; color: #15803d; background: #dcfce7;
+        padding: 4px 18px; border-radius: 20px; margin-bottom: 8px;
+        letter-spacing: 0.5px;
+    }
+    .card-fecha.ayer { color: var(--rojo); background: #fee2e2; }
+    .card-fecha.proximo-label { color: white; background: var(--rojo); animation: pulse 1.5s infinite; }
+
+    .bolos-container { display: flex; justify-content: center; gap: 12px; margin-bottom: 8px; }
+    .bolo-wrapper { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .bolo {
+        width: 100px; height: 100px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 900; font-size: 48px;
+        box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        border: 3px solid rgba(255,255,255,0.1);
+    }
+    .bolo.hoy { background: #2563eb; color: white; }
+    .bolo.ayer { background: #ffffff; color: var(--azul-oscuro); border-color: #cbd5e1; }
+    .bolo.esperando { background: #f59e0b; color: #78350f; }
+    
+    .bolo-label {
+        font-size: 13px; font-weight: 900; color: var(--texto-gris);
+        text-transform: uppercase; letter-spacing: 0.5px;
+        background: #e2e8f0; padding: 2px 10px; border-radius: 6px;
     }
 
-    /* --- SPLIT CONTAINER --- */
+    .card-timer {
+        font-size: 20px; font-weight: 900; color: var(--rojo);
+        background: #fee2e2; padding: 6px 18px; border-radius: 12px;
+        margin-bottom: 8px; font-variant-numeric: tabular-nums;
+        border: 2px solid var(--rojo); letter-spacing: 0.5px;
+        animation: pulse 1.2s infinite alternate;
+    }
+    .card-timer.esperando {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        color: #92400e; border-color: #f59e0b;
+    }
+
+    .card-footer {
+        width: 100%; display: flex; justify-content: center; align-items: center;
+        background: var(--gris-fondo); padding: 8px 15px; border-radius: 12px;
+        font-size: 16px; font-weight: 900; color: var(--azul-rey);
+        text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    /* ============================================================
+       VISTA FEATURED (ÚLTIMO SORTEO) - AJUSTADA PARA QUE QUEPA
+       ============================================================ */
     .split-container { display: flex; gap: 25px; height: 100%; width: 100%; }
     .split-main {
-        width: 1190px;
-        background: rgba(6, 19, 47, 0.35);
-        border: 5px solid var(--anguilla-yellow);
-        border-radius: 32px; display: flex; flex-direction: column; align-items: center;
-        justify-content: center; padding: 30px;
-        box-shadow: var(--shadow-lg);
-        overflow: hidden;
-        position: relative;
+        flex: 1; background: var(--blanco);
+        border: 6px solid var(--dorado); border-radius: 35px;
+        display: flex; flex-direction: column; align-items: center;
+        justify-content: space-evenly; /* Distribuye mejor el espacio */
+        padding: 20px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.4);
     }
-    .side-panel { width: 730px; display: flex; flex-direction: column; gap: 15px; }
-    .side-row {
-        background: white; border-radius: 20px; padding: 0 30px; display: flex;
-        justify-content: space-between; align-items: center; border-left: 12px solid var(--anguilla-blue);
-        box-shadow: var(--shadow-md); flex: 1;
+    .dest-logo { height: 220px; margin-bottom: 5px; object-fit: contain; }
+    .dest-nombre { font-size: 40px; font-weight: 900; color: var(--azul-rey); margin-bottom: 5px; text-transform: uppercase; }
+    .dest-hora-box {
+        font-size: 65px; background: linear-gradient(135deg, #fbbf24 0%, #f97316 50%, #fbbf24 100%);
+        color: #ffffff; padding: 8px 60px; border-radius: 25px; font-weight: 900;
+        letter-spacing: 2px; text-shadow: 0 4px 12px rgba(0,0,0,0.6);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.3); margin-bottom: 10px;
     }
-    .side-time { color: var(--anguilla-blue); font-size: 34px; font-weight: 900; }
-
-    .featured-label { font-size: 26px; background: rgba(255,255,255,0.15); padding: 6px 30px; border-radius: 50px; margin-bottom: 20px; font-weight: 800; color: #fff; letter-spacing: 1px; }
-    .featured-logo-big { height: 275px; margin-bottom: 20px; filter: drop-shadow(0 12px 20px rgba(0,0,0,0.4)); object-fit: contain; }
-
-    /* ✅ HORA DEL ÚLTIMO SORTEO — COLOR MÁS VISIBLE SIN ANIMACIÓN */
-    .featured-time-box {
-        font-size: 100px;
-        background: linear-gradient(135deg, #fbbf24 0%, #f97316 50%, #fbbf24 100%);
-        color: #ffffff;
-        padding: 4px 70px;
-        border-radius: 24px;
-        font-weight: 900;
-        letter-spacing: 2px;
-        text-shadow: 0 4px 12px rgba(0,0,0,0.6);
-        box-shadow:
-            0 10px 30px rgba(0,0,0,0.5),
-            0 0 40px rgba(251, 191, 36, 0.6),
-            inset 0 2px 0 rgba(255,255,255,0.3);
-        border: 3px solid rgba(255, 255, 255, 0.4);
-    }
-
-    .featured-date-big {
-        font-size: 30px;
-        font-weight: 800;
-        color: var(--white);
-        margin-top: 18px;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        opacity: 0.95;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.6);
-    }
-
-    .balls-container { display: flex; justify-content: center; align-items: center; gap: 18px; padding: 15px; background: transparent; border-radius: 20px; flex-grow: 1; width: 100%; }
-
-    /* ✅ AD BOX */
-    .ad-box {
-        width: 100%; height: 100%;
+    .dest-bolos { display: flex; justify-content: center; gap: 25px; margin-bottom: 10px; }
+    .dest-bolo-wrapper { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .dest-bolo {
+        width: 180px; height: 180px; border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
-        background: #000; overflow: hidden;
-        position: relative;
+        font-size: 90px; font-weight: 900; color: white;
+        background: #2563eb;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        border: 4px solid #1d4ed8;
     }
+    .dest-bolo-label {
+        font-size: 16px; font-weight: 900; color: var(--azul-rey);
+        text-transform: uppercase; letter-spacing: 1px;
+        background: #dbeafe; padding: 3px 15px; border-radius: 8px;
+    }
+    /* Etiqueta de "Último Sorteo" achicada */
+    .featured-tag {
+        background:#dcfce7; color:#15803d; padding:8px 25px; border-radius:20px; font-weight:900; font-size:22px; letter-spacing:0.5px;
+    }
+
+    .side-panel { width: 580px; display: flex; flex-direction: column; gap: 12px; }
+    .side-row {
+        background: var(--blanco); border-radius: 20px; padding: 10px 15px;
+        display: flex; justify-content: space-between; align-items: center;
+        border-left: 10px solid var(--dorado);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3); flex: 1;
+    }
+    .side-left { display: flex; align-items: center; gap: 12px; }
+    .side-logo { height: 65px; object-fit: contain; }
+    .side-info { display: flex; flex-direction: column; }
+    .side-info .hora { color: var(--azul-oscuro); font-size: 26px; font-weight: 900; }
+    .side-info .fecha { color: var(--texto-gris); font-size: 14px; font-weight: 700; text-transform: uppercase; }
+    .side-bolos { display: flex; gap: 8px; }
+    .side-bolo-wrapper { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+    .side-bolo {
+        width: 65px; height: 65px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 30px; font-weight: 900;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        border: 2px solid rgba(255,255,255,0.3);
+    }
+    .side-bolo.hoy { background: #2563eb; color: white; }
+    .side-bolo.ayer { background: #ffffff; color: var(--azul-oscuro); border-color: #cbd5e1; }
+    .side-bolo-label {
+        font-size: 10px; font-weight: 900; color: var(--texto-gris);
+        text-transform: uppercase; letter-spacing: 0.5px;
+        background: #e2e8f0; padding: 1px 6px; border-radius: 4px;
+    }
+
+    /* ADS / LIVE */
+    .ad-box { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #000; overflow: hidden; position: relative; }
     .ad-box img, .ad-box video { width: 100%; height: 100%; object-fit: contain; }
     .ad-box iframe { width: 100%; height: 100%; border: none; }
 
-    .waiting-text { color: #dc2626; font-size: 26px; font-weight: 900; text-align: center; width: 100%; margin: auto 0; letter-spacing: 0.5px; }
-
     .live-indicator {
         position: absolute; top: 25px; left: 25px;
-        background: #e63946; color: #fff;
-        font-family: 'Inter', sans-serif;
-        font-size: 24px; font-weight: 900;
-        padding: 8px 24px; border-radius: 8px;
-        box-shadow: 0 0 20px #e63946;
-        letter-spacing: 1.5px; z-index: 50;
-        display: inline-flex; align-items: center; gap: 8px;
+        background: #e63946; color: #fff; font-size: 24px; font-weight: 900;
+        padding: 8px 24px; border-radius: 8px; box-shadow: 0 0 20px #e63946;
+        letter-spacing: 1.5px; z-index: 50; display: inline-flex; align-items: center; gap: 8px;
     }
 
-    #preloader-cache { position: absolute; width: 1px; height: 1px; opacity: 0.01; overflow: hidden; bottom: 0; left: 0; pointer-events: none; }
+    /* CONEXIÓN */
+    .connection-status { display: inline-flex; align-items: center; gap: 8px; margin-left: 15px; position: relative; }
+    .connection-dot { width: 16px; height: 16px; border-radius: 50%; display: inline-block; transition: all 0.3s ease; flex-shrink: 0; }
+    .connection-dot.online { background: #22c55e; box-shadow: 0 0 20px rgba(34, 197, 94, 0.5); }
+    .connection-dot.offline { background: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
+    .connection-dot.checking { background: #f59e0b; box-shadow: 0 0 20px rgba(245, 158, 11, 0.5); }
+    .connection-tooltip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); color: white; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 100; }
+    .connection-status:hover .connection-tooltip { opacity: 1; }
+    .offline-badge { display: none; background: #ef4444; color: white; font-size: 16px; font-weight: 800; padding: 2px 14px; border-radius: 20px; margin-left: 10px; }
+    .offline-badge.show { display: inline-block; }
 
+    @keyframes dropIn {
+        0% { opacity: 0; transform: scale(0.8) translateY(10px); }
+        100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
     @keyframes pulse { 0% { opacity: 0.5; } 100% { opacity: 1; } }
-    @keyframes floating {
-        0% { transform: translateY(0px); }
-        50% { transform: translateY(-15px); }
-        100% { transform: translateY(0px); }
-    }
-
-    .reallogo-main,
-    .lotekalogo-main {
-        height: 275px;
-        margin-bottom: 20px;
-        filter: drop-shadow(0 12px 20px rgba(0,0,0,0.4));
-        object-fit: contain;
-    }
-
-    #adMainBox {
-        width: 100% !important;
-        border: none !important;
-        border-radius: 0 !important;
-        padding: 0 !important;
-        background: #000 !important;
-    }
-    #adsContainerStructure { gap: 0 !important; }
+    @keyframes floating { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
 </style>
 </head>
 <body>
 
+<div id="snow-container"></div>
+
 <div id="splash-screen">
-    <img src="nuevologo.png" class="splash-logo" alt="Logo Empresa">
-    <div class="splash-text">INICIANDO SISTEMA</div>
-    <div class="splash-sub">POR FAVOR ESPERE...</div>
+    <img src="nuevologo.png" id="splashLogo" class="splash-logo" alt="Bancas Kiko">
+    <div class="splash-text">INICIANDO PIZARRA</div>
+    <div class="splash-sub">CONECTANDO A FIREBASE...</div>
 </div>
 
-<div id="preloader-cache"></div>
+<div id="preloader-cache" style="position:absolute;width:1px;height:1px;opacity:0.01;overflow:hidden;bottom:0;left:0;pointer-events:none;"></div>
 
 <div id="canvas-master">
+    <!-- TOPBAR -->
     <div class="topbar">
-        <div class="logo-area-with-msg">
-            <div class="logo-main-area"><img src="nuevologo.png" alt="Logo"></div>
-            <div class="header-message-box" id="headerMessageBox">
-                <div class="header-msg-icon" id="headerMsgIcon">🍀</div>
-                <div class="header-msg-text">
-                    <div class="header-msg-main" id="headerMsgMain">¡LA SUERTE TE ESPERA!</div>
-                    <div class="header-msg-sub" id="headerMsgSub">Juega con responsabilidad</div>
-                </div>
+        <div class="brand-area">
+            <img src="nuevologo.png" id="headerLogo" alt="Bancas Kiko">
+            <div class="brand-text">
+                <div class="brand-title">Bancas <span>Kiko</span></div>
+                <div class="brand-slogan">La confianza en tu jugada</div>
             </div>
         </div>
         <div class="header-info">
@@ -403,59 +366,37 @@
         </div>
     </div>
 
+    <!-- TICKER -->
     <div class="ticker-bar">
-        <div class="ticker-text" id="marqueeText">CARGANDO INFORMACIÓN...</div>
+        <div class="ticker-text" id="marqueeText">CARGANDO ANUNCIOS...</div>
     </div>
 
-    <div id="view-grid">
+    <!-- VISTAS -->
+    <div id="view-grid" class="hidden">
         <div class="grid-container" id="mainGrid"></div>
     </div>
 
     <div id="view-featured" class="hidden">
         <div class="split-container">
-            <div class="split-main">
-                <div class="featured-label" id="fLabel">ÚLTIMO SORTEO REALIZADO</div>
-                <img src="anguilla.png" class="featured-logo-big" id="fLogo" alt="Anguilla" onerror="this.src='anguilla.png'">
-                <div class="featured-time-box" id="fTime">--:--</div>
-                <div class="balls-container" style="background:transparent; margin-top:20px;" id="fBalls"></div>
-                <div class="featured-date-big" id="fDate">--</div>
-            </div>
-            <div class="side-panel" id="sidePanelFeatured"></div>
+            <div class="split-main" id="featuredMain"></div>
+            <div class="side-panel" id="featuredSide"></div>
         </div>
     </div>
 
-    <div id="view-realenoche" class="hidden">
-        <div class="split-container">
-            <div class="split-main">
-                <div class="featured-label">🌙 REAL NOCHE · ÚLTIMO SORTEO</div>
-                <img src="logoreal.png" class="reallogo-main" alt="Real Noche" onerror="this.src='anguilla.png'">
-                <div class="featured-time-box" id="realTime">--:--</div>
-                <div class="balls-container" style="background:transparent; margin-top:20px;" id="realBalls"></div>
-                <div class="featured-date-big" id="realDate">--</div>
-            </div>
-            <div class="side-panel" id="sidePanelReal"></div>
-        </div>
-    </div>
-
-    <div id="view-loteka" class="hidden">
-        <div class="split-container">
-            <div class="split-main">
-                <div class="featured-label">🎰 LOTEKA TARDE · 1:30 PM · ÚLTIMO SORTEO</div>
-                <img src="lotekalogo.png" class="lotekalogo-main" alt="Loteka Tarde" onerror="this.src='anguilla.png'">
-                <div class="featured-time-box" id="lotekaTime">--:--</div>
-                <div class="balls-container" style="background:transparent; margin-top:20px;" id="lotekaBalls"></div>
-                <div class="featured-date-big" id="lotekaDate">--</div>
-            </div>
-            <div class="side-panel" id="sidePanelLoteka"></div>
-        </div>
+    <!-- BRANDING -->
+    <div id="view-branding">
+        <img src="nuevologo.png" id="brandingLogo" class="branding-logo" alt="Bancas Kiko">
+        <div class="branding-title">Bancas <span>Kiko</span></div>
+        <div class="branding-slogan">LA CONFIANZA EN TU JUGADA</div>
+        <div class="branding-tag">🍀 ¡LA SUERTE ESTÁ DE TU LADO! 🍀</div>
     </div>
 
     <div id="view-ads" class="hidden">
-        <div class="split-container" id="adsContainerStructure">
-            <div class="split-main" id="adMainBox">
-                <div class="ad-box" id="adDisplay"></div>
-            </div>
-        </div>
+        <div class="ad-box" id="adDisplay"></div>
+    </div>
+
+    <div id="view-live" class="hidden">
+        <div class="ad-box" id="liveDisplay"></div>
     </div>
 </div>
 
@@ -468,589 +409,492 @@
     const database = firebase.database();
 
     let SORTEOS = [];
-    let REAL_NOCHE_SORTEOS = [];
-    let LOTEKA_TARDE_SORTEOS = [];
     let ANUNCIOS = [];
-    let currentView = 0;
+    let LOGOS = {};
+    let modoNavidad = false;
+
+    let currentView = 77;
     let gridPage = 0;
     let adIndex = 0;
-    let rotationInterval = null;
+    let rotationTimer = null;
+    let gridTimerInterval = null;
     let enTransmisionVivo = false;
     let sistemaIniciado = false;
     let tiempoRotacionGlobal = 15000;
     let usandoCache = false;
     let isOnline = true;
 
-    // ============================================
-    // ✅ MAPEO DE LOGOS POR LOTERÍA
-    // ============================================
-    const LOGO_MAP = [
-        { keys: ['loteka'],                       logo: 'lotekalogo.png' },
-        { keys: ['real noche', 'real_noche', 'real'],  logo: 'logoreal.png' },
-        { keys: ['anguilla'],                     logo: 'anguilla.png' }
-    ];
-    const LOGO_DEFAULT = 'anguilla.png';
+    const VIEW_NAMES = ['grid', 'featured', 'branding', 'ads', 'live'];
+    const _cacheImgs = [];
 
-    function getLogoByNombre(nombre) {
-        if (!nombre) return LOGO_DEFAULT;
-        const n = nombre.toLowerCase().trim();
-        for (const entry of LOGO_MAP) {
-            if (entry.keys.some(k => n.includes(k))) {
-                return entry.logo;
-            }
-        }
-        return LOGO_DEFAULT;
-    }
+    /* ============================================================
+       MODO NAVIDAD
+       ============================================================ */
+    function aplicarModoNavidad(activo) {
+        modoNavidad = activo === true;
+        const logoSrc = modoNavidad ? 'nuevologo2.png' : 'nuevologo.png';
+        document.getElementById('splashLogo').src = logoSrc;
+        document.getElementById('headerLogo').src = logoSrc;
+        document.getElementById('brandingLogo').src = logoSrc;
 
-    // ============================================
-    // ✅ PRECARGA DE IMÁGENES EN CACHÉ (evita trabas)
-    // ============================================
-    const IMAGENES_A_PRECARGAR = [
-        'nuevologo.png', 'fondo.png',
-        'anguilla.png', 'logoreal.png', 'lotekalogo.png'
-    ];
-
-    function precargarImagenes() {
-        IMAGENES_A_PRECARGAR.forEach(src => {
-            const img = new Image();
-            img.decoding = 'async';
-            img.loading = 'eager';
-            img.src = src;
-        });
-    }
-
-    // ============================================
-    // CACHE (datos)
-    // ============================================
-    function guardarEnCache(clave, datos) {
-        try { localStorage.setItem(`anguilla_${clave}`, JSON.stringify({ data: datos, timestamp: Date.now() })); }
-        catch (e) { console.warn('No se pudo guardar en cache:', e); }
-    }
-    function obtenerDeCache(clave) {
-        try {
-            const item = localStorage.getItem(`anguilla_${clave}`);
-            if (!item) return null;
-            return JSON.parse(item);
-        } catch (e) { return null; }
-    }
-    function cargarDesdeCache() {
-        usandoCache = true;
-        let datosCargados = false;
-        const sorteosCache = obtenerDeCache('sorteos');
-        if (sorteosCache?.data?.length) { SORTEOS = sorteosCache.data; datosCargados = true; }
-        const realCache = obtenerDeCache('realNoche');
-        if (realCache?.data?.length) { REAL_NOCHE_SORTEOS = realCache.data; datosCargados = true; }
-        const lotekaCache = obtenerDeCache('lotekaTarde');
-        if (lotekaCache?.data?.length) { LOTEKA_TARDE_SORTEOS = lotekaCache.data; datosCargados = true; }
-        const anunciosCache = obtenerDeCache('anuncios');
-        if (anunciosCache?.data?.length) { ANUNCIOS = anunciosCache.data.filter(ad => ad.activo !== false); datosCargados = true; }
-        const tickerCache = obtenerDeCache('ticker');
-        if (tickerCache?.data) document.getElementById('marqueeText').innerText = tickerCache.data;
-        const tiempoCache = obtenerDeCache('tiempoRotacion');
-        if (tiempoCache?.data) tiempoRotacionGlobal = tiempoCache.data;
-
-        if (datosCargados && sistemaIniciado && !enTransmisionVivo) {
-            renderGrid();
-            if (currentView === 88) renderFeatured();
-            if (currentView === 111) renderRealNoche();
-            if (currentView === 122) renderLotekaTarde();
-            if (!rotationInterval) rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
+        const snow = document.getElementById('snow-container');
+        if (modoNavidad) {
+            snow.style.display = 'block';
+            iniciarNieve();
+        } else {
+            snow.style.display = 'none';
+            snow.innerHTML = '';
         }
     }
 
-    // ============================================
-    // CONEXIÓN
-    // ============================================
-    function actualizarIndicadorConexion(estado, mensaje) {
-        const dot = document.getElementById('connectionDot');
-        const tooltip = document.getElementById('connectionTooltip');
-        const badge = document.getElementById('offlineBadge');
-        dot.className = 'connection-dot';
-        if (estado === 'online') { dot.classList.add('online'); tooltip.textContent = mensaje || '✅ Conectado'; badge.classList.remove('show'); isOnline = true; }
-        else if (estado === 'offline') { dot.classList.add('offline'); tooltip.textContent = mensaje || '❌ Sin conexión'; badge.classList.add('show'); isOnline = false; usandoCache = true; }
-        else { dot.classList.add('checking'); tooltip.textContent = mensaje || '⏳ Verificando...'; }
-    }
-    function verificarConexion() {
-        actualizarIndicadorConexion('checking', '⏳ Verificando conexión...');
-        database.ref('.info/connected').once('value', (snap) => {
-            if (snap.val()) {
-                actualizarIndicadorConexion('online', '✅ Conectado a Firebase');
-                isOnline = true;
-                if (usandoCache) { usandoCache = false; cargarDatosFirebase(); }
-            } else {
-                actualizarIndicadorConexion('offline', '❌ Sin conexión a Firebase');
-                isOnline = false; cargarDesdeCache();
-            }
-        }).catch(() => {
-            fetch('https://www.google.com/favicon.ico', { mode: 'no-cors', cache: 'no-cache' })
-                .then(() => { actualizarIndicadorConexion('online', '✅ Conectado a internet'); isOnline = true; })
-                .catch(() => { actualizarIndicadorConexion('offline', '❌ Sin conexión a internet'); isOnline = false; cargarDesdeCache(); });
-        });
-    }
-    function monitorearConexion() {
-        database.ref('.info/connected').on('value', (snap) => {
-            if (snap.val()) {
-                actualizarIndicadorConexion('online', '✅ Conectado a Firebase');
-                isOnline = true;
-                if (usandoCache) { usandoCache = false; cargarDatosFirebase(); }
-            } else {
-                actualizarIndicadorConexion('offline', '❌ Sin conexión a Firebase');
-                isOnline = false; cargarDesdeCache();
-            }
-        });
+    function iniciarNieve() {
+        const container = document.getElementById('snow-container');
+        if (!container || container.children.length > 0) return;
+        const copos = ['❅', '❆', '❄', '•', '✦'];
+        for (let i = 0; i < 50; i++) {
+            const c = document.createElement('div');
+            c.className = 'snowflake';
+            c.textContent = copos[Math.floor(Math.random() * copos.length)];
+            c.style.left = Math.random() * 100 + 'vw';
+            c.style.fontSize = (Math.random() * 18 + 10) + 'px';
+            c.style.animationDuration = (Math.random() * 4 + 4) + 's';
+            c.style.animationDelay = (Math.random() * 6) + 's';
+            c.style.opacity = (Math.random() * 0.5 + 0.35).toString();
+            container.appendChild(c);
+        }
     }
 
-    // ============================================
-    // HELPERS
-    // ============================================
+    /* ============================================================
+       UTILIDADES
+       ============================================================ */
+    function getAhoraRD() {
+        const partes = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'America/Santo_Domingo',
+            year: 'numeric', month: '2-digit', day: '2-digit',
+            hour: '2-digit', minute: '2-digit', second: '2-digit',
+            hour12: false
+        }).formatToParts(new Date());
+        const get = (t) => partes.find(p => p.type === t)?.value;
+        let h = parseInt(get('hour'));
+        if (h === 24) h = 0;
+        return {
+            year: parseInt(get('year')), month: parseInt(get('month')),
+            day: parseInt(get('day')), hours: h,
+            minutes: parseInt(get('minute')), seconds: parseInt(get('second'))
+        };
+    }
+
+    function getFormatDateRD(offset = 0) {
+        const rd = getAhoraRD();
+        const d = new Date(Date.UTC(rd.year, rd.month - 1, rd.day));
+        d.setUTCDate(d.getUTCDate() - offset);
+        return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')}`;
+    }
+
     function convertirHoraAminutos(horaStr) {
         if (!horaStr) return 0;
-        const match = horaStr.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
-        if (!match) return 0;
-        let h = parseInt(match[1]);
-        const m = parseInt(match[2]);
-        const ampm = match[3].toUpperCase();
-        if (ampm === 'PM' && h !== 12) h += 12;
-        if (ampm === 'AM' && h === 12) h = 0;
-        return h * 60 + m;
+        const m = horaStr.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+        if (!m) return 0;
+        let h = parseInt(m[1]); const min = parseInt(m[2]);
+        const ap = m[3].toUpperCase();
+        if (ap === 'PM' && h !== 12) h += 12;
+        if (ap === 'AM' && h === 12) h = 0;
+        return h * 60 + min;
     }
-    function ordenarSorteosCronologicamente(sorteos) {
-        const hoy = sorteos.filter(s => s.day === 'hoy');
-        const ayer = sorteos.filter(s => s.day === 'ayer');
-        const ordenarPorHora = (arr) => arr.sort((a, b) => convertirHoraAminutos(a.hour) - convertirHoraAminutos(b.hour));
-        return [...ordenarPorHora(hoy), ...ordenarPorHora(ayer)];
+
+    function getLogoByNombre(nombre) {
+        if (!nombre) return 'anguilla.png';
+        const n = nombre.toLowerCase();
+        if (n.includes('loteka')) return 'lotekalogo.png';
+        if (n.includes('real')) return 'logoreal.png';
+        return 'anguilla.png';
     }
-    function getFormatDate(offsetDays = 0) {
-        const d = new Date();
-        d.setDate(d.getDate() - offsetDays);
-        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    }
-    function formatearFechaLarga(isoOrOffset) {
-        let d;
-        if (typeof isoOrOffset === 'number') {
-            d = new Date();
-            d.setDate(d.getDate() - isoOrOffset);
-        } else if (typeof isoOrOffset === 'string' && isoOrOffset.includes('-')) {
-            d = new Date(isoOrOffset + 'T12:00:00');
-        } else {
-            d = new Date();
-        }
-        const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO'];
-        const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
-        return `${dias[d.getDay()]} ${d.getDate()} ${meses[d.getMonth()]} ${d.getFullYear()}`;
-    }
-    function esVideoDirecto(url) {
-        if (!url) return false;
-        return url.includes('github.com') || url.includes('raw.githubusercontent') || /\.(mp4|webm|ogg|mov)$/i.test(url);
-    }
+
     function convertirLinkGitHub(url) {
         if (!url) return url;
-        url = url.trim();
         if (url.includes('raw.githubusercontent.com')) return url;
-        if (url.includes('github.com') && url.includes('/blob/')) return url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
-        if (url.includes('github.com') && url.includes('?raw=true')) return url.replace('github.com', 'raw.githubusercontent.com');
-        if (url.includes('github.com') && !url.includes('raw.githubusercontent.com')) {
-            const match = url.match(/github\.com\/([^\/]+\/[^\/]+\/blob\/[^?]+)/);
-            if (match) return 'https://raw.githubusercontent.com/' + match[1].replace('/blob/', '/');
+        if (url.includes('github.com') && url.includes('/blob/')) {
+            return url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
         }
         return url;
     }
 
-    // ============================================
-    // CARGA DE DATOS
-    // ============================================
+    function esVideoDirecto(url) {
+        if (!url) return false;
+        const u = url.toLowerCase();
+        return u.includes('.mp4') || u.includes('.webm') || u.includes('.ogg') || u.includes('.mov') || u.includes('raw.githubusercontent');
+    }
+
+    /* ============================================================
+       CACHÉ
+       ============================================================ */
+    function guardarEnCache(clave, datos) {
+        try { localStorage.setItem(`kiko_${clave}`, JSON.stringify({ data: datos, t: Date.now() })); } catch {}
+    }
+    function obtenerDeCache(clave) {
+        try { const i = localStorage.getItem(`kiko_${clave}`); return i ? JSON.parse(i) : null; } catch { return null; }
+    }
+    function cargarDesdeCache() {
+        usandoCache = true;
+        const s = obtenerDeCache('sorteos');
+        if (s?.data?.length) SORTEOS = s.data;
+        const a = obtenerDeCache('anuncios');
+        if (a?.data?.length) ANUNCIOS = a.data.filter(x => x.activo !== false);
+        const t = obtenerDeCache('ticker');
+        if (t?.data) document.getElementById('marqueeText').innerText = t.data;
+    }
+
+    function actualizarIndicadorConexion(estado, msg) {
+        const dot = document.getElementById('connectionDot');
+        const tip = document.getElementById('connectionTooltip');
+        const badge = document.getElementById('offlineBadge');
+        dot.className = 'connection-dot';
+        if (estado === 'online') {
+            dot.classList.add('online'); tip.textContent = msg || '✅ Conectado';
+            badge.classList.remove('show'); isOnline = true;
+        } else if (estado === 'offline') {
+            dot.classList.add('offline'); tip.textContent = msg || '❌ Sin conexión';
+            badge.classList.add('show'); isOnline = false; usandoCache = true;
+            cargarDesdeCache();
+        } else {
+            dot.classList.add('checking'); tip.textContent = msg || '⏳ Verificando...';
+        }
+    }
+
+    /* ============================================================
+       PROCESAMIENTO SORTEOS
+       ============================================================ */
     function procesarSorteosData(dataHoy, dataAyer) {
-        let finalSorteos = [];
-        const ahora = new Date();
-        const horaAct = { hrs: ahora.getHours(), mins: ahora.getMinutes() };
-        if (!dataHoy || dataHoy.length === 0) return finalSorteos;
+        const out = [];
+        const rd = getAhoraRD();
+        const horaAct = rd.hours * 60 + rd.minutes;
+        if (!dataHoy || dataHoy.length === 0) return out;
 
         dataHoy.forEach((sHoy, index) => {
             if (!sHoy) return;
-            let [h, mP] = sHoy.hora.split(":");
-            let mSor = parseInt(mP.substring(0, 2));
-            let ampm = mP.substring(2).trim();
-            let hSor = parseInt(h);
-            if (ampm === "PM" && hSor !== 12) hSor += 12;
-            if (ampm === "AM" && hSor === 12) hSor = 0;
+            const m = (sHoy.hora || '').match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+            let hSor = 0, mSor = 0;
+            if (m) {
+                hSor = parseInt(m[1]); mSor = parseInt(m[2]);
+                const ap = m[3].toUpperCase();
+                if (ap === 'PM' && hSor !== 12) hSor += 12;
+                if (ap === 'AM' && hSor === 12) hSor = 0;
+            }
+            const tieneHoy = sHoy.premios && sHoy.premios[0] !== "" && sHoy.premios[0] != null;
+            const minutosRestantes = (hSor * 60 + mSor) - horaAct;
+            const yaPaso = minutosRestantes <= -5;
+            const faltan20 = !tieneHoy && !yaPaso && minutosRestantes <= 20 && minutosRestantes > 0;
 
-            const tieneHoy = sHoy.premios && sHoy.premios[0] !== "" && sHoy.premios[0] !== undefined && sHoy.premios[0] !== null;
-            const yaPasoHora = (horaAct.hrs > hSor || (horaAct.hrs === hSor && horaAct.mins >= mSor + 5));
-
-            let sorteoFinal = { 
-                hour: sHoy.hora.replace(/(AM|PM)/, ' $1'), 
+            const s = {
+                hour: (sHoy.hora || '').replace(/(AM|PM)/, ' $1').trim(),
                 key: index,
-                nombre: sHoy.nombre || sHoy.name || sHoy.loteria || ''
+                nombre: sHoy.nombre || sHoy.name || sHoy.loteria || '',
+                minutosRestantes
             };
-
             if (tieneHoy) {
-                sorteoFinal.day = "hoy"; sorteoFinal.date = "HOY";
-                sorteoFinal.nums = [sHoy.premios[0], sHoy.premios[1], sHoy.premios[2]];
-                sorteoFinal.isWaiting = false;
-            } else if (yaPasoHora) {
-                sorteoFinal.day = "hoy"; sorteoFinal.date = "HOY";
-                sorteoFinal.nums = null; sorteoFinal.isWaiting = true;
+                s.day = 'hoy'; s.date = 'HOY';
+                s.nums = [sHoy.premios[0], sHoy.premios[1], sHoy.premios[2]];
+                s.isWaiting = false; s.isProximo = false;
+            } else if (yaPaso) {
+                s.day = 'hoy'; s.date = 'HOY';
+                s.nums = null; s.isWaiting = true; s.isProximo = false;
             } else {
-                const sAyer = dataAyer && dataAyer[index] ? dataAyer[index] : null;
-                sorteoFinal.day = "ayer"; sorteoFinal.date = "AYER";
-                sorteoFinal.nombre = sHoy.nombre || sAyer?.nombre || '';
-                sorteoFinal.nums = (sAyer?.premios?.[0] !== "" && sAyer?.premios?.[0] != null) ? [sAyer.premios[0], sAyer.premios[1], sAyer.premios[2]] : null;
-                sorteoFinal.isWaiting = false;
+                const sAyer = Array.isArray(dataAyer) ? dataAyer.find(a => a && a.hora === sHoy.hora) : null;
+                s.day = 'ayer'; s.date = 'AYER';
+                s.nombre = sHoy.nombre || sAyer?.nombre || '';
+                s.nums = (sAyer?.premios?.[0] !== "" && sAyer?.premios?.[0] != null)
+                    ? [sAyer.premios[0], sAyer.premios[1], sAyer.premios[2]] : null;
+                s.isWaiting = false; s.isProximo = faltan20;
             }
-            finalSorteos.push(sorteoFinal);
+            out.push(s);
         });
-        return finalSorteos;
+        return out;
     }
 
-    function cargarDatosFirebase() {
-        const hoyStr = getFormatDate(0);
-        const ayerStr = getFormatDate(1);
-
-        database.ref('ticker').once('value', snap => {
-            const tickerText = snap.val() || "BIENVENIDOS A ANGUILLA LOTTERY";
-            document.getElementById('marqueeText').innerText = tickerText;
-            guardarEnCache('ticker', tickerText);
-        });
-
-        database.ref(`sorteos/${hoyStr}`).once('value', snapHoy => {
-            const dataHoy = snapHoy.val() || [];
-            database.ref(`sorteos/${ayerStr}`).once('value', snapAyer => {
-                const dataAyer = snapAyer.val() || [];
-                const procesados = procesarSorteosData(dataHoy, dataAyer);
-                if (procesados?.length) {
-                    SORTEOS = ordenarSorteosCronologicamente(procesados);
-                    guardarEnCache('sorteos', SORTEOS);
-                    if (sistemaIniciado && !enTransmisionVivo) {
-                        renderGrid();
-                        if (currentView === 88) renderFeatured();
-                    }
-                }
-            });
-        });
-
-        database.ref('anunciosList').once('value', snap => {
-            const anuncios = [];
-            if (snap.exists()) snap.forEach(child => {
-                let item = child.val();
-                if (item?.activo !== false && item?.url?.trim()) anuncios.push(item);
-            });
-            if (anuncios.length) { ANUNCIOS = anuncios; guardarEnCache('anuncios', ANUNCIOS); }
-        });
-
-        database.ref('configuracion/tiempoPantalla').once('value', snap => {
-            if (snap.val()) {
-                tiempoRotacionGlobal = parseInt(snap.val()) * 1000;
-                guardarEnCache('tiempoRotacion', tiempoRotacionGlobal);
-                if (rotationInterval && !enTransmisionVivo) {
-                    clearInterval(rotationInterval);
-                    rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
-                }
-            }
-        });
+    function ordenarSorteosCronologicamente(arr) {
+        const hoy = arr.filter(s => s.day === 'hoy');
+        const ayer = arr.filter(s => s.day === 'ayer');
+        const ord = (a) => a.sort((x, y) => convertirHoraAminutos(x.hour) - convertirHoraAminutos(y.hour));
+        return [...ord(hoy), ...ord(ayer)];
     }
 
-    // ============================================
-    // PROCESADORES GENÉRICOS
-    // ============================================
-    function procesarSorteoPorNombre(data, filtroNombre) {
-        const arr = [];
-        if (!data) return arr;
-        const items = Array.isArray(data) ? data : Object.values(data);
-        for (const s of items) {
-            if (!s) continue;
-            const nombre = (s.nombre || '').toLowerCase();
-            if (!filtroNombre(nombre)) continue;
-            const nums = s.numeros || s.premios;
-            if (!nums || !Array.isArray(nums) || nums.length < 3) continue;
-            if (!nums[0] || nums[0] === "") continue;
-            arr.push({
-                nombre: s.nombre,
-                hora: (s.hora || '').replace(/(AM|PM)/i, ' $1').trim(),
-                fechaRD: s.fechaRD || '',
-                fecha: s.fecha || '',
-                numeros: [nums[0], nums[1], nums[2]],
-                enviadoEn: s.enviadoEn || '',
-                timestamp: s.enviadoEn ? new Date(s.enviadoEn).getTime() : 0
-            });
-        }
-        arr.sort((a, b) => b.timestamp - a.timestamp);
-        return arr;
-    }
-
-    function procesarRealNoche(data) {
-        return procesarSorteoPorNombre(data, (n) => n.includes('real noche') || n.includes('real_noche'));
-    }
-
-    function procesarLotekaTarde(data) {
-        return procesarSorteoPorNombre(data, (n) => n.includes('loteka') && n.includes('tarde'));
-    }
-
-    // ============================================
-    // RENDER: VISTA GENÉRICA
-    // ============================================
-    function renderVistaSorteo(config) {
-        const { sorteos, timeEl, ballsEl, sidePanelEl, dateEl, emptyMsg } = config;
-        const timeNode = document.getElementById(timeEl);
-        const ballsNode = document.getElementById(ballsEl);
-        const sideNode = document.getElementById(sidePanelEl);
-        const dateNode = document.getElementById(dateEl);
-
-        if (!sorteos.length) {
-            timeNode.innerText = '--:--';
-            dateNode.innerText = '--';
-            ballsNode.innerHTML = `<div class="waiting-text">${emptyMsg}</div>`;
-            sideNode.innerHTML = '<div class="waiting-text">NO HAY SORTEOS REGISTRADOS</div>';
-            return;
-        }
-
-        const last = sorteos[0];
-        const hoy = getFormatDate(0);
-        const esHoy = last.fechaRD === hoy;
-
-        timeNode.innerText = last.hora || '--:--';
-
-        if (last.fechaRD && last.fechaRD.includes('-')) {
-            dateNode.innerText = formatearFechaLarga(last.fechaRD);
-        } else {
-            dateNode.innerText = last.fecha || '--';
-        }
-
-        const ballClass = esHoy ? 'blue' : 'white';
-        ballsNode.innerHTML = last.numeros.map((n, i) =>
-            `<div class="ball-big ${ballClass}" style="animation-delay: ${i * 0.1}s">${n}</div>`
-        ).join('');
-
-        const historial = sorteos.slice(1, 6);
-        if (!historial.length) {
-            sideNode.innerHTML = '<div class="waiting-text" style="color:white;">SOLO HAY UN SORTEO REGISTRADO</div>';
-        } else {
-            sideNode.innerHTML = historial.map((s, idx) => {
-                let label = s.fecha || '';
-                if (s.fechaRD === hoy) label = 'HOY';
-                else if (s.fechaRD === getFormatDate(1)) label = 'AYER';
-                else if (s.fechaRD) {
-                    const [y, m, d] = s.fechaRD.split('-');
-                    label = `${d}/${m}/${y}`;
-                }
-                const smallClass = s.fechaRD === hoy ? '' : 'white';
-                const logoHist = getLogoByNombre(s.nombre);
-                return `
-                    <div class="side-row">
-                        <div style="display:flex; align-items:center; gap:12px; flex-shrink:0;">
-                            <img src="${logoHist}" style="height:60px; object-fit:contain;" onerror="this.src='anguilla.png'">
-                            <div class="side-time">
-                                ${s.hora}
-                                <small style="font-size:18px; display:block; color:#64748b; font-weight:700; margin-top:2px;">${label}</small>
-                            </div>
-                        </div>
-                        <div style="display:flex; gap:10px;">
-                            <div class="ball-small ${smallClass}" style="animation-delay: ${idx * 0.05}s">${s.numeros[0]}</div>
-                            <div class="ball-small ${smallClass}" style="animation-delay: ${idx * 0.05 + 0.08}s">${s.numeros[1]}</div>
-                            <div class="ball-small ${smallClass}" style="animation-delay: ${idx * 0.05 + 0.16}s">${s.numeros[2]}</div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-    }
-
-    function renderRealNoche() {
-        renderVistaSorteo({
-            sorteos: REAL_NOCHE_SORTEOS,
-            timeEl: 'realTime',
-            ballsEl: 'realBalls',
-            sidePanelEl: 'sidePanelReal',
-            dateEl: 'realDate',
-            emptyMsg: 'ESPERANDO SORTEO DE REAL NOCHE...'
-        });
-    }
-
-    function renderLotekaTarde() {
-        renderVistaSorteo({
-            sorteos: LOTEKA_TARDE_SORTEOS,
-            timeEl: 'lotekaTime',
-            ballsEl: 'lotekaBalls',
-            sidePanelEl: 'sidePanelLoteka',
-            dateEl: 'lotekaDate',
-            emptyMsg: 'ESPERANDO SORTEO DE LOTEKA TARDE...'
-        });
-    }
-
-    // ============================================
-    // INICIALIZACIÓN
-    // ============================================
+    /* ============================================================
+       INICIALIZACIÓN FIREBASE
+       ============================================================ */
     function inicializarDatos() {
+        database.ref('web_kiko/modo_navidad').on('value', snap => {
+            aplicarModoNavidad(snap.val() === true);
+        });
+
         database.ref('ticker').on('value', snap => {
-            const texto = snap.val() || "BIENVENIDOS A ANGUILLA LOTTERY";
-            document.getElementById('marqueeText').innerText = texto;
-            guardarEnCache('ticker', texto);
+            const txt = snap.val() || 'BIENVENIDOS A BANCAS KIKO';
+            document.getElementById('marqueeText').innerText = txt;
+            guardarEnCache('ticker', txt);
         });
 
         database.ref('configuracion/tiempoPantalla').on('value', snap => {
-            if (snap.val()) {
-                tiempoRotacionGlobal = parseInt(snap.val()) * 1000;
-                guardarEnCache('tiempoRotacion', tiempoRotacionGlobal);
-            }
+            if (snap.val()) tiempoRotacionGlobal = parseInt(snap.val()) * 1000;
         });
 
         database.ref('anunciosList').on('value', snap => {
             ANUNCIOS = [];
-            const cacheContainer = document.getElementById('preloader-cache');
-            cacheContainer.innerHTML = "";
+            const preloader = document.getElementById('preloader-cache');
+            if (preloader) preloader.innerHTML = '';
             if (snap.exists()) snap.forEach(child => {
-                let item = child.val();
-                if (item?.activo !== false && item?.url?.trim()) {
-                    ANUNCIOS.push(item);
-                    let imgPre = new Image();
-                    imgPre.decoding = 'async';
-                    imgPre.src = convertirLinkGitHub(item.url.trim());
-                    cacheContainer.appendChild(imgPre);
+                const v = child.val();
+                if (v?.activo !== false && v?.url?.trim()) {
+                    ANUNCIOS.push(v);
+                    const img = new Image();
+                    img.decoding = 'async';
+                    img.src = convertirLinkGitHub(v.url.trim());
+                    _cacheImgs.push(img);
+                    if (preloader) preloader.appendChild(img);
                 }
             });
             guardarEnCache('anuncios', ANUNCIOS);
             if (adIndex >= ANUNCIOS.length) adIndex = 0;
         });
 
-        const hoyStr = getFormatDate(0);
-        const ayerStr = getFormatDate(1);
+        database.ref('web_kiko/logos').on('value', snap => {
+            LOGOS = snap.val() || {};
+        });
 
+        const hoyStr = getFormatDateRD(0);
+        const ayerStr = getFormatDateRD(1);
         database.ref(`sorteos/${hoyStr}`).on('value', snapHoy => {
             const dataHoy = snapHoy.val() || [];
             database.ref(`sorteos/${ayerStr}`).once('value', snapAyer => {
                 const dataAyer = snapAyer.val() || [];
-                const procesados = procesarSorteosData(dataHoy, dataAyer);
-                if (procesados.length > 0) {
-                    SORTEOS = ordenarSorteosCronologicamente(procesados);
+                const proc = procesarSorteosData(dataHoy, dataAyer);
+                if (proc.length > 0) {
+                    SORTEOS = ordenarSorteosCronologicamente(proc);
                     guardarEnCache('sorteos', SORTEOS);
                 }
                 if (sistemaIniciado && !enTransmisionVivo) {
-                    renderGrid();
+                    if (currentView === 0) renderGrid();
                     if (currentView === 88) renderFeatured();
                 }
             });
         });
 
-        database.ref('sorteos_enloteria/resultados').on('value', snap => {
-            const data = snap.val();
-            REAL_NOCHE_SORTEOS = procesarRealNoche(data);
-            guardarEnCache('realNoche', REAL_NOCHE_SORTEOS);
-            LOTEKA_TARDE_SORTEOS = procesarLotekaTarde(data);
-            guardarEnCache('lotekaTarde', LOTEKA_TARDE_SORTEOS);
-            if (sistemaIniciado && !enTransmisionVivo) {
-                if (currentView === 111) renderRealNoche();
-                if (currentView === 122) renderLotekaTarde();
-            }
-        });
-
         database.ref('transmisionVivo').on('value', snap => {
             if (!sistemaIniciado) return;
             const live = snap.val();
-            const vGrid = document.getElementById('view-grid');
-            const vFeat = document.getElementById('view-featured');
-            const vReal = document.getElementById('view-realenoche');
-            const vLot = document.getElementById('view-loteka');
-            const vAds = document.getElementById('view-ads');
-            const boxAd = document.getElementById('adDisplay');
-
             if (live && live.activo === true) {
                 enTransmisionVivo = true;
-                clearInterval(rotationInterval);
-                vGrid.classList.add('hidden');
-                vFeat.classList.add('hidden');
-                vReal.classList.add('hidden');
-                vLot.classList.add('hidden');
-                vAds.classList.remove('hidden');
-
-                let rawUrl = live.url || "";
-                if (esVideoDirecto(rawUrl)) {
-                    let directUrl = convertirLinkGitHub(rawUrl);
-                    boxAd.innerHTML = `<div class="live-indicator">● EN VIVO</div><video src="${directUrl}" autoplay muted playsinline controls style="width:100%; height:100%; background:#000;"></video>`;
+                cancelarRotacion();
+                clearInterval(gridTimerInterval);
+                mostrarVista('live');
+                const box = document.getElementById('liveDisplay');
+                const raw = live.url || '';
+                if (esVideoDirecto(raw)) {
+                    box.innerHTML = `<div class="live-indicator">● EN VIVO</div><video src="${convertirLinkGitHub(raw)}" autoplay muted playsinline controls style="width:100%;height:100%;background:#000;"></video>`;
                 } else {
-                    let embedUrl = rawUrl.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/");
-                    if (embedUrl.includes("?")) embedUrl = embedUrl.split("?")[0];
-                    boxAd.innerHTML = `<div class="live-indicator">● EN VIVO</div><iframe src="${embedUrl}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;"></iframe>`;
+                    let embed = raw.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/');
+                    if (embed.includes('?')) embed = embed.split('?')[0];
+                    box.innerHTML = `<div class="live-indicator">● EN VIVO</div><iframe src="${embed}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%;height:100%;border:none;"></iframe>`;
                 }
             } else if (enTransmisionVivo) {
                 enTransmisionVivo = false;
-                boxAd.innerHTML = "";
-                gridPage = 0; currentView = 0;
-                vGrid.classList.remove('hidden');
-                vFeat.classList.add('hidden');
-                vReal.classList.add('hidden');
-                vLot.classList.add('hidden');
-                vAds.classList.add('hidden');
-                renderGrid();
-                clearInterval(rotationInterval);
-                rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
+                document.getElementById('liveDisplay').innerHTML = '';
+                currentView = 0; gridPage = 0;
+                mostrarVista('grid'); renderGrid();
+                programarRotacion(tiempoRotacionGlobal);
             }
         });
     }
 
-    // ============================================
-    // RENDER GRID / FEATURED / ADS
-    // ============================================
+    /* ============================================================
+       VISTAS
+       ============================================================ */
+    function mostrarVista(nombre) {
+        VIEW_NAMES.forEach(v => {
+            const el = document.getElementById('view-' + v);
+            if (el) el.classList.add('hidden');
+        });
+        const t = document.getElementById('view-' + nombre);
+        if (t) t.classList.remove('hidden');
+    }
+
+    /* ============================================================
+       ROTACIÓN
+       ============================================================ */
+    function programarRotacion(ms) {
+        cancelarRotacion();
+        rotationTimer = setTimeout(rotateDisplay, Math.max(1000, ms));
+    }
+    function cancelarRotacion() {
+        if (rotationTimer) { clearTimeout(rotationTimer); rotationTimer = null; }
+    }
+
+    function rotateDisplay() {
+        if (enTransmisionVivo || !sistemaIniciado) return;
+        let nextTime = tiempoRotacionGlobal;
+        const totalPages = Math.max(1, Math.ceil(SORTEOS.length / 8));
+
+        if (currentView === 0) {
+            if (gridPage < totalPages - 1) {
+                gridPage++;
+                mostrarVista('grid'); renderGrid();
+            } else {
+                currentView = 88; gridPage = 0;
+                mostrarVista('featured'); renderFeatured();
+            }
+        } else if (currentView === 88) {
+            currentView = 77;
+            mostrarVista('branding');
+        } else if (currentView === 77) {
+            currentView = 99; adIndex = 0;
+            mostrarVista('ads');
+            nextTime = renderMediaAd();
+        } else if (currentView === 99) {
+            currentView = 0; gridPage = 0;
+            mostrarVista('grid'); renderGrid();
+        } else {
+            currentView = 0; gridPage = 0;
+            mostrarVista('grid'); renderGrid();
+        }
+        programarRotacion(nextTime);
+    }
+
+    /* ============================================================
+       RENDER GRID
+       ============================================================ */
     function renderGrid() {
+        clearInterval(gridTimerInterval);
         const grid = document.getElementById('mainGrid');
+        if (!grid) return;
         grid.innerHTML = '';
         if (SORTEOS.length === 0) {
-            grid.innerHTML = `<div style="grid-column:1/-1; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-size:32px; font-weight:800; gap:20px;">
-                <span>${usandoCache ? '📡 MODO OFFLINE' : '📡 ESPERANDO DATOS'}</span>
-                <span style="font-size:20px; font-weight:400; opacity:0.7;">${usandoCache ? 'Cargando desde caché...' : 'No hay sorteos disponibles'}</span>
-            </div>`;
+            grid.innerHTML = `<div style="grid-column:1/-1; color:white; font-size:32px; font-weight:800; text-align:center; padding:50px;">
+                ${usandoCache ? '📡 MODO OFFLINE — CARGANDO...' : 'ESPERANDO DATOS...'}</div>`;
             return;
         }
         const start = gridPage * 8;
-        const pageItems = SORTEOS.slice(start, start + 8);
+        const items = SORTEOS.slice(start, start + 8);
 
-        pageItems.forEach((s, idx) => {
+        items.forEach((s, idx) => {
             const card = document.createElement('div');
-            card.className = `card ${s.day === 'hoy' ? 'card-hoy' : 'card-ayer'}`;
-            let bottom = s.isWaiting
-                ? `<div class="waiting-text">ESPERANDO RESULTADOS...</div>`
-                : `<div class="balls-container">
-                    <div class="ball-flat" style="animation-delay: ${(idx * 0.05)}s">${s.nums ? s.nums[0] : '--'}</div>
-                    <div class="ball-flat" style="animation-delay: ${(idx * 0.05 + 0.08)}s">${s.nums ? s.nums[1] : '--'}</div>
-                    <div class="ball-flat" style="animation-delay: ${(idx * 0.05 + 0.16)}s">${s.nums ? s.nums[2] : '--'}</div>
-                   </div>`;
-            const cacheBadge = usandoCache ? `<div class="cached-badge">📦 CACHÉ</div>` : '';
-            const logoUrl = getLogoByNombre(s.nombre);
-            card.innerHTML = `<div class="card-header">
-                <img class="mini-logo" src="${logoUrl}" onerror="this.src='anguilla.png'" alt="${s.nombre || 'Sorteo'}">
-                <div class="time-bar">${s.hour}</div>
-                <div class="date-tag">${s.nombre ? s.nombre + ' · ' : ''}${s.date}</div>
-            </div>${bottom}${cacheBadge}`;
+            card.className = `card ${s.isProximo || s.isWaiting ? 'proximo' : ''}`;
+            card.style.animationDelay = `${idx * 0.05}s`;
+
+            let claseFecha = s.day === 'hoy' ? '' : 'ayer';
+            let txtFecha = s.day === 'hoy' ? 'HOY' : 'AYER';
+            let boloClass = s.day === 'hoy' ? 'hoy' : 'ayer';
+            let timerHtml = '';
+
+            if (s.isWaiting) {
+                claseFecha = 'proximo-label'; txtFecha = 'ESPERANDO';
+                boloClass = 'esperando';
+                timerHtml = `<div class="card-timer esperando">⏳ ESPERANDO RESULTADOS...</div>`;
+            } else if (s.isProximo) {
+                claseFecha = 'proximo-label'; txtFecha = '¡POR SALIR!';
+                boloClass = 'ayer';
+                timerHtml = `<div class="card-timer" id="gridTimer">⏱ ...</div>`;
+            }
+
+            const nums = s.isWaiting ? ['?','?','?'] : (s.nums || ['--','--','--']);
+
+            card.innerHTML = `
+                <div style="text-align:center; width:100%;">
+                    <img class="card-logo" src="${getLogoByNombre(s.nombre)}" onerror="this.src='anguilla.png'">
+                    <div class="card-nombre-hora">
+                        <span class="card-nombre">${s.nombre || 'Anguilla'}</span>
+                        <span class="card-hora-inline">${s.hour}</span>
+                    </div>
+                    <div class="card-fecha ${claseFecha}">${txtFecha}</div>
+                </div>
+                ${timerHtml}
+                <div class="bolos-container">
+                    <div class="bolo-wrapper">
+                        <div class="bolo ${boloClass}">${nums[0]}</div>
+                        <div class="bolo-label">1ro</div>
+                    </div>
+                    <div class="bolo-wrapper">
+                        <div class="bolo ${boloClass}">${nums[1]}</div>
+                        <div class="bolo-label">2do</div>
+                    </div>
+                    <div class="bolo-wrapper">
+                        <div class="bolo ${boloClass}">${nums[2]}</div>
+                        <div class="bolo-label">3ro</div>
+                    </div>
+                </div>
+                <div class="card-footer">${s.nombre || 'Anguilla'}</div>
+            `;
             grid.appendChild(card);
         });
+
+        const prox = items.find(s => s.isProximo);
+        if (prox) iniciarGridTimer(prox.hour);
     }
 
-    function generarPanelLateral(contenedorId) {
-        let jugados = SORTEOS.filter(s => s.nums?.length > 0);
-        const panel = document.getElementById(contenedorId);
+    function iniciarGridTimer(hora) {
+        clearInterval(gridTimerInterval);
+        const el = document.getElementById('gridTimer');
+        if (!el) return;
+        const m = hora.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+        if (!m) return;
+        let hS = parseInt(m[1]); const mS = parseInt(m[2]);
+        const ap = m[3].toUpperCase();
+        if (ap === 'PM' && hS !== 12) hS += 12;
+        if (ap === 'AM' && hS === 12) hS = 0;
+
+        gridTimerInterval = setInterval(() => {
+            const rd = getAhoraRD();
+            const ahora = rd.hours * 3600 + rd.minutes * 60 + rd.seconds;
+            const sorteo = hS * 3600 + mS * 60;
+            const diff = sorteo - ahora;
+            if (diff <= 0) {
+                el.innerHTML = `⏳ ESPERANDO...`;
+                el.className = 'card-timer esperando';
+                return;
+            }
+            const mm = Math.floor(diff / 60);
+            const ss = diff % 60;
+            el.innerHTML = `⏱ Faltan ${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+        }, 1000);
+    }
+
+    /* ============================================================
+       RENDER FEATURED (ÚLTIMO SORTEO) - Ajustado
+       ============================================================ */
+    function generarPanelLateral(id) {
+        const jugados = SORTEOS.filter(s => s.nums?.length > 0);
+        const panel = document.getElementById(id);
+        if (!panel) return SORTEOS[0] || { hour: '--:--', date: 'HOY', nums: null, nombre: '' };
         if (jugados.length === 0) {
-            panel.innerHTML = '<div class="waiting-text">NO HAY SORTEOS PREVIOS</div>';
+            panel.innerHTML = '<div style="color:var(--rojo); font-size:22px; font-weight:900; text-align:center; padding:20px;">NO HAY SORTEOS PREVIOS</div>';
             return SORTEOS[0] || { hour: '--:--', date: 'HOY', nums: null, nombre: '' };
         }
         jugados.sort((a, b) => {
             if (a.day === b.day) return convertirHoraAminutos(b.hour) - convertirHoraAminutos(a.hour);
             return a.day === 'hoy' ? -1 : 1;
         });
-        let last = jugados[0];
-        const historial = jugados.slice(1, 6);
-        panel.innerHTML = historial.map((s, idx) => {
-            const logoUrl = getLogoByNombre(s.nombre);
-            return `
-            <div class="side-row">
-                <div style="display:flex; align-items:center; gap:12px; flex-shrink:0;">
-                    <img src="${logoUrl}" style="height:60px; object-fit:contain;" onerror="this.src='anguilla.png'">
-                    <div class="side-time">
-                        ${s.hour}
-                        <small style="font-size:18px; display:block; color:#64748b; font-weight:700; margin-top:2px;">${s.nombre ? s.nombre + ' · ' : ''}${s.date}</small>
+        const last = jugados[0];
+        const hist = jugados.slice(1, 6);
+        panel.innerHTML = hist.map((s, idx) => {
+            const boloClass = s.day === 'hoy' ? 'hoy' : 'ayer';
+            return `<div class="side-row">
+                <div class="side-left">
+                    <img class="side-logo" src="${getLogoByNombre(s.nombre)}" onerror="this.src='anguilla.png'">
+                    <div class="side-info">
+                        <span class="hora">${s.hour}</span>
+                        <span class="fecha">${s.nombre ? s.nombre + ' · ' : ''}${s.date}</span>
                     </div>
                 </div>
-                <div style="display:flex; gap:10px;">
-                    <div class="ball-small" style="animation-delay: ${idx * 0.05}s">${s.nums[0]}</div>
-                    <div class="ball-small" style="animation-delay: ${idx * 0.05 + 0.08}s">${s.nums[1]}</div>
-                    <div class="ball-small" style="animation-delay: ${idx * 0.05 + 0.16}s">${s.nums[2]}</div>
+                <div class="side-bolos">
+                    <div class="side-bolo-wrapper">
+                        <div class="side-bolo ${boloClass}" style="animation-delay:${idx*0.05}s">${s.nums[0]}</div>
+                        <div class="side-bolo-label">1ro</div>
+                    </div>
+                    <div class="side-bolo-wrapper">
+                        <div class="side-bolo ${boloClass}" style="animation-delay:${idx*0.05+0.08}s">${s.nums[1]}</div>
+                        <div class="side-bolo-label">2do</div>
+                    </div>
+                    <div class="side-bolo-wrapper">
+                        <div class="side-bolo ${boloClass}" style="animation-delay:${idx*0.05+0.16}s">${s.nums[2]}</div>
+                        <div class="side-bolo-label">3ro</div>
+                    </div>
                 </div>
             </div>`;
         }).join('');
@@ -1058,220 +902,145 @@
     }
 
     function renderFeatured() {
-        let last = generarPanelLateral('sidePanelFeatured');
-        document.getElementById('fTime').innerText = last.hour;
-        const fBalls = document.getElementById('fBalls');
-        const fDate = document.getElementById('fDate');
-        const fLogo = document.getElementById('fLogo');
-        const fLabel = document.getElementById('fLabel');
-
-        fLogo.src = getLogoByNombre(last.nombre);
-        fLabel.innerText = last.nombre ? `ÚLTIMO SORTEO · ${last.nombre.toUpperCase()}` : 'ÚLTIMO SORTEO REALIZADO';
-
-        if (last.nums) {
-            const esHoy = last.day === 'hoy';
-            fBalls.innerHTML = last.nums.map((n, i) => `<div class="ball-big ${esHoy ? 'blue' : 'white'}" style="animation-delay: ${i * 0.1}s">${n}</div>`).join('');
-            fDate.innerText = esHoy ? formatearFechaLarga(0) : formatearFechaLarga(1);
-        } else {
-            fBalls.innerHTML = '<div class="waiting-text">PROXIMO SORTEO</div>';
-            fDate.innerText = formatearFechaLarga(0);
-        }
+        const last = generarPanelLateral('featuredSide');
+        const main = document.getElementById('featuredMain');
+        if (!main) return;
+        const esHoy = last.day === 'hoy';
+        main.innerHTML = `
+            <img class="dest-logo" src="${getLogoByNombre(last.nombre)}" onerror="this.src='anguilla.png'">
+            <div class="dest-nombre">${last.nombre || 'Anguilla'}</div>
+            <div class="dest-hora-box">${last.hour || '--:--'}</div>
+            <div class="dest-bolos">
+                <div class="dest-bolo-wrapper">
+                    <div class="dest-bolo">${last.nums ? last.nums[0] : '?'}</div>
+                    <div class="dest-bolo-label">1ro</div>
+                </div>
+                <div class="dest-bolo-wrapper">
+                    <div class="dest-bolo">${last.nums ? last.nums[1] : '?'}</div>
+                    <div class="dest-bolo-label">2do</div>
+                </div>
+                <div class="dest-bolo-wrapper">
+                    <div class="dest-bolo">${last.nums ? last.nums[2] : '?'}</div>
+                    <div class="dest-bolo-label">3ro</div>
+                </div>
+            </div>
+            <div class="featured-tag">
+                ÚLTIMO SORTEO · ${esHoy ? 'HOY' : 'AYER'}
+            </div>`;
     }
 
+    /* ============================================================
+       RENDER ANUNCIOS
+       ============================================================ */
     function renderMediaAd() {
         const box = document.getElementById('adDisplay');
-        box.innerHTML = "";
-        const activos = ANUNCIOS.filter(ad => ad.activo !== false);
+        if (!box) return tiempoRotacionGlobal;
+        box.innerHTML = '';
+        const activos = ANUNCIOS.filter(ad => ad && ad.activo !== false && ad.url && ad.url.trim());
         if (activos.length === 0) {
-            const msg = usandoCache ? '📡 MODO OFFLINE - ANGUILLA LOTTERY' : 'ANGUILLA LOTTERY';
-            box.innerHTML = `<div style='color:white; font-size:60px; font-weight:800; letter-spacing:2px;'>${msg}</div>`;
-            return tiempoRotacionGlobal;
+            box.innerHTML = `<div style="color:white; font-size:60px; font-weight:800; text-align:center;">
+                BANCAS KIKO<br><span style="font-size:28px; color:#ffcc00; letter-spacing:4px;">LA CONFIANZA EN TU JUGADA</span></div>`;
+            return 6000;
         }
         if (adIndex >= activos.length) adIndex = 0;
         const ad = activos[adIndex];
-        let urlTarget = ad.url ? ad.url.trim() : "";
-        let urlProcesada = convertirLinkGitHub(urlTarget);
+        const url = ad.url.trim();
+        const urlP = convertirLinkGitHub(url);
 
-        if (esVideoDirecto(urlTarget) && (urlTarget.includes('.mp4') || urlTarget.includes('.webm') || urlTarget.includes('.ogg') || urlTarget.includes('.mov') || urlTarget.includes('raw.githubusercontent'))) {
-            box.innerHTML = `<video src="${urlProcesada}" autoplay muted playsinline preload="auto" style="width:100%; height:100%; object-fit:cover;"></video>`;
-        } else if (urlTarget.includes('youtube.com') || urlTarget.includes('youtu.be')) {
-            let embed = urlTarget.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/");
-            if (embed.includes("?")) embed = embed.split("?")[0];
-            box.innerHTML = `<iframe src="${embed}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%; height:100%; border:none;" loading="lazy"></iframe>`;
-        } else if (urlTarget !== "") {
-            box.innerHTML = `<img src="${urlProcesada}" loading="eager" style="width:100%; height:100%; object-fit:contain; background:#000;" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'color:white; font-size:60px; font-weight:800;\\'>ANGUILLA LOTTERY</div>';">`;
+        if (esVideoDirecto(url)) {
+            box.innerHTML = `<video src="${urlP}" autoplay muted playsinline preload="auto" style="width:100%;height:100%;object-fit:contain;background:#000;"></video>`;
+        } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+            let embed = url.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/');
+            if (embed.includes('?')) embed = embed.split('?')[0];
+            box.innerHTML = `<iframe src="${embed}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%;height:100%;border:none;" loading="lazy"></iframe>`;
         } else {
-            box.innerHTML = "<div style='color:white; font-size:60px; font-weight:800; letter-spacing:2px;'>ANGUILLA LOTTERY</div>";
+            box.innerHTML = `<img src="${urlP}" loading="eager" style="width:100%;height:100%;object-fit:contain;background:#000;" alt="Anuncio">`;
+            const img = box.querySelector('img');
+            if (img) img.onerror = () => {
+                box.innerHTML = `<div style="color:white; font-size:60px; font-weight:800;">BANCAS KIKO</div>`;
+            };
         }
-
-        let tiempoAsignado = (parseInt(ad.tiempo) || 15) * 1000;
+        const t = (parseInt(ad.tiempo) || 15) * 1000;
         adIndex++;
-        return tiempoAsignado;
+        return t;
     }
 
-    // ============================================
-    // ✅ MENSAJES EN EL HEADER (sin animaciones pesadas)
-    // ============================================
-    const HEADER_MESSAGES = [
-        { icon: '🍀', msg: '¡LA SUERTE TE ESPERA!',   sub: 'Juega con responsabilidad' },
-        { icon: '💰', msg: 'PAGAMOS A TIEMPO',         sub: 'Tu dinero está seguro' },
-        { icon: '🎰', msg: 'MÁS SORTEOS EN VIVO',      sub: 'Síguenos cada día' },
-        { icon: '⭐', msg: 'ANGUILLA LOTTERY',         sub: 'La mejor del país' },
-        { icon: '📢', msg: '¡NO TE LO PIERDAS!',       sub: 'Resultados al instante' },
-        { icon: '🔥', msg: 'JUGADAS AL MOMENTO',       sub: 'Atención personalizada' },
-        { icon: '🏆', msg: 'GRANDES PREMIOS',          sub: 'Tú puedes ser el ganador' },
-        { icon: '📱', msg: 'SÍGUENOS EN REDES',        sub: '@AnguillaLottery' },
-        { icon: '⏰', msg: 'RESULTADOS AL INSTANTE',   sub: 'Sin esperas' },
-        { icon: '🎯', msg: 'AQUÍ NO JUGAMOS',          sub: 'Con tu dinero' }
-    ];
-    let headerMessageIndex = 0;
-    let headerMessageInterval = null;
-
-    function cambiarMensajeHeader() {
-        const m = HEADER_MESSAGES[headerMessageIndex % HEADER_MESSAGES.length];
-        const iconEl = document.getElementById('headerMsgIcon');
-        const mainEl = document.getElementById('headerMsgMain');
-        const subEl = document.getElementById('headerMsgSub');
-        if (!iconEl) return;
-        iconEl.textContent = m.icon;
-        mainEl.textContent = m.msg;
-        subEl.textContent = m.sub;
-        headerMessageIndex++;
-    }
-
-    function iniciarMensajesHeader() {
-        if (headerMessageInterval) clearInterval(headerMessageInterval);
-        cambiarMensajeHeader();
-        headerMessageInterval = setInterval(cambiarMensajeHeader, 5000);
-    }
-
-    // ============================================
-    // ROTACIÓN
-    // ============================================
-    function rotateDisplay() {
-        if (SORTEOS.length === 0 || enTransmisionVivo || !sistemaIniciado) return;
-        clearInterval(rotationInterval);
-
-        const vGrid = document.getElementById('view-grid');
-        const vFeat = document.getElementById('view-featured');
-        const vReal = document.getElementById('view-realenoche');
-        const vLot = document.getElementById('view-loteka');
-        const vAds = document.getElementById('view-ads');
-        const totalPages = Math.max(1, Math.ceil(SORTEOS.length / 8));
-
-        vGrid.classList.add('hidden');
-        vFeat.classList.add('hidden');
-        vReal.classList.add('hidden');
-        vLot.classList.add('hidden');
-        vAds.classList.add('hidden');
-
-        setTimeout(() => {
-            let nextTime = tiempoRotacionGlobal;
-
-            if (currentView < totalPages - 1) {
-                gridPage++; currentView++;
-                renderGrid();
-                vGrid.classList.remove('hidden');
-            } else if (currentView === totalPages - 1) {
-                currentView = 88;
-                renderFeatured();
-                vFeat.classList.remove('hidden');
-            } else if (currentView === 88) {
-                currentView = 111;
-                renderRealNoche();
-                vReal.classList.remove('hidden');
-            } else if (currentView === 111) {
-                currentView = 122;
-                renderLotekaTarde();
-                vLot.classList.remove('hidden');
-            } else if (currentView === 122) {
-                currentView = 99;
-                nextTime = renderMediaAd();
-                vAds.classList.remove('hidden');
-            } else {
-                gridPage = 0; currentView = 0;
-                renderGrid();
-                vGrid.classList.remove('hidden');
-            }
-
-            rotationInterval = setInterval(rotateDisplay, Math.max(1000, nextTime - 300));
-        }, 300);
-    }
-
+    /* ============================================================
+       RELOJ
+       ============================================================ */
     function updateDateTime() {
-        const now = new Date();
-        const hrs = now.getHours() % 12 || 12;
-        const mins = now.getMinutes().toString().padStart(2, '0');
-        const secs = now.getSeconds().toString().padStart(2, '0');
-        const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
-        document.getElementById('liveClock').innerText = `${hrs}:${mins}:${secs} ${ampm}`;
-        const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO'];
-        const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
-        document.getElementById('currentDay').innerText = `${dias[now.getDay()]} ${now.getDate()}`;
-        document.getElementById('currentMonth').innerText = `${meses[now.getMonth()]} ${now.getFullYear()}`;
+        const rd = getAhoraRD();
+        const hrs = rd.hours % 12 || 12;
+        document.getElementById('liveClock').innerText =
+            `${hrs}:${String(rd.minutes).padStart(2,'0')}:${String(rd.seconds).padStart(2,'0')} ${rd.hours >= 12 ? 'PM' : 'AM'}`;
+        const dias = ['DOMINGO','LUNES','MARTES','MIÉRCOLES','JUEVES','VIERNES','SÁBADO'];
+        const meses = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
+        const f = new Date(Date.UTC(rd.year, rd.month - 1, rd.day));
+        document.getElementById('currentDay').innerText = `${dias[f.getUTCDay()]} ${rd.day}`;
+        document.getElementById('currentMonth').innerText = `${meses[rd.month - 1]} ${rd.year}`;
     }
 
-    window.onload = () => {
-        // ✅ Precargar imágenes en caché antes que nada
-        precargarImagenes();
-
-        dimensionarPantalla();
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
-
-        verificarConexion();
-        monitorearConexion();
-        cargarDesdeCache();
-        inicializarDatos();
-
-        setTimeout(() => { cargarDatosFirebase(); }, 1000);
-        activarMantenerPantallaEncendida();
-
-        setTimeout(() => {
-            const splash = document.getElementById('splash-screen');
-            splash.style.opacity = '0';
-            splash.style.visibility = 'hidden';
-            sistemaIniciado = true;
-            iniciarMensajesHeader();
-            if (SORTEOS.length === 0) cargarDesdeCache();
-
-            database.ref('transmisionVivo').once('value', snap => {
-                const live = snap.val();
-                if (live && live.activo === true) {
-                    // mantener vista
-                } else {
-                    renderGrid();
-                    rotationInterval = setInterval(rotateDisplay, tiempoRotacionGlobal);
-                }
-            });
-        }, 1500);
-    };
-
-    // ✅ Escala con CONTAIN y cap de 1.6 (vuelve al tamaño original)
-    function dimensionarPantalla() {
-        const baseWidth = 1920, baseHeight = 1080;
-        const winW = window.innerWidth;
-        const winH = window.innerHeight;
-        let scale = Math.min(winW / baseWidth, winH / baseHeight);
-        // Cap para que en pantallas grandes no se vea gigante
-        if (scale > 1.6) scale = 1.6;
-        document.getElementById('canvas-master').style.transform = `translate(-50%, -50%) scale(${scale})`;
-    }
-    window.addEventListener('resize', dimensionarPantalla);
-
+    /* ============================================================
+       WAKELOCK
+       ============================================================ */
     let wakeLock = null;
-    async function activarMantenerPantallaEncendida() {
+    async function activarWakeLock() {
         try {
             if ('wakeLock' in navigator) {
                 wakeLock = await navigator.wakeLock.request('screen');
                 document.addEventListener('visibilitychange', async () => {
                     if (wakeLock !== null && document.visibilityState === 'visible') {
-                        wakeLock = await navigator.wakeLock.request('screen');
+                        try { wakeLock = await navigator.wakeLock.request('screen'); } catch {}
                     }
                 });
             }
-        } catch (err) { console.error("WakeLock Error: ", err); }
+        } catch {}
     }
+
+    /* ============================================================
+       ESCALADO
+       ============================================================ */
+    function dimensionarPantalla() {
+        const w = window.innerWidth, h = window.innerHeight;
+        let scale = Math.min(w / 1920, h / 1080);
+        if (scale > 1.6) scale = 1.6;
+        document.getElementById('canvas-master').style.transform =
+            `translate(-50%, -50%) scale(${scale})`;
+    }
+
+    /* ============================================================
+       INICIO
+       ============================================================ */
+    window.onload = () => {
+        ['nuevologo.png', 'nuevologo2.png', 'anguilla.png', 'logoreal.png', 'lotekalogo.png'].forEach(src => {
+            const i = new Image(); i.decoding = 'async'; i.src = src; _cacheImgs.push(i);
+        });
+        dimensionarPantalla();
+        window.addEventListener('resize', dimensionarPantalla);
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+        database.ref('.info/connected').on('value', snap => {
+            if (snap.val()) actualizarIndicadorConexion('online', '✅ Conectado');
+            else actualizarIndicadorConexion('offline', '❌ Sin conexión');
+        });
+        cargarDesdeCache();
+        inicializarDatos();
+        activarWakeLock();
+
+        setTimeout(() => {
+            const s = document.getElementById('splash-screen');
+            s.style.opacity = '0'; s.style.visibility = 'hidden';
+            sistemaIniciado = true;
+            currentView = 77;
+            mostrarVista('branding');
+
+            setTimeout(() => {
+                currentView = 0; gridPage = 0;
+                mostrarVista('grid'); renderGrid();
+                programarRotacion(tiempoRotacionGlobal);
+            }, 5000);
+        }, 1500);
+    };
 </script>
 </body>
 </html>
