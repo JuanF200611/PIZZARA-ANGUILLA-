@@ -34,7 +34,6 @@
     .snowflake {
         position: absolute; top: -20px; color: white;
         opacity: 0.85;
-        /* Forzar a la tarjeta gráfica a mover esto */
         will-change: transform;
         animation: fall linear infinite;
         text-shadow: 0 0 6px rgba(255,255,255,0.6);
@@ -233,24 +232,32 @@
         text-transform: uppercase; letter-spacing: 0.5px;
     }
 
-    /* VISTA FEATURED */
+    /* ============================================================
+       VISTA FEATURED (ÚLTIMO SORTEO) - FONDO AZUL PREMIUM
+       ============================================================ */
     .split-container { display: flex; gap: 25px; height: 100%; width: 100%; }
     .split-main {
-        flex: 1; background: var(--blanco);
+        flex: 1; 
+        /* Fondo azul oscuro premium */
+        background: linear-gradient(135deg, #061f4a 0%, #0033a0 50%, #061f4a 100%);
         border: 6px solid var(--dorado); border-radius: 35px;
         display: flex; flex-direction: column; align-items: center;
         justify-content: space-evenly;
         padding: 20px;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 0 50px rgba(0,0,0,0.3);
     }
-    .dest-logo { height: 220px; margin-bottom: 5px; object-fit: contain; }
-    .dest-nombre { font-size: 40px; font-weight: 900; color: var(--azul-rey); margin-bottom: 5px; text-transform: uppercase; }
+    .dest-logo { height: 220px; margin-bottom: 5px; object-fit: contain; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); }
+    
+    /* Textos adaptados al fondo oscuro */
+    .dest-nombre { font-size: 40px; font-weight: 900; color: var(--dorado); margin-bottom: 5px; text-transform: uppercase; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+    
     .dest-hora-box {
         font-size: 65px; background: linear-gradient(135deg, #fbbf24 0%, #f97316 50%, #fbbf24 100%);
         color: #ffffff; padding: 8px 60px; border-radius: 25px; font-weight: 900;
         letter-spacing: 2px; text-shadow: 0 4px 12px rgba(0,0,0,0.6);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.3); margin-bottom: 10px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.5); margin-bottom: 10px;
     }
+    
     .dest-bolos { display: flex; justify-content: center; gap: 25px; margin-bottom: 10px; }
     .dest-bolo-wrapper { display: flex; flex-direction: column; align-items: center; gap: 6px; }
     .dest-bolo {
@@ -258,16 +265,20 @@
         display: flex; align-items: center; justify-content: center;
         font-size: 90px; font-weight: 900; color: white;
         background: #2563eb;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        border: 4px solid #1d4ed8;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset -5px -5px 15px rgba(0,0,0,0.3);
+        border: 4px solid #60a5fa;
     }
+    
+    /* Etiquetas 1ro, 2do, 3ro adaptadas */
     .dest-bolo-label {
-        font-size: 16px; font-weight: 900; color: var(--azul-rey);
+        font-size: 16px; font-weight: 900; color: var(--azul-oscuro);
         text-transform: uppercase; letter-spacing: 1px;
-        background: #dbeafe; padding: 3px 15px; border-radius: 8px;
+        background: var(--dorado); padding: 3px 15px; border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
+    
     .featured-tag {
-        background:#dcfce7; color:#15803d; padding:8px 25px; border-radius:20px; font-weight:900; font-size:22px; letter-spacing:0.5px;
+        background: rgba(255, 255, 255, 0.15); color: var(--blanco); padding: 8px 25px; border-radius: 20px; font-weight: 900; font-size: 22px; letter-spacing: 0.5px; border: 2px solid rgba(255,255,255,0.3); box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     }
 
     .side-panel { width: 580px; display: flex; flex-direction: column; gap: 12px; }
@@ -451,7 +462,6 @@
         const container = document.getElementById('snow-container');
         if (!container || container.children.length > 0) return;
         const copos = ['❅', '❆', '❄', '•', '✦'];
-        // Reducido a 25 copos para mejor rendimiento
         for (let i = 0; i < 25; i++) {
             const c = document.createElement('div');
             c.className = 'snowflake';
@@ -857,7 +867,7 @@
     }
 
     /* ============================================================
-       RENDER FEATURED (ÚLTIMO SORTEO)
+       RENDER FEATURED (ÚLTIMO SORTEO) - NUEVO FONDO AZUL
        ============================================================ */
     function generarPanelLateral(id) {
         const jugados = SORTEOS.filter(s => s.nums?.length > 0);
