@@ -14,6 +14,7 @@
             --neon-orange: #ff7900;
             --neon-green: #39ff14;
             --neon-red: #e63946;
+            --neon-purple: #a29bfe;
             --text-light: #ffffff;
             --text-muted: #8a99ad;
             --shadow-glow: 0 8px 32px rgba(0,0,0,0.6);
@@ -240,6 +241,23 @@
         }
         .real-item .real-actions { display: flex; gap: 5px; }
         .real-item .real-actions button { padding: 5px 9px; font-size: 0.7rem; min-height: 28px; }
+
+        /* MODO NAVIDAD */
+        .navidad-card { border: 1px solid rgba(0, 240, 255, 0.25); background: linear-gradient(135deg, #121624 0%, #15203a 100%); }
+        .navidad-card::before { background: linear-gradient(90deg, #00f0ff, #ff7900, #39ff14) !important; }
+        .navidad-preview {
+            display: flex; align-items: center; gap: 14px; margin-top: 12px;
+            padding: 12px; border-radius: 10px;
+            background: #090b12; border: 1px solid var(--card-border);
+        }
+        .navidad-preview img {
+            height: 60px; object-fit: contain;
+            filter: drop-shadow(0 4px 10px rgba(0,240,255,0.3));
+            transition: filter 0.3s;
+        }
+        .navidad-preview .preview-info { flex: 1; }
+        .navidad-preview .preview-info .nombre { font-weight: 700; color: var(--text-light); font-size: 0.85rem; }
+        .navidad-preview .preview-info .desc { color: var(--text-muted); font-size: 0.7rem; margin-top: 2px; }
     </style>
 </head>
 <body>
@@ -280,6 +298,32 @@
                         <label style="font-size:0.8rem; color:var(--text-muted); min-width:100px; font-weight:500;">Cintillo:</label>
                         <input type="text" id="marqueeInp" placeholder="Escribe avisos aquí...">
                         <button class="btn btn-success" onclick="guardarCintillo()" style="padding: 8px 16px; font-size:0.8rem;">Actualizar</button>
+                    </div>
+                </div>
+
+                <!-- ✅ MODO NAVIDAD -->
+                <div class="panel-card navidad-card">
+                    <h2>🎄 Modo Navidad</h2>
+                    <p style="color: var(--text-muted); font-size: 0.78rem; margin-bottom: 12px; line-height: 1.5;">
+                        Activa el logo navideño (<code style="color:#00f0ff; background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:3px;">nuevologo2.png</code>)
+                        y la animación de nieve en la pizarra y la web.
+                    </p>
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+                        <label class="switch-container">
+                            <div class="switch">
+                                <input type="checkbox" id="navidadSwitch" onchange="toggleNavidad()">
+                                <span class="slider"></span>
+                            </div>
+                            <span style="font-size: 0.85rem; color: var(--text-light); font-weight: 600;">Navidad Activada</span>
+                        </label>
+                        <span class="status-badge status-inactive" id="navidadStatus">Inactivo</span>
+                    </div>
+                    <div class="navidad-preview">
+                        <img src="nuevologo.png" id="navidadPreviewImg" alt="Preview Logo">
+                        <div class="preview-info">
+                            <div class="nombre" id="navidadPreviewName">Logo Normal</div>
+                            <div class="desc" id="navidadPreviewDesc">nuevologo.png · sin nieve</div>
+                        </div>
                     </div>
                 </div>
 
@@ -451,10 +495,44 @@
         escucharEstadoTransmision();
         fetchConfiguracionGlobal();
         escucharRealNoche();
+        escucharModoNavidad();  // ✅ NUEVO
     };
 
     // ============================================================
-    // SORTEOS ANGUILLA — CORREGIDO
+    // ✅ MODO NAVIDAD
+    // ============================================================
+    function escucharModoNavidad() {
+        database.ref('web_kiko/modo_navidad').on('value', snap => {
+            const activo = snap.val() === true;
+            const sw = document.getElementById('navidadSwitch');
+            const st = document.getElementById('navidadStatus');
+            const prevImg = document.getElementById('navidadPreviewImg');
+            const prevName = document.getElementById('navidadPreviewName');
+            const prevDesc = document.getElementById('navidadPreviewDesc');
+
+            if (sw) sw.checked = activo;
+            if (st) {
+                st.textContent = activo ? 'Activo' : 'Inactivo';
+                st.className = 'status-badge ' + (activo ? 'status-active' : 'status-inactive');
+            }
+            if (prevImg) {
+                prevImg.src = activo ? 'nuevologo2.png' : 'nuevologo.png';
+                prevImg.onerror = () => { prevImg.src = 'nuevologo.png'; };
+            }
+            if (prevName) prevName.textContent = activo ? 'Logo Navideño' : 'Logo Normal';
+            if (prevDesc) prevDesc.textContent = activo ? 'nuevologo2.png · con nieve ❄️' : 'nuevologo.png · sin nieve';
+        });
+    }
+
+    function toggleNavidad() {
+        const activo = document.getElementById('navidadSwitch').checked;
+        database.ref('web_kiko/modo_navidad').set(activo, err => {
+            if (!err) mostrarFeedback(activo ? '✓ Modo Navidad activado ❄️' : '✓ Modo Navidad desactivado');
+        });
+    }
+
+    // ============================================================
+    // SORTEOS ANGUILLA
     // ============================================================
     function fetchSorteos() {
         const fecha = document.getElementById('targetDate').value;
@@ -464,7 +542,6 @@
         listado.innerHTML = "<p style='color:#a0aec0; font-size:0.9rem; padding:10px;'>⏳ Cargando registros...</p>";
         document.getElementById('btnInit').style.display = 'none';
 
-        // Detach listener anterior
         if (listenerSorteosActual) {
             listenerSorteosActual.ref.off('value', listenerSorteosActual.cb);
             listenerSorteosActual = null;
@@ -484,7 +561,6 @@
                 return;
             }
 
-            // Convertir a array (Firebase puede devolver Array u Object)
             let items = [];
             if (Array.isArray(data)) {
                 items = data.map((v, i) => ({ idx: i, data: v }));
@@ -492,7 +568,6 @@
                 items = Object.keys(data).map(k => ({ idx: k, data: data[k] }));
             }
 
-            // Ordenar por hora
             items.sort((a, b) => {
                 const ha = normalizarHora(a.data?.hora || '');
                 const hb = normalizarHora(b.data?.hora || '');
@@ -535,7 +610,7 @@
             fecha,
             hora,
             noche: false,
-            premios: [null, null, null]  // null explícito, Firebase SÍ lo persiste
+            premios: [null, null, null]
         }));
         database.ref(`sorteos/${fecha}`).set(nuevaData, (err) => {
             if (err) { alert('Error: ' + err.message); return; }
@@ -569,7 +644,7 @@
     }
 
     // ============================================================
-    // REAL NOCHE — LEER DE sorteos_enloteria/resultados
+    // REAL NOCHE
     // ============================================================
     function escucharRealNoche() {
         database.ref('sorteos_enloteria/resultados').on('value', snap => {
@@ -593,7 +668,6 @@
                 return;
             }
 
-            // Ordenar por enviadoEn descendente (más reciente primero)
             items.sort((a, b) => String(b.enviadoEn || '').localeCompare(String(a.enviadoEn || '')));
 
             items.forEach(item => {
@@ -1006,6 +1080,7 @@
     window.forzarActualizarEstadisticas = forzarActualizarEstadisticas;
     window.guardarRealNoche = guardarRealNoche;
     window.eliminarRealNoche = eliminarRealNoche;
+    window.toggleNavidad = toggleNavidad;  // ✅ NUEVO
 </script>
 </body>
 </html>
