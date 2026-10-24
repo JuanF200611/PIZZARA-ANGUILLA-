@@ -22,37 +22,21 @@
     html, body {
         height: 100dvh; width: 100dvw;
         overflow: hidden;
-        background: radial-gradient(circle at 50% 0%, #0d2b6b 0%, #021133 100%);
+        /* Fondo sólido en lugar de degradado para ahorrar GPU */
+        background-color: #041233; 
     }
 
-    /* NIEVE OPTIMIZADA (CON ACELERACIÓN POR HARDWARE) */
-    #snow-container {
-        position: fixed; inset: 0;
-        pointer-events: none; z-index: 100000;
-        overflow: hidden; display: none;
-    }
-    .snowflake {
-        position: absolute; top: -20px; color: white;
-        opacity: 0.85;
-        will-change: transform;
-        animation: fall linear infinite;
-        text-shadow: 0 0 6px rgba(255,255,255,0.6);
-    }
-    @keyframes fall { 
-        to { transform: translate3d(0, 110vh, 0); } 
-    }
-
-    /* SPLASH */
+    /* SPLASH (Simplificado) */
     #splash-screen {
         position: fixed; inset: 0;
-        background: radial-gradient(circle at 50% 0%, #0d2b6b 0%, #021133 100%);
+        background-color: #041233;
         z-index: 999999;
         display: flex; flex-direction: column; align-items: center; justify-content: center;
-        transition: opacity 1s ease-in-out, visibility 1s;
+        transition: opacity 0.5s ease-in-out, visibility 0.5s;
     }
-    .splash-logo { height: min(320px, 40vh); object-fit: contain; animation: floating 3s ease-in-out infinite; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5)); will-change: transform; }
-    .splash-text { color: var(--blanco); font-size: clamp(24px, 3vw, 42px); font-weight: 900; margin-top: 40px; letter-spacing: 2px; }
-    .splash-sub { color: var(--dorado); font-size: clamp(16px, 1.6vw, 24px); font-weight: 700; margin-top: 10px; letter-spacing: 4px; animation: pulse 1.5s alternate infinite; }
+    .splash-logo { height: 250px; object-fit: contain; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); }
+    .splash-text { color: var(--blanco); font-size: 32px; font-weight: 900; margin-top: 20px; }
+    .splash-sub { color: var(--dorado); font-size: 18px; font-weight: 700; margin-top: 10px; }
 
     /* CANVAS MASTER */
     #canvas-master {
@@ -66,35 +50,33 @@
         display: flex; flex-direction: column;
     }
 
-    /* HEADER */
+    /* HEADER (Sin backdrop-filter) */
     .topbar {
         width: calc(100% - 30px);
         margin: 10px 15px 0 15px;
         height: 100px;
         display: flex; align-items: center; justify-content: space-between;
         padding: 0 30px;
-        background: linear-gradient(90deg, rgba(0, 26, 77, 0.95) 0%, rgba(0, 51, 160, 0.95) 100%);
+        background: #001a4d; /* Color sólido en vez de gradiente */
         border-radius: 20px;
         border-bottom: 4px solid var(--dorado);
         position: relative; z-index: 5;
         flex-shrink: 0;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.45);
-        backdrop-filter: blur(10px);
     }
     .brand-area { display: flex; align-items: center; gap: 16px; height: 100%; }
-    .brand-area img { height: 72px; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.55)); }
+    .brand-area img { height: 72px; object-fit: contain; }
     .brand-text { display: flex; flex-direction: column; justify-content: center; line-height: 1; }
-    .brand-title { font-size: 26px; font-weight: 900; color: var(--blanco); letter-spacing: 0.5px; text-transform: uppercase; text-shadow: 0 2px 8px rgba(0,0,0,0.5); white-space: nowrap; }
+    .brand-title { font-size: 26px; font-weight: 900; color: var(--blanco); text-transform: uppercase; }
     .brand-title span { color: var(--dorado); }
-    .brand-slogan { font-size: 12px; font-weight: 600; color: #cbd5e1; letter-spacing: 1.6px; text-transform: uppercase; margin-top: 5px; white-space: nowrap; }
+    .brand-slogan { font-size: 12px; font-weight: 600; color: #cbd5e1; letter-spacing: 1.6px; margin-top: 5px; }
 
     .header-info { display: flex; align-items: center; gap: 25px; }
-    .header-clock { font-size: 52px; font-weight: 900; color: var(--blanco); border-right: 4px solid rgba(255, 204, 0, 0.4); padding-right: 25px; font-variant-numeric: tabular-nums; }
+    .header-clock { font-size: 52px; font-weight: 900; color: var(--blanco); border-right: 4px solid rgba(255, 204, 0, 0.4); padding-right: 25px; }
     .date-header { text-align: right; }
     .main-date { font-size: 26px; font-weight: 900; color: var(--dorado); text-transform: uppercase; }
     .sub-date { font-size: 15px; font-weight: 700; color: var(--blanco); }
 
-    /* TICKER OPTIMIZADO */
+    /* TICKER (Animación optimizada) */
     .ticker-bar {
         width: calc(100% - 30px);
         margin: 8px 15px 0 15px;
@@ -105,12 +87,11 @@
         border-bottom: 4px solid var(--dorado);
         flex-shrink: 0;
         position: relative; z-index: 5;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.35);
     }
     .ticker-text {
         white-space: nowrap; font-size: 24px; font-weight: 800; color: var(--blanco);
         will-change: transform;
-        animation: marquee 25s linear infinite; padding-left: 100%;
+        animation: marquee 30s linear infinite; padding-left: 100%;
     }
     @keyframes marquee { 0% { transform: translate3d(0,0,0); } 100% { transform: translate3d(-100%,0,0); } }
 
@@ -118,13 +99,13 @@
     #view-grid, #view-featured, #view-ads, #view-live {
         flex: 1; padding: 15px 25px;
         position: relative; opacity: 1; visibility: visible;
-        transition: opacity 0.4s ease, visibility 0.4s;
+        transition: opacity 0.3s ease, visibility 0.3s;
         overflow: hidden;
     }
     .hidden { opacity: 0 !important; visibility: hidden !important; position: absolute !important; inset: 0 !important; pointer-events: none; }
     #view-ads, #view-live { padding: 0; background: #000; }
 
-    /* BRANDING */
+    /* BRANDING (Sin animaciones de flotado) */
     #view-branding {
         position: absolute !important;
         inset: 0 !important;
@@ -132,16 +113,16 @@
         height: 100% !important;
         z-index: 99999 !important;
         display: flex; flex-direction: column; align-items: center; justify-content: center;
-        background: radial-gradient(circle at 50% 30%, #0d2b6b 0%, #021133 100%);
+        background-color: #041233;
         padding: 20px; text-align: center;
-        opacity: 1; visibility: visible; transition: opacity 0.4s ease, visibility 0.4s;
+        opacity: 1; visibility: visible; transition: opacity 0.3s ease, visibility 0.3s;
     }
     #view-branding.hidden { opacity: 0 !important; visibility: hidden !important; pointer-events: none; }
-    .branding-logo { height: min(450px, 50vh); max-width: 90vw; object-fit: contain; animation: floating 3.5s ease-in-out infinite; filter: drop-shadow(0 25px 50px rgba(0,0,0,0.7)); will-change: transform; }
-    .branding-title { font-size: clamp(42px, 6vw, 96px); font-weight: 900; color: var(--blanco); margin-top: 30px; letter-spacing: 4px; text-shadow: 0 6px 20px rgba(0,0,0,0.7); line-height: 1; }
+    .branding-logo { height: 400px; max-width: 90vw; object-fit: contain; }
+    .branding-title { font-size: 80px; font-weight: 900; color: var(--blanco); margin-top: 20px; letter-spacing: 4px; }
     .branding-title span { color: var(--dorado); }
-    .branding-slogan { font-size: clamp(18px, 2.4vw, 38px); font-weight: 700; color: var(--dorado); margin-top: 20px; letter-spacing: 8px; animation: pulse 2s infinite alternate; text-align: center; }
-    .branding-tag { margin-top: 40px; font-size: clamp(16px, 1.8vw, 28px); font-weight: 800; color: #cbd5e1; background: rgba(0,0,0,0.4); padding: 16px 50px; border-radius: 50px; border: 2px solid rgba(255,204,0,0.5); text-align: center; backdrop-filter: blur(4px); }
+    .branding-slogan { font-size: 30px; font-weight: 700; color: var(--dorado); margin-top: 15px; letter-spacing: 8px; }
+    .branding-tag { margin-top: 30px; font-size: 24px; font-weight: 800; color: #cbd5e1; background: rgba(0,0,0,0.5); padding: 12px 40px; border-radius: 50px; border: 2px solid var(--dorado); }
 
     /* GRID */
     .grid-container {
@@ -153,24 +134,22 @@
     }
     .card {
         background: var(--blanco);
-        border-radius: 25px;
+        border-radius: 20px; /* Bordes un poco menos redondeados para fluidez */
         padding: 15px;
         display: flex; flex-direction: column;
         align-items: center; justify-content: space-between;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Sombra simplificada */
         border-top: 8px solid var(--dorado);
         position: relative;
-        animation: dropIn 0.5s ease-out both;
-        overflow: hidden;
+        /* Eliminamos la animación dropIn para ahorrar GPU */
     }
     .card.proximo {
         border-top-color: var(--rojo);
-        box-shadow: 0 0 40px rgba(217, 0, 0, 0.6);
         transform: scale(1.02);
         z-index: 5;
     }
     
-    .card-logo { height: 85px; object-fit: contain; margin-bottom: 5px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+    .card-logo { height: 85px; object-fit: contain; margin-bottom: 5px; }
 
     .card-nombre-hora {
         display: flex; align-items: baseline; justify-content: center;
@@ -189,10 +168,8 @@
     .card-fecha {
         font-size: 17px; font-weight: 900; color: #15803d; background: #dcfce7;
         padding: 4px 18px; border-radius: 20px; margin-bottom: 8px;
-        letter-spacing: 0.5px;
     }
     .card-fecha.ayer { color: var(--rojo); background: #fee2e2; }
-    .card-fecha.proximo-label { color: white; background: var(--rojo); animation: pulse 1.5s infinite; }
 
     .bolos-container { display: flex; justify-content: center; gap: 12px; margin-bottom: 8px; }
     .bolo-wrapper { display: flex; flex-direction: column; align-items: center; gap: 4px; }
@@ -200,62 +177,47 @@
         width: 100px; height: 100px; border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
         font-weight: 900; font-size: 48px;
-        box-shadow: 0 8px 15px rgba(0,0,0,0.2);
-        border: 3px solid rgba(255,255,255,0.1);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        border: 2px solid rgba(255,255,255,0.2);
     }
     .bolo.hoy { background: #2563eb; color: white; }
     .bolo.ayer { background: #ffffff; color: var(--azul-oscuro); border-color: #cbd5e1; }
-    .bolo.esperando { background: #f59e0b; color: #78350f; }
     
     .bolo-label {
         font-size: 13px; font-weight: 900; color: var(--texto-gris);
-        text-transform: uppercase; letter-spacing: 0.5px;
-        background: #e2e8f0; padding: 2px 10px; border-radius: 6px;
+        text-transform: uppercase; background: #e2e8f0; padding: 2px 10px; border-radius: 6px;
     }
 
     .card-timer {
         font-size: 20px; font-weight: 900; color: var(--rojo);
         background: #fee2e2; padding: 6px 18px; border-radius: 12px;
-        margin-bottom: 8px; font-variant-numeric: tabular-nums;
-        border: 2px solid var(--rojo); letter-spacing: 0.5px;
-        animation: pulse 1.2s infinite alternate;
-    }
-    .card-timer.esperando {
-        background: linear-gradient(135deg, #fef3c7, #fde68a);
-        color: #92400e; border-color: #f59e0b;
+        margin-bottom: 8px; border: 2px solid var(--rojo);
     }
 
     .card-footer {
         width: 100%; display: flex; justify-content: center; align-items: center;
         background: var(--gris-fondo); padding: 8px 15px; border-radius: 12px;
         font-size: 16px; font-weight: 900; color: var(--azul-rey);
-        text-transform: uppercase; letter-spacing: 0.5px;
+        text-transform: uppercase;
     }
 
-    /* ============================================================
-       VISTA FEATURED (ÚLTIMO SORTEO) - FONDO AZUL PREMIUM
-       ============================================================ */
+    /* VISTA FEATURED (ÚLTIMO SORTEO) - OPTIMIZADA */
     .split-container { display: flex; gap: 25px; height: 100%; width: 100%; }
     .split-main {
         flex: 1; 
-        /* Fondo azul oscuro premium */
-        background: linear-gradient(135deg, #061f4a 0%, #0033a0 50%, #061f4a 100%);
-        border: 6px solid var(--dorado); border-radius: 35px;
+        /* Fondo sólido en lugar de gradiente */
+        background-color: #061f4a;
+        border: 6px solid var(--dorado); border-radius: 30px;
         display: flex; flex-direction: column; align-items: center;
         justify-content: space-evenly;
         padding: 20px;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 0 50px rgba(0,0,0,0.3);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
-    .dest-logo { height: 220px; margin-bottom: 5px; object-fit: contain; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); }
-    
-    /* Textos adaptados al fondo oscuro */
-    .dest-nombre { font-size: 40px; font-weight: 900; color: var(--dorado); margin-bottom: 5px; text-transform: uppercase; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-    
+    .dest-logo { height: 200px; margin-bottom: 5px; object-fit: contain; }
+    .dest-nombre { font-size: 40px; font-weight: 900; color: var(--dorado); margin-bottom: 5px; text-transform: uppercase; }
     .dest-hora-box {
-        font-size: 65px; background: linear-gradient(135deg, #fbbf24 0%, #f97316 50%, #fbbf24 100%);
-        color: #ffffff; padding: 8px 60px; border-radius: 25px; font-weight: 900;
-        letter-spacing: 2px; text-shadow: 0 4px 12px rgba(0,0,0,0.6);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.5); margin-bottom: 10px;
+        font-size: 65px; background-color: #f97316; /* Naranja sólido */
+        color: #ffffff; padding: 8px 60px; border-radius: 20px; font-weight: 900;
     }
     
     .dest-bolos { display: flex; justify-content: center; gap: 25px; margin-bottom: 10px; }
@@ -264,21 +226,17 @@
         width: 180px; height: 180px; border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
         font-size: 90px; font-weight: 900; color: white;
-        background: #2563eb;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset -5px -5px 15px rgba(0,0,0,0.3);
+        background-color: #2563eb;
         border: 4px solid #60a5fa;
     }
     
-    /* Etiquetas 1ro, 2do, 3ro adaptadas */
     .dest-bolo-label {
         font-size: 16px; font-weight: 900; color: var(--azul-oscuro);
-        text-transform: uppercase; letter-spacing: 1px;
-        background: var(--dorado); padding: 3px 15px; border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        text-transform: uppercase; background: var(--dorado); padding: 3px 15px; border-radius: 8px;
     }
     
     .featured-tag {
-        background: rgba(255, 255, 255, 0.15); color: var(--blanco); padding: 8px 25px; border-radius: 20px; font-weight: 900; font-size: 22px; letter-spacing: 0.5px; border: 2px solid rgba(255,255,255,0.3); box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        background: rgba(255, 255, 255, 0.2); color: var(--blanco); padding: 8px 25px; border-radius: 20px; font-weight: 900; font-size: 22px; border: 2px solid rgba(255,255,255,0.4);
     }
 
     .side-panel { width: 580px; display: flex; flex-direction: column; gap: 12px; }
@@ -286,7 +244,7 @@
         background: var(--blanco); border-radius: 20px; padding: 10px 15px;
         display: flex; justify-content: space-between; align-items: center;
         border-left: 10px solid var(--dorado);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3); flex: 1;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2); flex: 1;
     }
     .side-left { display: flex; align-items: center; gap: 12px; }
     .side-logo { height: 65px; object-fit: contain; }
@@ -299,51 +257,21 @@
         width: 65px; height: 65px; border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
         font-size: 30px; font-weight: 900;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        border: 2px solid rgba(255,255,255,0.3);
     }
     .side-bolo.hoy { background: #2563eb; color: white; }
-    .side-bolo.ayer { background: #ffffff; color: var(--azul-oscuro); border-color: #cbd5e1; }
+    .side-bolo.ayer { background: #ffffff; color: var(--azul-oscuro); border: 2px solid #cbd5e1; }
     .side-bolo-label {
         font-size: 10px; font-weight: 900; color: var(--texto-gris);
-        text-transform: uppercase; letter-spacing: 0.5px;
-        background: #e2e8f0; padding: 1px 6px; border-radius: 4px;
+        text-transform: uppercase; background: #e2e8f0; padding: 1px 6px; border-radius: 4px;
     }
 
     /* ADS / LIVE */
     .ad-box { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #000; overflow: hidden; position: relative; }
     .ad-box img, .ad-box video { width: 100%; height: 100%; object-fit: contain; }
     .ad-box iframe { width: 100%; height: 100%; border: none; }
-
-    .live-indicator {
-        position: absolute; top: 25px; left: 25px;
-        background: #e63946; color: #fff; font-size: 24px; font-weight: 900;
-        padding: 8px 24px; border-radius: 8px; box-shadow: 0 0 20px #e63946;
-        letter-spacing: 1.5px; z-index: 50; display: inline-flex; align-items: center; gap: 8px;
-    }
-
-    /* CONEXIÓN */
-    .connection-status { display: inline-flex; align-items: center; gap: 8px; margin-left: 15px; position: relative; }
-    .connection-dot { width: 16px; height: 16px; border-radius: 50%; display: inline-block; transition: all 0.3s ease; flex-shrink: 0; }
-    .connection-dot.online { background: #22c55e; box-shadow: 0 0 20px rgba(34, 197, 94, 0.5); }
-    .connection-dot.offline { background: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
-    .connection-dot.checking { background: #f59e0b; box-shadow: 0 0 20px rgba(245, 158, 11, 0.5); }
-    .connection-tooltip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); color: white; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 100; }
-    .connection-status:hover .connection-tooltip { opacity: 1; }
-    .offline-badge { display: none; background: #ef4444; color: white; font-size: 16px; font-weight: 800; padding: 2px 14px; border-radius: 20px; margin-left: 10px; }
-    .offline-badge.show { display: inline-block; }
-
-    @keyframes dropIn {
-        0% { opacity: 0; transform: scale(0.8) translateY(10px); }
-        100% { opacity: 1; transform: scale(1) translateY(0); }
-    }
-    @keyframes pulse { 0% { opacity: 0.5; } 100% { opacity: 1; } }
-    @keyframes floating { 0% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -15px, 0); } 100% { transform: translate3d(0, 0, 0); } }
 </style>
 </head>
 <body>
-
-<div id="snow-container"></div>
 
 <div id="splash-screen">
     <img src="nuevologo.png" id="splashLogo" class="splash-logo" alt="Bancas Kiko">
@@ -368,11 +296,6 @@
             <div class="date-header">
                 <div class="main-date" id="currentDay">...</div>
                 <div class="sub-date" id="currentMonth">...</div>
-                <div class="connection-status" id="connectionStatus">
-                    <span class="connection-dot checking" id="connectionDot"></span>
-                    <span class="connection-tooltip" id="connectionTooltip">Verificando...</span>
-                </div>
-                <span class="offline-badge" id="offlineBadge">📡 SIN CONEXIÓN</span>
             </div>
         </div>
     </div>
@@ -439,7 +362,7 @@
     const _cacheImgs = [];
 
     /* ============================================================
-       MODO NAVIDAD
+       MODO NAVIDAD (SIN NIEVE PARA AHORRAR CPU)
        ============================================================ */
     function aplicarModoNavidad(activo) {
         modoNavidad = activo === true;
@@ -447,32 +370,6 @@
         document.getElementById('splashLogo').src = logoSrc;
         document.getElementById('headerLogo').src = logoSrc;
         document.getElementById('brandingLogo').src = logoSrc;
-
-        const snow = document.getElementById('snow-container');
-        if (modoNavidad) {
-            snow.style.display = 'block';
-            iniciarNieve();
-        } else {
-            snow.style.display = 'none';
-            snow.innerHTML = '';
-        }
-    }
-
-    function iniciarNieve() {
-        const container = document.getElementById('snow-container');
-        if (!container || container.children.length > 0) return;
-        const copos = ['❅', '❆', '❄', '•', '✦'];
-        for (let i = 0; i < 25; i++) {
-            const c = document.createElement('div');
-            c.className = 'snowflake';
-            c.textContent = copos[Math.floor(Math.random() * copos.length)];
-            c.style.left = Math.random() * 100 + 'vw';
-            c.style.fontSize = (Math.random() * 18 + 10) + 'px';
-            c.style.animationDuration = (Math.random() * 4 + 4) + 's';
-            c.style.animationDelay = (Math.random() * 6) + 's';
-            c.style.opacity = (Math.random() * 0.5 + 0.35).toString();
-            container.appendChild(c);
-        }
     }
 
     /* ============================================================
@@ -555,23 +452,6 @@
         if (t?.data) document.getElementById('marqueeText').innerText = t.data;
     }
 
-    function actualizarIndicadorConexion(estado, msg) {
-        const dot = document.getElementById('connectionDot');
-        const tip = document.getElementById('connectionTooltip');
-        const badge = document.getElementById('offlineBadge');
-        dot.className = 'connection-dot';
-        if (estado === 'online') {
-            dot.classList.add('online'); tip.textContent = msg || '✅ Conectado';
-            badge.classList.remove('show'); isOnline = true;
-        } else if (estado === 'offline') {
-            dot.classList.add('offline'); tip.textContent = msg || '❌ Sin conexión';
-            badge.classList.add('show'); isOnline = false; usandoCache = true;
-            cargarDesdeCache();
-        } else {
-            dot.classList.add('checking'); tip.textContent = msg || '⏳ Verificando...';
-        }
-    }
-
     /* ============================================================
        PROCESAMIENTO SORTEOS
        ============================================================ */
@@ -649,25 +529,12 @@
 
         database.ref('anunciosList').on('value', snap => {
             ANUNCIOS = [];
-            const preloader = document.getElementById('preloader-cache');
-            if (preloader) preloader.innerHTML = '';
             if (snap.exists()) snap.forEach(child => {
                 const v = child.val();
-                if (v?.activo !== false && v?.url?.trim()) {
-                    ANUNCIOS.push(v);
-                    const img = new Image();
-                    img.decoding = 'async';
-                    img.src = convertirLinkGitHub(v.url.trim());
-                    _cacheImgs.push(img);
-                    if (preloader) preloader.appendChild(img);
-                }
+                if (v?.activo !== false && v?.url?.trim()) ANUNCIOS.push(v);
             });
             guardarEnCache('anuncios', ANUNCIOS);
             if (adIndex >= ANUNCIOS.length) adIndex = 0;
-        });
-
-        database.ref('web_kiko/logos').on('value', snap => {
-            LOGOS = snap.val() || {};
         });
 
         const hoyStr = getFormatDateRD(0);
@@ -699,11 +566,11 @@
                 const box = document.getElementById('liveDisplay');
                 const raw = live.url || '';
                 if (esVideoDirecto(raw)) {
-                    box.innerHTML = `<div class="live-indicator">● EN VIVO</div><video src="${convertirLinkGitHub(raw)}" autoplay muted playsinline controls style="width:100%;height:100%;background:#000;"></video>`;
+                    box.innerHTML = `<video src="${convertirLinkGitHub(raw)}" autoplay muted playsinline controls style="width:100%;height:100%;background:#000;"></video>`;
                 } else {
                     let embed = raw.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/');
                     if (embed.includes('?')) embed = embed.split('?')[0];
-                    box.innerHTML = `<div class="live-indicator">● EN VIVO</div><iframe src="${embed}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%;height:100%;border:none;"></iframe>`;
+                    box.innerHTML = `<iframe src="${embed}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%;height:100%;border:none;"></iframe>`;
                 }
             } else if (enTransmisionVivo) {
                 enTransmisionVivo = false;
@@ -716,7 +583,7 @@
     }
 
     /* ============================================================
-       VISTAS
+       VISTAS Y ROTACIÓN
        ============================================================ */
     function mostrarVista(nombre) {
         VIEW_NAMES.forEach(v => {
@@ -727,9 +594,6 @@
         if (t) t.classList.remove('hidden');
     }
 
-    /* ============================================================
-       ROTACIÓN
-       ============================================================ */
     function programarRotacion(ms) {
         cancelarRotacion();
         rotationTimer = setTimeout(rotateDisplay, Math.max(1000, ms));
@@ -769,7 +633,7 @@
     }
 
     /* ============================================================
-       RENDER GRID
+       RENDERIZADOS
        ============================================================ */
     function renderGrid() {
         clearInterval(gridTimerInterval);
@@ -777,8 +641,7 @@
         if (!grid) return;
         grid.innerHTML = '';
         if (SORTEOS.length === 0) {
-            grid.innerHTML = `<div style="grid-column:1/-1; color:white; font-size:32px; font-weight:800; text-align:center; padding:50px;">
-                ${usandoCache ? '📡 MODO OFFLINE — CARGANDO...' : 'ESPERANDO DATOS...'}</div>`;
+            grid.innerHTML = `<div style="grid-column:1/-1; color:white; font-size:32px; font-weight:800; text-align:center; padding:50px;">ESPERANDO DATOS...</div>`;
             return;
         }
         const start = gridPage * 8;
@@ -787,7 +650,6 @@
         items.forEach((s, idx) => {
             const card = document.createElement('div');
             card.className = `card ${s.isProximo || s.isWaiting ? 'proximo' : ''}`;
-            card.style.animationDelay = `${idx * 0.05}s`;
 
             let claseFecha = s.day === 'hoy' ? '' : 'ayer';
             let txtFecha = s.day === 'hoy' ? 'HOY' : 'AYER';
@@ -797,7 +659,7 @@
             if (s.isWaiting) {
                 claseFecha = 'proximo-label'; txtFecha = 'ESPERANDO';
                 boloClass = 'esperando';
-                timerHtml = `<div class="card-timer esperando">⏳ ESPERANDO RESULTADOS...</div>`;
+                timerHtml = `<div class="card-timer esperando">⏳ ESPERANDO...</div>`;
             } else if (s.isProximo) {
                 claseFecha = 'proximo-label'; txtFecha = '¡POR SALIR!';
                 boloClass = 'ayer';
@@ -817,18 +679,9 @@
                 </div>
                 ${timerHtml}
                 <div class="bolos-container">
-                    <div class="bolo-wrapper">
-                        <div class="bolo ${boloClass}">${nums[0]}</div>
-                        <div class="bolo-label">1ro</div>
-                    </div>
-                    <div class="bolo-wrapper">
-                        <div class="bolo ${boloClass}">${nums[1]}</div>
-                        <div class="bolo-label">2do</div>
-                    </div>
-                    <div class="bolo-wrapper">
-                        <div class="bolo ${boloClass}">${nums[2]}</div>
-                        <div class="bolo-label">3ro</div>
-                    </div>
+                    <div class="bolo-wrapper"><div class="bolo ${boloClass}">${nums[0]}</div><div class="bolo-label">1ro</div></div>
+                    <div class="bolo-wrapper"><div class="bolo ${boloClass}">${nums[1]}</div><div class="bolo-label">2do</div></div>
+                    <div class="bolo-wrapper"><div class="bolo ${boloClass}">${nums[2]}</div><div class="bolo-label">3ro</div></div>
                 </div>
                 <div class="card-footer">${s.nombre || 'Anguilla'}</div>
             `;
@@ -866,15 +719,12 @@
         }, 1000);
     }
 
-    /* ============================================================
-       RENDER FEATURED (ÚLTIMO SORTEO) - NUEVO FONDO AZUL
-       ============================================================ */
     function generarPanelLateral(id) {
         const jugados = SORTEOS.filter(s => s.nums?.length > 0);
         const panel = document.getElementById(id);
         if (!panel) return SORTEOS[0] || { hour: '--:--', date: 'HOY', nums: null, nombre: '' };
         if (jugados.length === 0) {
-            panel.innerHTML = '<div style="color:var(--rojo); font-size:22px; font-weight:900; text-align:center; padding:20px;">NO HAY SORTEOS PREVIOS</div>';
+            panel.innerHTML = '<div style="color:var(--rojo); font-size:22px; font-weight:900; text-align:center;">NO HAY SORTEOS PREVIOS</div>';
             return SORTEOS[0] || { hour: '--:--', date: 'HOY', nums: null, nombre: '' };
         }
         jugados.sort((a, b) => {
@@ -894,18 +744,9 @@
                     </div>
                 </div>
                 <div class="side-bolos">
-                    <div class="side-bolo-wrapper">
-                        <div class="side-bolo ${boloClass}" style="animation-delay:${idx*0.05}s">${s.nums[0]}</div>
-                        <div class="side-bolo-label">1ro</div>
-                    </div>
-                    <div class="side-bolo-wrapper">
-                        <div class="side-bolo ${boloClass}" style="animation-delay:${idx*0.05+0.08}s">${s.nums[1]}</div>
-                        <div class="side-bolo-label">2do</div>
-                    </div>
-                    <div class="side-bolo-wrapper">
-                        <div class="side-bolo ${boloClass}" style="animation-delay:${idx*0.05+0.16}s">${s.nums[2]}</div>
-                        <div class="side-bolo-label">3ro</div>
-                    </div>
+                    <div class="side-bolo-wrapper"><div class="side-bolo ${boloClass}">${s.nums[0]}</div><div class="side-bolo-label">1ro</div></div>
+                    <div class="side-bolo-wrapper"><div class="side-bolo ${boloClass}">${s.nums[1]}</div><div class="side-bolo-label">2do</div></div>
+                    <div class="side-bolo-wrapper"><div class="side-bolo ${boloClass}">${s.nums[2]}</div><div class="side-bolo-label">3ro</div></div>
                 </div>
             </div>`;
         }).join('');
@@ -922,35 +763,20 @@
             <div class="dest-nombre">${last.nombre || 'Anguilla'}</div>
             <div class="dest-hora-box">${last.hour || '--:--'}</div>
             <div class="dest-bolos">
-                <div class="dest-bolo-wrapper">
-                    <div class="dest-bolo">${last.nums ? last.nums[0] : '?'}</div>
-                    <div class="dest-bolo-label">1ro</div>
-                </div>
-                <div class="dest-bolo-wrapper">
-                    <div class="dest-bolo">${last.nums ? last.nums[1] : '?'}</div>
-                    <div class="dest-bolo-label">2do</div>
-                </div>
-                <div class="dest-bolo-wrapper">
-                    <div class="dest-bolo">${last.nums ? last.nums[2] : '?'}</div>
-                    <div class="dest-bolo-label">3ro</div>
-                </div>
+                <div class="dest-bolo-wrapper"><div class="dest-bolo">${last.nums ? last.nums[0] : '?'}</div><div class="dest-bolo-label">1ro</div></div>
+                <div class="dest-bolo-wrapper"><div class="dest-bolo">${last.nums ? last.nums[1] : '?'}</div><div class="dest-bolo-label">2do</div></div>
+                <div class="dest-bolo-wrapper"><div class="dest-bolo">${last.nums ? last.nums[2] : '?'}</div><div class="dest-bolo-label">3ro</div></div>
             </div>
-            <div class="featured-tag">
-                ÚLTIMO SORTEO · ${esHoy ? 'HOY' : 'AYER'}
-            </div>`;
+            <div class="featured-tag">ÚLTIMO SORTEO · ${esHoy ? 'HOY' : 'AYER'}</div>`;
     }
 
-    /* ============================================================
-       RENDER ANUNCIOS
-       ============================================================ */
     function renderMediaAd() {
         const box = document.getElementById('adDisplay');
         if (!box) return tiempoRotacionGlobal;
         box.innerHTML = '';
         const activos = ANUNCIOS.filter(ad => ad && ad.activo !== false && ad.url && ad.url.trim());
         if (activos.length === 0) {
-            box.innerHTML = `<div style="color:white; font-size:60px; font-weight:800; text-align:center;">
-                BANCAS KIKO<br><span style="font-size:28px; color:#ffcc00; letter-spacing:4px;">LA CONFIANZA EN TU JUGADA</span></div>`;
+            box.innerHTML = `<div style="color:white; font-size:60px; font-weight:800; text-align:center;">BANCAS KIKO</div>`;
             return 6000;
         }
         if (adIndex >= activos.length) adIndex = 0;
@@ -976,9 +802,6 @@
         return t;
     }
 
-    /* ============================================================
-       RELOJ
-       ============================================================ */
     function updateDateTime() {
         const rd = getAhoraRD();
         const hrs = rd.hours % 12 || 12;
@@ -991,9 +814,6 @@
         document.getElementById('currentMonth').innerText = `${meses[rd.month - 1]} ${rd.year}`;
     }
 
-    /* ============================================================
-       WAKELOCK
-       ============================================================ */
     let wakeLock = null;
     async function activarWakeLock() {
         try {
@@ -1008,9 +828,6 @@
         } catch {}
     }
 
-    /* ============================================================
-       ESCALADO
-       ============================================================ */
     function dimensionarPantalla() {
         const w = window.innerWidth, h = window.innerHeight;
         let scale = Math.min(w / 1920, h / 1080);
@@ -1019,9 +836,6 @@
             `translate(-50%, -50%) scale(${scale})`;
     }
 
-    /* ============================================================
-       INICIO
-       ============================================================ */
     window.onload = () => {
         ['nuevologo.png', 'nuevologo2.png', 'anguilla.png', 'logoreal.png', 'lotekalogo.png'].forEach(src => {
             const i = new Image(); i.decoding = 'async'; i.src = src; _cacheImgs.push(i);
@@ -1030,10 +844,6 @@
         window.addEventListener('resize', dimensionarPantalla);
         updateDateTime();
         setInterval(updateDateTime, 1000);
-        database.ref('.info/connected').on('value', snap => {
-            if (snap.val()) actualizarIndicadorConexion('online', '✅ Conectado');
-            else actualizarIndicadorConexion('offline', '❌ Sin conexión');
-        });
         cargarDesdeCache();
         inicializarDatos();
         activarWakeLock();
