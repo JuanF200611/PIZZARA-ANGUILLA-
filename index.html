@@ -15,6 +15,7 @@
         --gris-fondo: #f4f7f6;
         --texto-oscuro: #1e293b;
         --texto-gris: #64748b;
+        --negro-borde: #000000;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -49,31 +50,31 @@
         display: flex; flex-direction: column;
     }
 
-    /* HEADER (Ajustado) */
+    /* HEADER */
     .topbar {
         width: calc(100% - 16px);
         margin: 6px 8px 0 8px;
-        height: 90px;
+        height: 92px;
         display: flex; align-items: center; justify-content: space-between;
-        padding: 0 20px;
+        padding: 0 30px;
         background: #001a4d;
-        border-radius: 16px;
+        border-radius: 20px;
         border-bottom: 4px solid var(--dorado);
         position: relative; z-index: 5;
         flex-shrink: 0;
     }
-    .brand-area { display: flex; align-items: center; gap: 14px; height: 100%; }
-    .brand-area img { height: 65px; object-fit: contain; }
+    .brand-area { display: flex; align-items: center; gap: 16px; height: 100%; }
+    .brand-area img { height: 72px; object-fit: contain; }
     .brand-text { display: flex; flex-direction: column; justify-content: center; line-height: 1; }
-    .brand-title { font-size: 24px; font-weight: 900; color: var(--blanco); text-transform: uppercase; }
+    .brand-title { font-size: 26px; font-weight: 900; color: var(--blanco); text-transform: uppercase; }
     .brand-title span { color: var(--dorado); }
-    .brand-slogan { font-size: 11px; font-weight: 600; color: #cbd5e1; letter-spacing: 1.2px; margin-top: 4px; }
+    .brand-slogan { font-size: 12px; font-weight: 600; color: #cbd5e1; letter-spacing: 1.6px; margin-top: 5px; }
 
-    .header-info { display: flex; align-items: center; gap: 15px; }
-    .header-clock { font-size: 46px; font-weight: 900; color: var(--blanco); border-right: 3px solid rgba(255, 204, 0, 0.4); padding-right: 15px; }
+    .header-info { display: flex; align-items: center; gap: 25px; }
+    .header-clock { font-size: 52px; font-weight: 900; color: var(--blanco); border-right: 4px solid rgba(255, 204, 0, 0.4); padding-right: 25px; }
     .date-header { text-align: right; }
-    .main-date { font-size: 24px; font-weight: 900; color: var(--dorado); text-transform: uppercase; }
-    .sub-date { font-size: 14px; font-weight: 700; color: var(--blanco); }
+    .main-date { font-size: 26px; font-weight: 900; color: var(--dorado); text-transform: uppercase; }
+    .sub-date { font-size: 15px; font-weight: 700; color: var(--blanco); }
 
     /* TICKER */
     .ticker-bar {
@@ -88,7 +89,7 @@
         position: relative; z-index: 5;
     }
     .ticker-text {
-        white-space: nowrap; font-size: 22px; font-weight: 800; color: var(--blanco);
+        white-space: nowrap; font-size: 24px; font-weight: 800; color: var(--blanco);
         will-change: transform;
         animation: marquee 30s linear infinite; padding-left: 100%;
     }
@@ -172,6 +173,7 @@
     }
     .card-fecha.ayer { color: var(--rojo); background: #fee2e2; }
 
+    /* BOLOS - Modificados con borde negro y alto contraste */
     .bolos-container {
         display: flex;
         justify-content: center;
@@ -184,22 +186,22 @@
         overflow: hidden;
     }
     .bolo-wrapper { display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: center; }
-    
-    /* BOLOS CON CONTORNO NEGRO */
     .bolo {
         width: 130px; height: 130px;
         border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
         font-weight: 900; font-size: 62px;
-        border: 5px solid #000000;
-        box-shadow: 0 6px 12px rgba(0,0,0,0.6);
+        /* Bordes negros y sombra fuerte para el monitor */
+        border: 5px solid var(--negro-borde); 
+        box-shadow: 0 6px 12px rgba(0,0,0,0.5), inset 0 0 15px rgba(0,0,0,0.3);
     }
-    .bolo.hoy { background: #0055ff; color: white; }
-    .bolo.ayer { background: #ffffff; color: #000000; }
+    .bolo.hoy { background: #0055ff; color: white; text-shadow: 2px 2px 0 #000; }
+    .bolo.ayer { background: #ffffff; color: #000; text-shadow: none; }
 
     .bolo-label {
-        font-size: 13px; font-weight: 900; color: var(--texto-gris);
-        text-transform: uppercase; background: #e2e8f0; padding: 2px 10px; border-radius: 6px;
+        font-size: 13px; font-weight: 900; color: var(--texto-oscuro);
+        text-transform: uppercase; background: #cbd5e1; padding: 2px 10px; border-radius: 6px;
+        border: 1px solid #000;
     }
 
     .card-timer {
@@ -210,92 +212,75 @@
 
     .card-footer { display: none; }
 
-    /* VISTA FEATURED (ÚLTIMO SORTEO) */
-    .split-container { display: flex; gap: 18px; height: 100%; width: 100%; padding: 6px; }
-
+    /* VISTA FEATURED - AUMENTADA DE TAMAÑO Y CONTRASTE */
+    .split-container { display: flex; gap: 15px; height: 100%; width: 100%; }
     .split-main {
         flex: 1;
         background-color: #061f4a;
-        border: 8px solid var(--dorado);
-        border-radius: 30px;
+        border: 8px solid var(--dorado); border-radius: 30px;
         display: flex; flex-direction: column; align-items: center;
         justify-content: space-evenly;
-        padding: 20px 25px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.8);
     }
-
-    .dest-logo { height: 240px; margin-bottom: 5px; object-fit: contain; }
-
-    .dest-nombre {
-        font-size: 56px; font-weight: 900; color: var(--dorado);
-        margin-bottom: 8px; text-transform: uppercase; text-align: center;
-        line-height: 1;
-    }
-
+    .dest-logo { height: 220px; margin-bottom: 5px; object-fit: contain; }
+    .dest-nombre { font-size: 55px; font-weight: 900; color: var(--dorado); margin-bottom: 5px; text-transform: uppercase; text-shadow: 2px 2px 4px #000; }
     .dest-hora-box {
-        font-size: 80px; background-color: #ff6a00;
-        color: #ffffff; padding: 10px 80px; border-radius: 24px; font-weight: 900;
-        letter-spacing: 2px;
-        border: 4px solid #000000;
+        font-size: 80px; background-color: #ff6600; /* Naranja más brillante */
+        color: #ffffff; padding: 10px 80px; border-radius: 20px; font-weight: 900;
+        border: 4px solid #000; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
     }
 
     .dest-bolos { display: flex; justify-content: center; gap: 35px; margin-bottom: 10px; }
     .dest-bolo-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-
     .dest-bolo {
-        width: 240px; height: 240px; border-radius: 50%;
+        width: 200px; height: 200px; border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
-        font-size: 130px; font-weight: 900; color: white;
+        font-size: 100px; font-weight: 900; color: white;
         background-color: #0055ff;
-        border: 8px solid #000000;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+        border: 6px solid #000; /* Borde negro grueso */
+        box-shadow: 0 8px 20px rgba(0,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.5);
+        text-shadow: 3px 3px 0 #000;
     }
 
     .dest-bolo-label {
-        font-size: 22px; font-weight: 900; color: var(--azul-oscuro);
-        text-transform: uppercase; background: var(--dorado);
-        padding: 6px 22px; border-radius: 10px;
-        border: 2px solid #000000;
+        font-size: 22px; font-weight: 900; color: #000;
+        text-transform: uppercase; background: var(--dorado); padding: 4px 20px; border-radius: 8px;
+        border: 2px solid #000;
     }
 
     .featured-tag {
-        background: rgba(255, 255, 255, 0.2); color: var(--blanco);
-        padding: 12px 35px; border-radius: 24px; font-weight: 900;
-        font-size: 30px; border: 2px solid rgba(255,255,255,0.4);
-        letter-spacing: 1px;
+        background: var(--rojo); color: var(--blanco); padding: 10px 30px; border-radius: 20px; font-weight: 900; font-size: 28px; border: 3px solid #fff;
     }
 
-    .side-panel { width: 620px; display: flex; flex-direction: column; gap: 12px; }
-
+    .side-panel { width: 650px; display: flex; flex-direction: column; gap: 12px; } /* Más ancho */
     .side-row {
-        background: var(--blanco); border-radius: 20px; padding: 14px 18px;
+        background: var(--blanco); border-radius: 20px; padding: 15px 20px;
         display: flex; justify-content: space-between; align-items: center;
         border-left: 12px solid var(--dorado);
-        box-shadow: 0 3px 10px rgba(0,0,0,0.2); flex: 1;
+        border-bottom: 4px solid #000; /* Borde inferior para resaltar */
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3); flex: 1;
     }
-
     .side-left { display: flex; align-items: center; gap: 15px; }
     .side-logo { height: 80px; object-fit: contain; }
-
     .side-info { display: flex; flex-direction: column; }
-    .side-info .hora { color: var(--azul-oscuro); font-size: 32px; font-weight: 900; }
-    .side-info .fecha { color: var(--texto-gris); font-size: 16px; font-weight: 700; text-transform: uppercase; }
-
+    .side-info .hora { color: var(--azul-oscuro); font-size: 34px; font-weight: 900; line-height: 1; }
+    .side-info .fecha { color: var(--texto-gris); font-size: 18px; font-weight: 800; text-transform: uppercase; margin-top: 5px; }
     .side-bolos { display: flex; gap: 10px; }
-    .side-bolo-wrapper { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-
+    .side-bolo-wrapper { display: flex; flex-direction: column; align-items: center; gap: 5px; }
     .side-bolo {
-        width: 85px; height: 85px; border-radius: 50%;
+        width: 80px; height: 80px; border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
-        font-size: 40px; font-weight: 900;
-        border: 3px solid #000000;
+        font-size: 38px; font-weight: 900;
+        border: 3px solid #000; /* Borde negro */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.4);
     }
-    .side-bolo.hoy { background: #0055ff; color: white; }
-    .side-bolo.ayer { background: #ffffff; color: #000000; }
-
+    .side-bolo.hoy { background: #0055ff; color: white; text-shadow: 2px 2px 0 #000; }
+    .side-bolo.ayer { background: #ffffff; color: var(--azul-oscuro); }
     .side-bolo-label {
-        font-size: 12px; font-weight: 900; color: var(--texto-gris);
-        text-transform: uppercase; background: #e2e8f0; padding: 2px 8px; border-radius: 4px;
+        font-size: 12px; font-weight: 900; color: var(--texto-oscuro);
+        text-transform: uppercase; background: #cbd5e1; padding: 2px 8px; border-radius: 4px;
+        border: 1px solid #000;
     }
 
     /* ADS / LIVE */
@@ -303,6 +288,7 @@
     .ad-box img, .ad-box video { width: 100%; height: 100%; object-fit: contain; }
     .ad-box iframe { width: 100%; height: 100%; border: none; }
 
+    /* Seguro anti-desborde */
     .card * { min-width: 0; min-height: 0; }
 </style>
 </head>
@@ -317,6 +303,7 @@
 <div id="preloader-cache" style="position:absolute;width:1px;height:1px;opacity:0.01;overflow:hidden;bottom:0;left:0;pointer-events:none;"></div>
 
 <div id="canvas-master">
+    <!-- TOPBAR -->
     <div class="topbar">
         <div class="brand-area">
             <img src="nuevologo.png" id="headerLogo" alt="Bancas Kiko">
@@ -334,10 +321,12 @@
         </div>
     </div>
 
+    <!-- TICKER -->
     <div class="ticker-bar">
         <div class="ticker-text" id="marqueeText">CARGANDO ANUNCIOS...</div>
     </div>
 
+    <!-- VISTAS -->
     <div id="view-grid" class="hidden">
         <div class="grid-container" id="mainGrid"></div>
     </div>
@@ -349,6 +338,7 @@
         </div>
     </div>
 
+    <!-- BRANDING -->
     <div id="view-branding">
         <img src="nuevologo.png" id="brandingLogo" class="branding-logo" alt="Bancas Kiko">
         <div class="branding-title">Bancas <span>Kiko</span></div>
@@ -375,6 +365,7 @@
 
     let SORTEOS = [];
     let ANUNCIOS = [];
+    let LOGOS = {};
     let modoNavidad = false;
 
     let currentView = 77;
@@ -385,6 +376,8 @@
     let enTransmisionVivo = false;
     let sistemaIniciado = false;
     let tiempoRotacionGlobal = 15000;
+    let usandoCache = false;
+    let isOnline = true;
 
     const VIEW_NAMES = ['grid', 'featured', 'branding', 'ads', 'live'];
     const _cacheImgs = [];
@@ -462,6 +455,7 @@
         try { const i = localStorage.getItem(`kiko_${clave}`); return i ? JSON.parse(i) : null; } catch { return null; }
     }
     function cargarDesdeCache() {
+        usandoCache = true;
         const s = obtenerDeCache('sorteos');
         if (s?.data?.length) SORTEOS = s.data;
         const a = obtenerDeCache('anuncios');
@@ -729,7 +723,7 @@
         const panel = document.getElementById(id);
         if (!panel) return SORTEOS[0] || { hour: '--:--', date: 'HOY', nums: null, nombre: '' };
         if (jugados.length === 0) {
-            panel.innerHTML = '<div style="color:var(--rojo); font-size:26px; font-weight:900; text-align:center;">NO HAY SORTEOS PREVIOS</div>';
+            panel.innerHTML = '<div style="color:var(--rojo); font-size:22px; font-weight:900; text-align:center;">NO HAY SORTEOS PREVIOS</div>';
             return SORTEOS[0] || { hour: '--:--', date: 'HOY', nums: null, nombre: '' };
         }
         jugados.sort((a, b) => {
@@ -833,32 +827,15 @@
         } catch {}
     }
 
-    // ESCALADO FORZADO AL 100% DE LA PANTALLA
     function dimensionarPantalla() {
         const w = window.innerWidth, h = window.innerHeight;
-        // Math.max obliga a cubrir toda la pantalla, recortando los sobrantes laterales (overflow: hidden)
-        let scale = Math.max(w / 1920, h / 1080);
-        
+        let scale = Math.min(w / 1920, h / 1080);
+        if (scale > 1.6) scale = 1.6;
         document.getElementById('canvas-master').style.transform =
             `translate(-50%, -50%) scale(${scale})`;
     }
 
-    // FUNCIÓN PARA PANTALLA COMPLETA AUTOMÁTICA (F11)
-    function entrarPantallaCompleta() {
-        let elem = document.documentElement;
-        if (elem.requestFullscreen) {
-            elem.requestFullscreen().catch(() => {});
-        } else if (elem.webkitRequestFullscreen) { /* Safari */
-            elem.webkitRequestFullscreen();
-        } else if (elem.msRequestFullscreen) { /* IE11 */
-            elem.msRequestFullscreen();
-        }
-    }
-
     window.onload = () => {
-        // Intentar pantalla completa silenciosa al cargar
-        entrarPantallaCompleta();
-
         ['nuevologo.png', 'nuevologo2.png', 'anguilla.png', 'logoreal.png', 'lotekalogo.png'].forEach(src => {
             const i = new Image(); i.decoding = 'async'; i.src = src; _cacheImgs.push(i);
         });
