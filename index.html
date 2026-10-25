@@ -47,34 +47,33 @@
         overflow: hidden;
         will-change: transform;
         display: flex; flex-direction: column;
-        padding: 2px; /* Margen mínimo para no pegar al borde */
     }
 
-    /* HEADER */
+    /* HEADER (Ajustado para que no se salga el reloj a la derecha) */
     .topbar {
         width: calc(100% - 16px);
         margin: 6px 8px 0 8px;
-        height: 92px;
+        height: 90px;
         display: flex; align-items: center; justify-content: space-between;
-        padding: 0 30px;
+        padding: 0 20px; /* Reducido un poco el padding lateral */
         background: #001a4d;
-        border-radius: 20px;
+        border-radius: 16px;
         border-bottom: 4px solid var(--dorado);
         position: relative; z-index: 5;
         flex-shrink: 0;
     }
-    .brand-area { display: flex; align-items: center; gap: 16px; height: 100%; }
-    .brand-area img { height: 72px; object-fit: contain; }
+    .brand-area { display: flex; align-items: center; gap: 14px; height: 100%; }
+    .brand-area img { height: 65px; object-fit: contain; }
     .brand-text { display: flex; flex-direction: column; justify-content: center; line-height: 1; }
-    .brand-title { font-size: 26px; font-weight: 900; color: var(--blanco); text-transform: uppercase; }
+    .brand-title { font-size: 24px; font-weight: 900; color: var(--blanco); text-transform: uppercase; }
     .brand-title span { color: var(--dorado); }
-    .brand-slogan { font-size: 12px; font-weight: 600; color: #cbd5e1; letter-spacing: 1.6px; margin-top: 5px; }
+    .brand-slogan { font-size: 11px; font-weight: 600; color: #cbd5e1; letter-spacing: 1.2px; margin-top: 4px; }
 
-    .header-info { display: flex; align-items: center; gap: 25px; }
-    .header-clock { font-size: 52px; font-weight: 900; color: var(--blanco); border-right: 4px solid rgba(255, 204, 0, 0.4); padding-right: 25px; }
+    .header-info { display: flex; align-items: center; gap: 15px; /* Reducido de 25 a 15 */ }
+    .header-clock { font-size: 46px; /* Reducido de 52 a 46 */ font-weight: 900; color: var(--blanco); border-right: 3px solid rgba(255, 204, 0, 0.4); padding-right: 15px; }
     .date-header { text-align: right; }
-    .main-date { font-size: 26px; font-weight: 900; color: var(--dorado); text-transform: uppercase; }
-    .sub-date { font-size: 15px; font-weight: 700; color: var(--blanco); }
+    .main-date { font-size: 24px; font-weight: 900; color: var(--dorado); text-transform: uppercase; }
+    .sub-date { font-size: 14px; font-weight: 700; color: var(--blanco); }
 
     /* TICKER */
     .ticker-bar {
@@ -89,7 +88,7 @@
         position: relative; z-index: 5;
     }
     .ticker-text {
-        white-space: nowrap; font-size: 24px; font-weight: 800; color: var(--blanco);
+        white-space: nowrap; font-size: 22px; font-weight: 800; color: var(--blanco);
         will-change: transform;
         animation: marquee 30s linear infinite; padding-left: 100%;
     }
@@ -834,12 +833,17 @@
         } catch {}
     }
 
-    // SOLUCIÓN DEFINITIVA: LLENAR TODA LA PANTALLA SIN ESPACIOS VACÍOS
+    // ESCALADO PERFECTO (Sin cortar esquinas y adaptado a la pantalla)
     function dimensionarPantalla() {
         const w = window.innerWidth, h = window.innerHeight;
         
-        // Math.max asegura que el lienzo cubra TODA la pantalla (expande hasta los bordes)
-        let scale = Math.max(w / 1920, h / 1080);
+        // Calculamos ambas escalas
+        const scaleX = w / 1920;
+        const scaleY = h / 1080;
+        
+        // Math.min asegura que TODO quepa. 
+        // El 0.96 (96%) deja un margen del 4% en los bordes para que no se corte nada de las esquinas.
+        let scale = Math.min(scaleX, scaleY) * 0.96; 
         
         document.getElementById('canvas-master').style.transform =
             `translate(-50%, -50%) scale(${scale})`;
