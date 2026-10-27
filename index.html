@@ -173,7 +173,7 @@
     }
     .card-fecha.ayer { color: var(--rojo); background: #fee2e2; }
 
-    /* BOLOS - Modificados con borde negro y alto contraste */
+    /* BOLOS - AZULES CON EFECTO 3D */
     .bolos-container {
         display: flex;
         justify-content: center;
@@ -191,12 +191,50 @@
         border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
         font-weight: 900; font-size: 62px;
-        /* Bordes negros y sombra fuerte para el monitor */
-        border: 5px solid var(--negro-borde); 
+        border: 5px solid var(--negro-borde);
         box-shadow: 0 6px 12px rgba(0,0,0,0.5), inset 0 0 15px rgba(0,0,0,0.3);
+        position: relative;
     }
-    .bolo.hoy { background: #0055ff; color: white; text-shadow: 2px 2px 0 #000; }
-    .bolo.ayer { background: #ffffff; color: #000; text-shadow: none; }
+    /* ✅ BOLO HOY - AZUL 3D (como estaba antes, pero con volumen) */
+    .bolo.hoy {
+        background:
+            radial-gradient(circle at 30% 25%, #6ea8ff 0%, #0055ff 35%, #0033a0 70%, #001a4d 100%);
+        color: white;
+        text-shadow:
+            0 2px 0 #000,
+            0 4px 6px rgba(0,0,0,0.6),
+            1px 1px 0 #000,
+            -1px -1px 0 #000,
+            1px -1px 0 #000,
+            -1px 1px 0 #000;
+        box-shadow:
+            0 8px 18px rgba(0,0,0,0.6),
+            inset -8px -10px 20px rgba(0,0,0,0.55),
+            inset 8px 10px 18px rgba(255,255,255,0.35),
+            inset 0 0 30px rgba(0,0,0,0.25);
+    }
+    /* ✅ BOLO AYER - BLANCO 3D */
+    .bolo.ayer {
+        background:
+            radial-gradient(circle at 30% 25%, #ffffff 0%, #f1f5f9 35%, #cbd5e1 75%, #94a3b8 100%);
+        color: #000;
+        text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+        box-shadow:
+            0 8px 18px rgba(0,0,0,0.5),
+            inset -8px -10px 20px rgba(0,0,0,0.25),
+            inset 8px 10px 18px rgba(255,255,255,0.9),
+            inset 0 0 30px rgba(0,0,0,0.08);
+    }
+    /* Brillo superior tipo esfera */
+    .bolo::after {
+        content: '';
+        position: absolute;
+        top: 8%; left: 15%;
+        width: 45%; height: 35%;
+        border-radius: 50%;
+        background: radial-gradient(ellipse at center, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0) 70%);
+        pointer-events: none;
+    }
 
     .bolo-label {
         font-size: 13px; font-weight: 900; color: var(--texto-oscuro);
@@ -212,7 +250,7 @@
 
     .card-footer { display: none; }
 
-    /* VISTA FEATURED - AUMENTADA DE TAMAÑO Y CONTRASTE */
+    /* VISTA FEATURED */
     .split-container { display: flex; gap: 15px; height: 100%; width: 100%; }
     .split-main {
         flex: 1;
@@ -225,22 +263,60 @@
     }
     .dest-logo { height: 220px; margin-bottom: 5px; object-fit: contain; }
     .dest-nombre { font-size: 55px; font-weight: 900; color: var(--dorado); margin-bottom: 5px; text-transform: uppercase; text-shadow: 2px 2px 4px #000; }
+
+    /* ✅ HORA CON CONTORNO NEGRO GRUESO */
     .dest-hora-box {
-        font-size: 80px; background-color: #ff6600; /* Naranja más brillante */
-        color: #ffffff; padding: 10px 80px; border-radius: 20px; font-weight: 900;
-        border: 4px solid #000; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        font-size: 80px;
+        background-color: #ff6600;
+        color: #ffffff;
+        padding: 10px 80px;
+        border-radius: 20px;
+        font-weight: 900;
+        border: 4px solid #000;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        -webkit-text-stroke: 3px #000;
+        paint-order: stroke fill;
+        text-shadow:
+            3px 3px 0 #000,
+            -3px -3px 0 #000,
+            3px -3px 0 #000,
+            -3px 3px 0 #000,
+            0 6px 12px rgba(0,0,0,0.7);
+        letter-spacing: 2px;
     }
 
     .dest-bolos { display: flex; justify-content: center; gap: 35px; margin-bottom: 10px; }
     .dest-bolo-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    /* ✅ BOLO DESTACADO AZUL 3D */
     .dest-bolo {
         width: 200px; height: 200px; border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
         font-size: 100px; font-weight: 900; color: white;
-        background-color: #0055ff;
-        border: 6px solid #000; /* Borde negro grueso */
-        box-shadow: 0 8px 20px rgba(0,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.5);
-        text-shadow: 3px 3px 0 #000;
+        background:
+            radial-gradient(circle at 30% 25%, #6ea8ff 0%, #0055ff 35%, #0033a0 70%, #001a4d 100%);
+        border: 6px solid #000;
+        box-shadow:
+            0 12px 26px rgba(0,0,0,0.7),
+            inset -12px -14px 28px rgba(0,0,0,0.6),
+            inset 12px 14px 26px rgba(255,255,255,0.4),
+            inset 0 0 40px rgba(0,0,0,0.25);
+        text-shadow:
+            0 3px 0 #000,
+            0 6px 10px rgba(0,0,0,0.7),
+            2px 2px 0 #000,
+            -2px -2px 0 #000,
+            2px -2px 0 #000,
+            -2px 2px 0 #000;
+        position: relative;
+    }
+    .dest-bolo::after {
+        content: '';
+        position: absolute;
+        top: 8%; left: 15%;
+        width: 45%; height: 35%;
+        border-radius: 50%;
+        background: radial-gradient(ellipse at center, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 70%);
+        pointer-events: none;
     }
 
     .dest-bolo-label {
@@ -253,12 +329,12 @@
         background: var(--rojo); color: var(--blanco); padding: 10px 30px; border-radius: 20px; font-weight: 900; font-size: 28px; border: 3px solid #fff;
     }
 
-    .side-panel { width: 650px; display: flex; flex-direction: column; gap: 12px; } /* Más ancho */
+    .side-panel { width: 650px; display: flex; flex-direction: column; gap: 12px; }
     .side-row {
         background: var(--blanco); border-radius: 20px; padding: 15px 20px;
         display: flex; justify-content: space-between; align-items: center;
         border-left: 12px solid var(--dorado);
-        border-bottom: 4px solid #000; /* Borde inferior para resaltar */
+        border-bottom: 4px solid #000;
         box-shadow: 0 5px 15px rgba(0,0,0,0.3); flex: 1;
     }
     .side-left { display: flex; align-items: center; gap: 15px; }
@@ -272,11 +348,49 @@
         width: 80px; height: 80px; border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
         font-size: 38px; font-weight: 900;
-        border: 3px solid #000; /* Borde negro */
+        border: 3px solid #000;
         box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        position: relative;
     }
-    .side-bolo.hoy { background: #0055ff; color: white; text-shadow: 2px 2px 0 #000; }
-    .side-bolo.ayer { background: #ffffff; color: var(--azul-oscuro); }
+    /* ✅ SIDE BOLO HOY - AZUL 3D */
+    .side-bolo.hoy {
+        background:
+            radial-gradient(circle at 30% 25%, #6ea8ff 0%, #0055ff 35%, #0033a0 70%, #001a4d 100%);
+        color: white;
+        text-shadow:
+            0 1px 0 #000,
+            0 2px 4px rgba(0,0,0,0.6),
+            1px 1px 0 #000,
+            -1px -1px 0 #000,
+            1px -1px 0 #000,
+            -1px 1px 0 #000;
+        box-shadow:
+            0 6px 14px rgba(0,0,0,0.6),
+            inset -5px -6px 12px rgba(0,0,0,0.55),
+            inset 5px 6px 12px rgba(255,255,255,0.35),
+            inset 0 0 20px rgba(0,0,0,0.25);
+    }
+    /* ✅ SIDE BOLO AYER - BLANCO 3D */
+    .side-bolo.ayer {
+        background:
+            radial-gradient(circle at 30% 25%, #ffffff 0%, #f1f5f9 35%, #cbd5e1 75%, #94a3b8 100%);
+        color: var(--azul-oscuro);
+        text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+        box-shadow:
+            0 6px 14px rgba(0,0,0,0.5),
+            inset -5px -6px 12px rgba(0,0,0,0.25),
+            inset 5px 6px 12px rgba(255,255,255,0.9),
+            inset 0 0 20px rgba(0,0,0,0.08);
+    }
+    .side-bolo::after {
+        content: '';
+        position: absolute;
+        top: 8%; left: 15%;
+        width: 45%; height: 35%;
+        border-radius: 50%;
+        background: radial-gradient(ellipse at center, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0) 70%);
+        pointer-events: none;
+    }
     .side-bolo-label {
         font-size: 12px; font-weight: 900; color: var(--texto-oscuro);
         text-transform: uppercase; background: #cbd5e1; padding: 2px 8px; border-radius: 4px;
@@ -288,7 +402,6 @@
     .ad-box img, .ad-box video { width: 100%; height: 100%; object-fit: contain; }
     .ad-box iframe { width: 100%; height: 100%; border: none; }
 
-    /* Seguro anti-desborde */
     .card * { min-width: 0; min-height: 0; }
 </style>
 </head>
@@ -365,10 +478,13 @@
 
     let SORTEOS = [];
     let ANUNCIOS = [];
-    let LOGOS = {};
     let modoNavidad = false;
 
-    let currentView = 77;
+    // ============================================================
+    // ESTADO DE ROTACIÓN
+    // Ciclo: GRID (páginas) → FEATURED → AD → BRANDING → AD → GRID ...
+    // ============================================================
+    let estado = 'grid';
     let gridPage = 0;
     let adIndex = 0;
     let rotationTimer = null;
@@ -376,10 +492,7 @@
     let enTransmisionVivo = false;
     let sistemaIniciado = false;
     let tiempoRotacionGlobal = 15000;
-    let usandoCache = false;
-    let isOnline = true;
 
-    const VIEW_NAMES = ['grid', 'featured', 'branding', 'ads', 'live'];
     const _cacheImgs = [];
 
     function aplicarModoNavidad(activo) {
@@ -455,7 +568,6 @@
         try { const i = localStorage.getItem(`kiko_${clave}`); return i ? JSON.parse(i) : null; } catch { return null; }
     }
     function cargarDesdeCache() {
-        usandoCache = true;
         const s = obtenerDeCache('sorteos');
         if (s?.data?.length) SORTEOS = s.data;
         const a = obtenerDeCache('anuncios');
@@ -555,8 +667,8 @@
                     guardarEnCache('sorteos', SORTEOS);
                 }
                 if (sistemaIniciado && !enTransmisionVivo) {
-                    if (currentView === 0) renderGrid();
-                    if (currentView === 88) renderFeatured();
+                    if (estado === 'grid') renderGrid();
+                    if (estado === 'featured') renderFeatured();
                 }
             });
         });
@@ -581,7 +693,7 @@
             } else if (enTransmisionVivo) {
                 enTransmisionVivo = false;
                 document.getElementById('liveDisplay').innerHTML = '';
-                currentView = 0; gridPage = 0;
+                estado = 'grid'; gridPage = 0;
                 mostrarVista('grid'); renderGrid();
                 programarRotacion(tiempoRotacionGlobal);
             }
@@ -589,7 +701,7 @@
     }
 
     function mostrarVista(nombre) {
-        VIEW_NAMES.forEach(v => {
+        ['grid', 'featured', 'branding', 'ads', 'live'].forEach(v => {
             const el = document.getElementById('view-' + v);
             if (el) el.classList.add('hidden');
         });
@@ -599,40 +711,81 @@
 
     function programarRotacion(ms) {
         cancelarRotacion();
-        rotationTimer = setTimeout(rotateDisplay, Math.max(1000, ms));
+        rotationTimer = setTimeout(pasoRotacion, Math.max(1000, ms));
     }
     function cancelarRotacion() {
         if (rotationTimer) { clearTimeout(rotationTimer); rotationTimer = null; }
     }
 
-    function rotateDisplay() {
+    function pasoRotacion() {
         if (enTransmisionVivo || !sistemaIniciado) return;
         let nextTime = tiempoRotacionGlobal;
         const totalPages = Math.max(1, Math.ceil(SORTEOS.length / 8));
 
-        if (currentView === 0) {
+        if (estado === 'grid') {
             if (gridPage < totalPages - 1) {
                 gridPage++;
                 mostrarVista('grid'); renderGrid();
             } else {
-                currentView = 88; gridPage = 0;
+                estado = 'featured';
                 mostrarVista('featured'); renderFeatured();
             }
-        } else if (currentView === 88) {
-            currentView = 77;
+        } else if (estado === 'featured') {
+            estado = 'ad';
+            nextTime = renderAnuncioActual();
+        } else if (estado === 'ad') {
+            estado = 'branding';
             mostrarVista('branding');
-        } else if (currentView === 77) {
-            currentView = 99; adIndex = 0;
-            mostrarVista('ads');
-            nextTime = renderMediaAd();
-        } else if (currentView === 99) {
-            currentView = 0; gridPage = 0;
-            mostrarVista('grid'); renderGrid();
+        } else if (estado === 'branding') {
+            estado = 'ad';
+            nextTime = renderAnuncioActual();
         } else {
-            currentView = 0; gridPage = 0;
+            estado = 'grid'; gridPage = 0;
             mostrarVista('grid'); renderGrid();
         }
+
         programarRotacion(nextTime);
+    }
+
+    function renderAnuncioActual() {
+        const activos = ANUNCIOS.filter(ad => ad && ad.activo !== false && ad.url && ad.url.trim());
+        if (activos.length === 0) {
+            estado = 'branding';
+            mostrarVista('branding');
+            return 5000;
+        }
+
+        if (adIndex >= activos.length) {
+            adIndex = 0;
+            estado = 'grid'; gridPage = 0;
+            mostrarVista('grid'); renderGrid();
+            return tiempoRotacionGlobal;
+        }
+
+        const ad = activos[adIndex];
+        mostrarVista('ads');
+        const box = document.getElementById('adDisplay');
+        box.innerHTML = '';
+        const url = ad.url.trim();
+        const urlP = convertirLinkGitHub(url);
+
+        if (esVideoDirecto(url)) {
+            box.innerHTML = `<video src="${urlP}" autoplay muted playsinline preload="auto" style="width:100%;height:100%;object-fit:contain;background:#000;"></video>`;
+        } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+            let embed = url.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/');
+            if (embed.includes('?')) embed = embed.split('?')[0];
+            box.innerHTML = `<iframe src="${embed}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%;height:100%;border:none;" loading="lazy"></iframe>`;
+        } else {
+            box.innerHTML = `<img src="${urlP}" loading="eager" style="width:100%;height:100%;object-fit:contain;background:#000;" alt="Anuncio">`;
+            const img = box.querySelector('img');
+            if (img) img.onerror = () => {
+                box.innerHTML = `<div style="color:white; font-size:60px; font-weight:800;">BANCAS KIKO</div>`;
+            };
+        }
+
+        const t = (parseInt(ad.tiempo) || 15) * 1000;
+        adIndex++;
+        return t;
     }
 
     function renderGrid() {
@@ -647,7 +800,7 @@
         const start = gridPage * 8;
         const items = SORTEOS.slice(start, start + 8);
 
-        items.forEach((s, idx) => {
+        items.forEach((s) => {
             const card = document.createElement('div');
             card.className = `card ${s.isProximo || s.isWaiting ? 'proximo' : ''}`;
 
@@ -732,7 +885,7 @@
         });
         const last = jugados[0];
         const hist = jugados.slice(1, 6);
-        panel.innerHTML = hist.map((s, idx) => {
+        panel.innerHTML = hist.map((s) => {
             const boloClass = s.day === 'hoy' ? 'hoy' : 'ayer';
             return `<div class="side-row">
                 <div class="side-left">
@@ -767,38 +920,6 @@
                 <div class="dest-bolo-wrapper"><div class="dest-bolo">${last.nums ? last.nums[2] : '?'}</div><div class="dest-bolo-label">3ro</div></div>
             </div>
             <div class="featured-tag">ÚLTIMO SORTEO · ${esHoy ? 'HOY' : 'AYER'}</div>`;
-    }
-
-    function renderMediaAd() {
-        const box = document.getElementById('adDisplay');
-        if (!box) return tiempoRotacionGlobal;
-        box.innerHTML = '';
-        const activos = ANUNCIOS.filter(ad => ad && ad.activo !== false && ad.url && ad.url.trim());
-        if (activos.length === 0) {
-            box.innerHTML = `<div style="color:white; font-size:60px; font-weight:800; text-align:center;">BANCAS KIKO</div>`;
-            return 6000;
-        }
-        if (adIndex >= activos.length) adIndex = 0;
-        const ad = activos[adIndex];
-        const url = ad.url.trim();
-        const urlP = convertirLinkGitHub(url);
-
-        if (esVideoDirecto(url)) {
-            box.innerHTML = `<video src="${urlP}" autoplay muted playsinline preload="auto" style="width:100%;height:100%;object-fit:contain;background:#000;"></video>`;
-        } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
-            let embed = url.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/');
-            if (embed.includes('?')) embed = embed.split('?')[0];
-            box.innerHTML = `<iframe src="${embed}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%;height:100%;border:none;" loading="lazy"></iframe>`;
-        } else {
-            box.innerHTML = `<img src="${urlP}" loading="eager" style="width:100%;height:100%;object-fit:contain;background:#000;" alt="Anuncio">`;
-            const img = box.querySelector('img');
-            if (img) img.onerror = () => {
-                box.innerHTML = `<div style="color:white; font-size:60px; font-weight:800;">BANCAS KIKO</div>`;
-            };
-        }
-        const t = (parseInt(ad.tiempo) || 15) * 1000;
-        adIndex++;
-        return t;
     }
 
     function updateDateTime() {
@@ -851,14 +972,9 @@
             const s = document.getElementById('splash-screen');
             s.style.opacity = '0'; s.style.visibility = 'hidden';
             sistemaIniciado = true;
-            currentView = 77;
-            mostrarVista('branding');
-
-            setTimeout(() => {
-                currentView = 0; gridPage = 0;
-                mostrarVista('grid'); renderGrid();
-                programarRotacion(tiempoRotacionGlobal);
-            }, 5000);
+            estado = 'grid'; gridPage = 0; adIndex = 0;
+            mostrarVista('grid'); renderGrid();
+            programarRotacion(tiempoRotacionGlobal);
         }, 1500);
     };
 </script>
