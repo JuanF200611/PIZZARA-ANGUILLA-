@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Dashboard Máster | Anguilla Admin Pro</title>
+    <title>Súper Admin | Bancas Kiko & Pizarra</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg-dark: #0a0c14;
@@ -15,6 +16,7 @@
             --neon-green: #39ff14;
             --neon-red: #e63946;
             --neon-purple: #a29bfe;
+            --dorado: #ffcc00;
             --text-light: #ffffff;
             --text-muted: #8a99ad;
             --shadow-glow: 0 8px 32px rgba(0,0,0,0.6);
@@ -38,7 +40,7 @@
         header::after {
             content: '';
             position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%);
-            width: 150px; height: 2px;
+            width: 200px; height: 2px;
             background: linear-gradient(90deg, transparent, var(--neon-orange), var(--neon-blue), transparent);
         }
         header h1 {
@@ -49,6 +51,24 @@
         }
         header p { color: var(--text-muted); margin: 5px 0 0 0; font-size: 0.85rem; letter-spacing: 1px; }
 
+        /* --- MENÚ DE PESTAÑAS --- */
+        .tabs-menu {
+            display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+            margin-bottom: 10px; padding-bottom: 15px; border-bottom: 1px solid var(--card-border);
+        }
+        .tab-btn {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            color: var(--text-muted); padding: 10px 20px; border-radius: 8px;
+            font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .tab-btn:hover { color: var(--text-light); border-color: var(--neon-blue); }
+        .tab-btn.active { background: var(--neon-blue); color: #000; border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0, 240, 255, 0.4); }
+        
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
         .main-layout { display: flex; flex-direction: column; gap: 15px; }
         .grid-2col { display: grid; grid-template-columns: 1fr; gap: 15px; }
         @media (min-width: 1024px) { .grid-2col { grid-template-columns: 2fr 1fr; } }
@@ -56,7 +76,7 @@
         .panel-card {
             background: var(--card-bg); border-radius: 12px; padding: 18px;
             border: 1px solid var(--card-border); box-shadow: var(--shadow-glow);
-            position: relative; overflow: hidden;
+            position: relative; overflow: hidden; margin-bottom: 15px;
         }
         .panel-card::before {
             content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
@@ -72,13 +92,13 @@
         @media (min-width: 480px) { .flex-row { flex-direction: row; align-items: center; } }
         .flex-wrap { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 
-        input[type="date"], input[type="text"], input[type="number"], input[type="url"], input[type="time"], textarea {
+        input[type="date"], input[type="text"], input[type="number"], input[type="url"], input[type="time"], textarea, select {
             background: #090b12; border: 1px solid var(--card-border); color: #fff;
             padding: 10px 14px; border-radius: 8px; font-family: inherit;
             font-size: 0.9rem; width: 100%; box-sizing: border-box;
             transition: border-color 0.2s ease;
         }
-        input:focus, textarea:focus { border-color: var(--neon-blue); outline: none; }
+        input:focus, textarea:focus, select:focus { border-color: var(--neon-blue); outline: none; }
         input::placeholder, textarea::placeholder { color: var(--text-muted); opacity: 0.6; }
 
         .btn {
@@ -106,6 +126,7 @@
             color: white !important;
         }
 
+        /* --- SORTEOS --- */
         .sorteos-container {
             display: flex; flex-direction: column; gap: 10px;
             max-height: 55vh; overflow-y: auto; padding-right: 3px;
@@ -137,6 +158,7 @@
         }
         .ball-inp:focus { border-color: var(--neon-orange) !important; }
 
+        /* --- ANUNCIOS Y LOGOS --- */
         .ad-item {
             background: linear-gradient(135deg, #171c2e, #1a2035);
             padding: 14px; border-radius: 10px; margin-bottom: 10px;
@@ -145,18 +167,38 @@
         }
         .ad-item:hover { border-color: var(--neon-blue); }
         .ad-row-main { display: flex; gap: 12px; align-items: flex-start; }
-        .ad-preview-box {
+        
+        .preview-box {
             width: 70px; height: 70px; border-radius: 10px; background: #090b12;
             border: 1px solid var(--card-border);
             display: flex; align-items: center; justify-content: center;
             overflow: hidden; flex-shrink: 0; position: relative;
         }
-        .ad-preview-box img, .ad-preview-box video { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .ad-preview-box .no-img { font-size: 0.6rem; color: var(--text-muted); text-align: center; padding: 5px; }
-        .ad-fields { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .preview-box img, .preview-box video { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .preview-box .no-img { font-size: 0.6rem; color: var(--text-muted); text-align: center; padding: 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; }
+        
+        .ad-fields { flex: 1; display: flex; flex-direction: column; gap: 6px; }
         .form-group { margin-bottom: 0; }
         .form-group label { font-size: 0.7rem; color: var(--text-muted); display: block; margin-bottom: 2px; font-weight: 500; }
 
+        .logo-upload-box {
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            width: 60px; height: 60px; background: #090b12; border: 2px dashed var(--card-border);
+            border-radius: 8px; cursor: pointer; transition: 0.2s; position: relative; overflow: hidden; flex-shrink: 0;
+        }
+        .logo-upload-box:hover { border-color: var(--neon-blue); }
+        .logo-upload-box input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+        .logo-upload-box i { color: var(--text-muted); font-size: 18px; }
+        .logo-upload-box img { width: 100%; height: 100%; object-fit: contain; background: #000; }
+        
+        .logo-item { display: flex; gap: 12px; align-items: center; background: #171c2e; padding: 12px; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 8px; }
+        .logo-item.alias { border-color: var(--dorado); }
+        .logo-item-info { flex: 1; overflow: hidden; }
+        .logo-item-info .nombre { font-weight: 700; color: var(--text-light); font-size: 0.9rem; display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+        .alias-badge { font-size: 9px; background: var(--dorado); color: #000; padding: 2px 6px; border-radius: 4px; font-weight: 800; }
+        .logo-item-info input, .logo-item-info select { padding: 6px 10px; font-size: 0.75rem; background: #090b12; margin-bottom: 4px; }
+
+        /* --- SWITCHES --- */
         .switch-container { display: flex; align-items: center; gap: 8px; cursor: pointer; }
         .switch { position: relative; display: inline-block; width: 38px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -171,6 +213,7 @@
         input:checked + .slider { background: linear-gradient(135deg, var(--neon-green), #2ee610); }
         input:checked + .slider:before { transform: translateX(18px); }
 
+        /* --- MONITOR --- */
         .preview-horizontal { width: 100%; }
         .monitor-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
         .iframe-container {
@@ -203,16 +246,6 @@
         }
         .save-feedback.show { opacity: 1; transform: translateY(0) scale(1); }
 
-        ::-webkit-scrollbar { width: 3px; }
-        ::-webkit-scrollbar-track { background: var(--bg-dark); }
-        ::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--neon-blue); }
-
-        @keyframes pulseLive {
-            0% { box-shadow: 0 0 10px var(--neon-red); }
-            100% { box-shadow: 0 0 25px var(--neon-red); }
-        }
-
         .status-badge {
             display: inline-block; padding: 3px 10px; border-radius: 16px;
             font-size: 0.6rem; font-weight: 700;
@@ -221,214 +254,244 @@
         .status-active { background: rgba(57, 255, 20, 0.2); color: var(--neon-green); border: 1px solid rgba(57, 255, 20, 0.3); }
         .status-inactive { background: rgba(230, 57, 70, 0.2); color: var(--neon-red); border: 1px solid rgba(230, 57, 70, 0.3); }
 
-        .real-noche-card { border: 1px solid rgba(108, 92, 231, 0.4); }
-        .real-item {
-            display: flex; gap: 8px; align-items: center; justify-content: space-between;
-            background: #0d111c; padding: 10px; border-radius: 10px;
-            border: 1px solid var(--card-border); margin-bottom: 6px;
-        }
-        .real-item .real-info { display: flex; flex-direction: column; gap: 3px; min-width: 130px; }
-        .real-item .real-info .fecha { font-weight: 800; color: #e2e8f0; font-size: 0.8rem; }
-        .real-item .real-info .hora { color: #a29bfe; font-size: 0.7rem; font-weight: 700; }
-        .real-item .real-info .nombre { color: var(--text-muted); font-size: 0.65rem; }
-        .real-item .real-balls { display: flex; gap: 5px; }
-        .real-item .real-balls .rb {
-            width: 34px; height: 34px; border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #60a5fa, #2563eb);
-            color: white; font-weight: 900; font-size: 0.85rem;
-            display: inline-flex; align-items: center; justify-content: center;
-            box-shadow: inset -3px -3px 6px rgba(0,0,0,.4), inset 2px 2px 4px rgba(255,255,255,.3);
-        }
-        .real-item .real-actions { display: flex; gap: 5px; }
-        .real-item .real-actions button { padding: 5px 9px; font-size: 0.7rem; min-height: 28px; }
-
-        /* MODO NAVIDAD */
-        .navidad-card { border: 1px solid rgba(0, 240, 255, 0.25); background: linear-gradient(135deg, #121624 0%, #15203a 100%); }
-        .navidad-card::before { background: linear-gradient(90deg, #00f0ff, #ff7900, #39ff14) !important; }
         .navidad-preview {
             display: flex; align-items: center; gap: 14px; margin-top: 12px;
             padding: 12px; border-radius: 10px;
             background: #090b12; border: 1px solid var(--card-border);
         }
-        .navidad-preview img {
-            height: 60px; object-fit: contain;
-            filter: drop-shadow(0 4px 10px rgba(0,240,255,0.3));
-            transition: filter 0.3s;
-        }
+        .navidad-preview img { height: 60px; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(0,240,255,0.3)); }
         .navidad-preview .preview-info { flex: 1; }
         .navidad-preview .preview-info .nombre { font-weight: 700; color: var(--text-light); font-size: 0.85rem; }
         .navidad-preview .preview-info .desc { color: var(--text-muted); font-size: 0.7rem; margin-top: 2px; }
+
+        /* --- TABLA TICKETS --- */
+        .cliente-wrapper { margin-bottom: 15px; border: 1px solid var(--card-border); border-radius: 10px; overflow: hidden; }
+        .cliente-btn {
+            width: 100%; display: flex; justify-content: space-between; align-items: center;
+            background: #171c2e; border: none; padding: 15px 20px; cursor: pointer; color: white; text-align: left; transition: 0.2s;
+        }
+        .cliente-btn:hover { background: #1a2035; }
+        .cliente-nombre { font-size: 1.1rem; font-weight: 800; color: var(--neon-blue); }
+        .cliente-telefono { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+        .cliente-badge { background: rgba(0, 240, 255, 0.15); color: var(--neon-blue); padding: 6px 14px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; border: 1px solid rgba(0, 240, 255, 0.3); }
+        
+        .tickets-panel { display: none; padding: 15px; background: #0d101a; }
+        .tickets-panel.active { display: block; }
+        
+        .tabla-interna { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; }
+        .tabla-interna th { background: #171c2e; padding: 10px; color: var(--text-muted); font-weight: 600; border-bottom: 1px solid var(--card-border); }
+        .tabla-interna td { padding: 10px; border-bottom: 1px solid #1a2035; }
+        .monto-tag { color: var(--neon-green); font-weight: 800; }
+        .fecha-reg-tag { font-size: 0.75rem; color: var(--text-muted); }
+
+        @keyframes pulseLive { 0% { box-shadow: 0 0 10px var(--neon-red); } 100% { box-shadow: 0 0 25px var(--neon-red); } }
     </style>
 </head>
 <body>
 
 <div class="dashboard">
     <header>
-        <h1>🏆 Anguilla Master Dashboard Pro</h1>
-        <p>Control optimizado para gestión de sorteos y anuncios</p>
+        <h1>👑 Súper Admin | Bancas Kiko</h1>
+        <p>Control centralizado de Pizarra, Web y Logos</p>
     </header>
 
-    <div class="main-layout">
-
-        <div class="panel-card preview-horizontal">
-            <div class="monitor-header-flex">
-                <h2 style="margin: 0; font-size: 0.95rem;">📺 Monitor en Tiempo Real</h2>
-                <div class="flex-wrap">
-                    <button class="btn btn-outline" style="min-height:30px; padding: 4px 14px; font-size:0.75rem;" onclick="recargarMonitor()">🔄 Recargar</button>
-                </div>
-            </div>
-            <div class="iframe-container">
-                <div class="preview-badge">📡 VISTA PREVIA</div>
-                <iframe src="index.html" id="monitorFrame" class="active-player"></iframe>
-                <video id="monitorVideo" controls autoplay muted preload="auto"></video>
-            </div>
-        </div>
-
-        <div class="grid-2col">
-            <div style="display: flex; flex-direction: column; gap: 15px;">
-
-                <div class="panel-card">
-                    <h2>⚙️ Configuración General</h2>
-                    <div class="flex-row" style="margin-bottom: 10px;">
-                        <label style="font-size:0.8rem; color:var(--text-muted); min-width:100px; font-weight:500;">Rotación (seg):</label>
-                        <input type="number" id="globalTimeInp" placeholder="15" min="5" style="max-width: 100px;">
-                        <button class="btn btn-primary" onclick="guardarTiempoGlobal()" style="padding: 8px 16px; font-size:0.8rem;">Actualizar</button>
-                    </div>
-                    <div class="flex-row">
-                        <label style="font-size:0.8rem; color:var(--text-muted); min-width:100px; font-weight:500;">Cintillo:</label>
-                        <input type="text" id="marqueeInp" placeholder="Escribe avisos aquí...">
-                        <button class="btn btn-success" onclick="guardarCintillo()" style="padding: 8px 16px; font-size:0.8rem;">Actualizar</button>
-                    </div>
-                </div>
-
-                <!-- ✅ MODO NAVIDAD -->
-                <div class="panel-card navidad-card">
-                    <h2>🎄 Modo Navidad</h2>
-                    <p style="color: var(--text-muted); font-size: 0.78rem; margin-bottom: 12px; line-height: 1.5;">
-                        Activa el logo navideño (<code style="color:#00f0ff; background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:3px;">nuevologo2.png</code>)
-                        y la animación de nieve en la pizarra y la web.
-                    </p>
-                    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
-                        <label class="switch-container">
-                            <div class="switch">
-                                <input type="checkbox" id="navidadSwitch" onchange="toggleNavidad()">
-                                <span class="slider"></span>
-                            </div>
-                            <span style="font-size: 0.85rem; color: var(--text-light); font-weight: 600;">Navidad Activada</span>
-                        </label>
-                        <span class="status-badge status-inactive" id="navidadStatus">Inactivo</span>
-                    </div>
-                    <div class="navidad-preview">
-                        <img src="nuevologo.png" id="navidadPreviewImg" alt="Preview Logo">
-                        <div class="preview-info">
-                            <div class="nombre" id="navidadPreviewName">Logo Normal</div>
-                            <div class="desc" id="navidadPreviewDesc">nuevologo.png · sin nieve</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="panel-card" style="border: 1px solid rgba(230, 57, 70, 0.2);">
-                    <h2>📡 Transmisión en Vivo</h2>
-                    <div style="display: flex; flex-direction: column; gap: 10px;">
-                        <input type="url" id="streamingUrlInp" placeholder="https://www.youtube.com/watch?v=... o enlace directo">
-                        <div class="flex-row" style="justify-content: flex-end; gap: 8px;">
-                            <button class="btn btn-danger" id="btnStopLive" onclick="detenerTransmision()" style="display:none; padding: 8px 16px; font-size:0.8rem;">■ Detener</button>
-                            <button class="btn btn-primary" id="btnStartLive" onclick="iniciarTransmision()" style="padding: 8px 16px; font-size:0.8rem;">▶ Lanzar En Vivo</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="panel-card">
-                    <h2>🎯 Resultados Anguilla</h2>
-                    <div class="flex-row" style="margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
-                        <input type="date" id="targetDate" onchange="fetchSorteos()" style="max-width: 160px;">
-                        <button class="btn btn-outline" onclick="cambiarDia(-1)" style="padding: 8px 12px; font-size: 0.75rem;">◀ Ayer</button>
-                        <button class="btn btn-outline" onclick="cambiarDia(0)" style="padding: 8px 12px; font-size: 0.75rem;">Hoy</button>
-                        <button class="btn btn-primary" id="btnInit" style="display:none; padding: 8px 16px; font-size:0.8rem;" onclick="crearEstructuraBase()">⚙ Inicializar Día</button>
-                    </div>
-                    <div class="sorteos-container" id="listado"></div>
-                </div>
-
-                <div class="panel-card real-noche-card">
-                    <h2>🌙 Real Noche (Enloteria)</h2>
-                    <p style="color: var(--text-muted); font-size: 0.72rem; margin-bottom: 12px;">
-                        Lee de <code style="color:#a29bfe; background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:3px;">sorteos_enloteria/resultados</code>. Puedes agregar manualmente si el sistema automático falla.
-                    </p>
-
-                    <div class="flex-row" style="gap: 8px; margin-bottom: 10px; flex-wrap: wrap;">
-                        <div style="flex:1; min-width: 130px;">
-                            <label style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; display:block; margin-bottom:3px;">Fecha RD</label>
-                            <input type="date" id="realFecha">
-                        </div>
-                        <div style="flex:1; min-width: 100px;">
-                            <label style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; display:block; margin-bottom:3px;">Hora 24h</label>
-                            <input type="time" id="realHora" value="20:00">
-                        </div>
-                        <div style="flex:1; min-width: 100px;">
-                            <label style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; display:block; margin-bottom:3px;">Hora texto</label>
-                            <input type="text" id="realHoraTexto" placeholder="8:00PM">
-                        </div>
-                        <div style="flex:1; min-width: 80px;">
-                            <label style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; display:block; margin-bottom:3px;">ID</label>
-                            <input type="number" id="realId" value="1577">
-                        </div>
-                    </div>
-
-                    <div class="flex-row" style="gap: 8px; margin-bottom: 10px; flex-wrap: wrap;">
-                        <div style="flex:1; min-width: 160px;">
-                            <label style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; display:block; margin-bottom:3px;">Nombre</label>
-                            <input type="text" id="realNombre" value="Real Noche">
-                        </div>
-                        <div style="display: flex; gap: 6px; align-items: flex-end; flex:1;">
-                            <div>
-                                <label style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; display:block; margin-bottom:3px;">N1</label>
-                                <input type="number" id="realN1" placeholder="00" min="0" max="99" style="width:70px; text-align:center; font-weight:800; color:#60a5fa;">
-                            </div>
-                            <div>
-                                <label style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; display:block; margin-bottom:3px;">N2</label>
-                                <input type="number" id="realN2" placeholder="00" min="0" max="99" style="width:70px; text-align:center; font-weight:800; color:#60a5fa;">
-                            </div>
-                            <div>
-                                <label style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; display:block; margin-bottom:3px;">N3</label>
-                                <input type="number" id="realN3" placeholder="00" min="0" max="99" style="width:70px; text-align:center; font-weight:800; color:#60a5fa;">
-                            </div>
-                        </div>
-                    </div>
-
-                    <button class="btn btn-success btn-block" onclick="guardarRealNoche()" style="padding: 10px; font-size:0.9rem;">
-                        💾 Guardar Sorteo Real Noche
-                    </button>
-
-                    <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--card-border);">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                            <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">📋 Últimos registros</span>
-                            <span id="realCount" style="font-size:0.7rem; color:#a29bfe; font-weight:700;">0</span>
-                        </div>
-                        <div id="listaRealNoche" style="max-height: 32vh; overflow-y: auto; padding-right: 3px;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: 15px;">
-
-                <div class="panel-card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 6px;">
-                        <h2 style="margin: 0; font-size: 0.95rem;">📢 Lista de Anuncios</h2>
-                        <button class="btn btn-primary" style="padding: 6px 14px; font-size: 0.75rem;" onclick="agregarNuevoAnuncioVacio()">+ Añadir</button>
-                    </div>
-                    <div id="contenedorAnuncios" style="max-height: 45vh; overflow-y: auto; padding-right: 3px;"></div>
-                    <button class="btn btn-success btn-block" style="margin-top: 12px; padding: 8px; font-size:0.85rem;" onclick="guardarTodosLosAnuncios()">💾 Guardar Todos</button>
-                </div>
-
-                <div class="panel-card" style="border: 1px solid rgba(255, 204, 0, 0.15);">
-                    <h2>📊 Estadísticas en Pizarra</h2>
-                    <p style="color: var(--text-muted); font-size: 0.8rem; line-height: 1.5;">Los números <span style="color:#ff4500; font-weight:700;">calientes</span> 🔥 y <span style="color:#00bfff; font-weight:700;">fríos</span> ❄️ se muestran automáticamente en la pizarra basados en los últimos sorteos.</p>
-                    <button class="btn btn-info" onclick="forzarActualizarEstadisticas()" style="background: #1e2538; color: #fff; margin-top: 10px; border: 1px solid var(--card-border); padding: 8px 16px; font-size:0.8rem;">🔄 Actualizar Stats</button>
-                </div>
-            </div>
-        </div>
-
+    <!-- MENÚ DE PESTAÑAS -->
+    <div class="tabs-menu">
+        <button class="tab-btn active" onclick="switchTab('pizarra', this)"><i class="fas fa-tv"></i> Pizarra / Sorteos</button>
+        <button class="tab-btn" onclick="switchTab('anuncios', this)"><i class="fas fa-bullhorn"></i> Anuncios</button>
+        <button class="tab-btn" onclick="switchTab('web', this)"><i class="fas fa-globe"></i> Web Kiko</button>
+        <button class="tab-btn" onclick="switchTab('logos', this)"><i class="fas fa-image"></i> Logos Loterías</button>
+        <button class="tab-btn" onclick="switchTab('promo', this)"><i class="fas fa-gift"></i> Promo Navidad</button>
     </div>
+
+    <!-- ========================================== -->
+    <!-- PESTAÑA 1: PIZARRA Y SORTEOS -->
+    <!-- ========================================== -->
+    <div id="tab-pizarra" class="tab-content active">
+        <div class="main-layout">
+            <div class="panel-card preview-horizontal">
+                <div class="monitor-header-flex">
+                    <h2 style="margin: 0; font-size: 0.95rem;">📺 Monitor en Tiempo Real</h2>
+                    <div class="flex-wrap">
+                        <button class="btn btn-outline" style="min-height:30px; padding: 4px 14px; font-size:0.75rem;" onclick="recargarMonitor()">🔄 Recargar</button>
+                    </div>
+                </div>
+                <div class="iframe-container">
+                    <div class="preview-badge">📡 VISTA PREVIA</div>
+                    <iframe src="index.html" id="monitorFrame" class="active-player"></iframe>
+                    <video id="monitorVideo" controls autoplay muted preload="auto"></video>
+                </div>
+            </div>
+
+            <div class="grid-2col">
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div class="panel-card">
+                        <h2>⚙️ Configuración General</h2>
+                        <div class="flex-row" style="margin-bottom: 10px;">
+                            <label style="font-size:0.8rem; color:var(--text-muted); min-width:100px; font-weight:500;">Rotación (seg):</label>
+                            <input type="number" id="globalTimeInp" placeholder="15" min="5" style="max-width: 100px;">
+                            <button class="btn btn-primary" onclick="guardarTiempoGlobal()" style="padding: 8px 16px; font-size:0.8rem;">Actualizar</button>
+                        </div>
+                        <div class="flex-row">
+                            <label style="font-size:0.8rem; color:var(--text-muted); min-width:100px; font-weight:500;">Cintillo:</label>
+                            <input type="text" id="marqueeInp" placeholder="Escribe avisos aquí...">
+                            <button class="btn btn-success" onclick="guardarCintillo()" style="padding: 8px 16px; font-size:0.8rem;">Actualizar</button>
+                        </div>
+                    </div>
+
+                    <div class="panel-card" style="border: 1px solid rgba(230, 57, 70, 0.2);">
+                        <h2>📡 Transmisión en Vivo</h2>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <input type="url" id="streamingUrlInp" placeholder="https://www.youtube.com/watch?v=... o enlace directo">
+                            <div class="flex-row" style="justify-content: flex-end; gap: 8px;">
+                                <button class="btn btn-danger" id="btnStopLive" onclick="detenerTransmision()" style="display:none; padding: 8px 16px; font-size:0.8rem;">■ Detener</button>
+                                <button class="btn btn-primary" id="btnStartLive" onclick="iniciarTransmision()" style="padding: 8px 16px; font-size:0.8rem;">▶ Lanzar En Vivo</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-card">
+                        <h2>🎯 Resultados Anguilla</h2>
+                        <div class="flex-row" style="margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+                            <input type="date" id="targetDate" onchange="fetchSorteos()" style="max-width: 160px;">
+                            <button class="btn btn-outline" onclick="cambiarDia(-1)" style="padding: 8px 12px; font-size: 0.75rem;">◀ Ayer</button>
+                            <button class="btn btn-outline" onclick="cambiarDia(0)" style="padding: 8px 12px; font-size: 0.75rem;">Hoy</button>
+                            <button class="btn btn-primary" id="btnInit" style="display:none; padding: 8px 16px; font-size:0.8rem;" onclick="crearEstructuraBase()">⚙ Inicializar Día</button>
+                        </div>
+                        <div class="sorteos-container" id="listado"></div>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div class="panel-card">
+                        <h2>📊 Estadísticas en Pizarra</h2>
+                        <p style="color: var(--text-muted); font-size: 0.8rem; line-height: 1.5; margin-bottom: 10px;">Los números calientes y fríos se muestran automáticamente en la pizarra.</p>
+                        <button class="btn btn-info" onclick="forzarActualizarEstadisticas()" style="background: #1e2538; color: #fff; border: 1px solid var(--card-border); padding: 8px 16px; font-size:0.8rem;">🔄 Actualizar Stats</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PESTAÑA 2: ANUNCIOS -->
+    <!-- ========================================== -->
+    <div id="tab-anuncios" class="tab-content">
+        <div class="panel-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 6px;">
+                <h2 style="margin: 0; font-size: 0.95rem;">📢 Lista de Anuncios</h2>
+                <button class="btn btn-primary" style="padding: 6px 14px; font-size: 0.75rem;" onclick="agregarNuevoAnuncioVacio()">+ Añadir Anuncio</button>
+            </div>
+            <div id="contenedorAnuncios" style="padding-right: 3px;"></div>
+            <button class="btn btn-success btn-block" style="margin-top: 12px; padding: 10px; font-size:0.9rem;" onclick="guardarTodosLosAnuncios()">💾 Guardar Todos los Anuncios</button>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PESTAÑA 3: WEB KIKO Y PROMO -->
+    <!-- ========================================== -->
+    <div id="tab-web" class="tab-content">
+        <div class="grid-2col">
+            <div class="panel-card">
+                <h2>🎄 Modo Navidad (Apariencia Web)</h2>
+                <p style="color: var(--text-muted); font-size: 0.78rem; margin-bottom: 12px; line-height: 1.5;">
+                    Activa el logo navideño y la animación de nieve en la web pública.
+                </p>
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom: 15px;">
+                    <label class="switch-container">
+                        <div class="switch">
+                            <input type="checkbox" id="navidadSwitch" onchange="toggleNavidad()">
+                            <span class="slider"></span>
+                        </div>
+                        <span style="font-size: 0.85rem; color: var(--text-light); font-weight: 600;">Navidad Activada</span>
+                    </label>
+                    <span class="status-badge status-inactive" id="navidadStatus">Inactivo</span>
+                </div>
+                <div class="navidad-preview">
+                    <img src="nuevologo.png" id="navidadPreviewImg" alt="Preview Logo">
+                    <div class="preview-info">
+                        <div class="nombre" id="navidadPreviewName">Logo Normal</div>
+                        <div class="desc" id="navidadPreviewDesc">nuevologo.png · sin nieve</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-card">
+                <h2>🎁 Botón Promoción Navidad y Reglas</h2>
+                <p style="color: var(--text-muted); font-size: 0.78rem; margin-bottom: 12px; line-height: 1.5;">
+                    Configura el botón, las fechas y el monto mínimo para que un ticket sea válido.
+                </p>
+                <div class="switch-container" style="margin-bottom: 15px;">
+                    <div class="switch">
+                        <input type="checkbox" id="togglePromo" onchange="cambiarEstadoPromo(this)">
+                        <span class="slider"></span>
+                    </div>
+                    <span class="switch-label" id="textoEstadoPromo" style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">Cargando...</span>
+                </div>
+                
+                <h2 style="margin-top: 20px;">📅 Fechas de la Promoción</h2>
+                <div class="flex-row" style="margin-bottom: 10px;">
+                    <label style="font-size:0.8rem; color:var(--text-muted); width: 100px;">Inicio:</label>
+                    <input type="date" id="fechaInicio">
+                </div>
+                <div class="flex-row" style="margin-bottom: 15px;">
+                    <label style="font-size:0.8rem; color:var(--text-muted); width: 100px;">Fin:</label>
+                    <input type="date" id="fechaFin">
+                </div>
+
+                <h2 style="margin-top: 20px;">💰 Monto Mínimo por Ticket</h2>
+                <p style="color: var(--text-muted); font-size: 0.7rem; margin-bottom: 8px;">Ejemplo: si pones 50, los tickets de menos de RD$50 serán rechazados. (Si lo dejas vacío, mínimo RD$1).</p>
+                <div class="flex-row" style="margin-bottom: 15px;">
+                    <label style="font-size:0.8rem; color:var(--text-muted); width: 100px;">Mín. RD$:</label>
+                    <input type="number" id="montoMinimo" placeholder="Ej: 50" step="0.01" min="1">
+                </div>
+
+                <button class="btn btn-primary" onclick="guardarConfiguracionPromo()">💾 Guardar Configuración</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PESTAÑA 4: LOGOS LOTERÍAS -->
+    <!-- ========================================== -->
+    <div id="tab-logos" class="tab-content">
+        <div class="panel-card">
+            <h2>🖼️ Asignar Logos a las Loterías</h2>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 15px;">
+                Sube el logo desde tu PC a Cloudinary, o selecciona <b>"Usar logo de..."</b> si comparten el mismo logo.
+            </p>
+            <div id="listaLogos"></div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PESTAÑA 5: PROMO NAVIDAD (TICKETS) -->
+    <!-- ========================================== -->
+    <div id="tab-promo" class="tab-content">
+        <div class="panel-card">
+            <h2>📝 Registrar Ticket Manualmente</h2>
+            <p style="color:var(--text-muted); font-size:0.8rem; margin-bottom:15px;">Usa esto si el cliente fue a la agencia y el sistema no pudo leer su ticket.</p>
+            <div class="grid-2col" style="gap:10px;">
+                <input type="text" id="manNombre" placeholder="Nombre del Cliente">
+                <input type="text" id="manTelefono" placeholder="Teléfono (809) 000-0000" maxlength="14" oninput="formatearTelefonoAdmin(this)">
+                <input type="text" id="manTicket" placeholder="Número de Ticket (8 dígitos)">
+                <select id="manBanca">
+                    <option value="Kiko I">Kiko I</option>
+                    <option value="Kiko II">Kiko II</option>
+                </select>
+                <input type="date" id="manFecha">
+                <input type="number" id="manMonto" placeholder="Monto RD$ (Ej. 150.00)" step="0.01">
+            </div>
+            <button class="btn btn-primary btn-block" style="margin-top: 10px;" onclick="guardarTicketManual()">💾 Guardar Ticket Manual</button>
+        </div>
+
+        <div class="panel-card">
+            <h2>👥 Clientes Participantes</h2>
+            <p style="color:var(--text-muted); font-size:0.8rem; margin-bottom:15px;">Haz clic en un cliente para desplegar la tabla de sus tickets.</p>
+            <div id="listaClientes"></div>
+        </div>
+    </div>
+
 </div>
 
 <div id="saveFeedback" class="save-feedback">✓ Guardado exitosamente</div>
@@ -437,12 +500,20 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
 <script>
+    // ==========================================
+    // CONFIGURACIÓN E INICIALIZACIÓN
+    // ==========================================
     const firebaseConfig = { databaseURL: "https://pizarra-loteria-36ba5-default-rtdb.firebaseio.com/" };
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    let anunciosLocales = [];
+    const CLOUD_NAME = "fvgu3y66";
+    const UPLOAD_PRESET = "wjs_preset";
+
     let listenerSorteosActual = null;
+    let LOGOS_ACTUALES = {};
+    let LOTERIAS_UNICAS = new Set();
+    let clientesGlobales = [];
 
     const CRONOGRAMA_HORAS = [
         "08:00AM", "09:00AM", "10:00AM", "11:00AM", "12:00PM",
@@ -450,14 +521,53 @@
         "06:00PM", "07:00PM", "08:00PM", "09:00PM", "10:00PM"
     ];
 
-    // ============================================================
-    // HELPERS
-    // ============================================================
+    window.onload = () => {
+        document.getElementById('targetDate').value = hoyISO();
+        fetchSorteos();
+        escucharCintillo();
+        escucharAnuncios();
+        escucharEstadoTransmision();
+        fetchConfiguracionGlobal();
+        escucharWebKiko();
+        escucharLogos();
+        escucharPromocion();
+    };
+
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('tab-' + tabId).classList.add('active');
+        if(btn) btn.classList.add('active');
+    }
+
+    // ==========================================
+    // HELPERS GENERALES
+    // ==========================================
     function hoyISO() {
         const d = new Date();
         return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
+    
+    function mostrarFeedback(mensaje = '✓ Guardado exitosamente') {
+        const fb = document.getElementById('saveFeedback');
+        fb.textContent = mensaje;
+        fb.classList.add('show');
+        clearTimeout(fb._timeout);
+        fb._timeout = setTimeout(() => fb.classList.remove('show'), 2500);
+    }
 
+    function formatearTelefonoAdmin(input) {
+        let val = input.value.replace(/\D/g, '');
+        if (val.length > 0) val = '(' + val;
+        if (val.length > 4) val = val.slice(0, 4) + ') ' + val.slice(4);
+        if (val.length > 9) val = val.slice(0, 9) + '-' + val.slice(9);
+        if (val.length > 14) val = val.slice(0, 14);
+        input.value = val;
+    }
+
+    // ==========================================
+    // PESTAÑA 1: SORTEOS Y PIZARRA
+    // ==========================================
     function cambiarDia(offset) {
         const input = document.getElementById('targetDate');
         if (!input.value) input.value = hoyISO();
@@ -475,65 +585,6 @@
         return `${m[1].padStart(2,'0')}:${m[2]}${m[3]}`;
     }
 
-    function mostrarFeedback(mensaje = '✓ Guardado exitosamente') {
-        const fb = document.getElementById('saveFeedback');
-        fb.textContent = mensaje;
-        fb.classList.add('show');
-        clearTimeout(fb._timeout);
-        fb._timeout = setTimeout(() => fb.classList.remove('show'), 2500);
-    }
-
-    // ============================================================
-    // INICIALIZACIÓN
-    // ============================================================
-    window.onload = () => {
-        document.getElementById('targetDate').value = hoyISO();
-        document.getElementById('realFecha').value = hoyISO();
-        fetchSorteos();
-        escucharCintillo();
-        escucharAnuncios();
-        escucharEstadoTransmision();
-        fetchConfiguracionGlobal();
-        escucharRealNoche();
-        escucharModoNavidad();  // ✅ NUEVO
-    };
-
-    // ============================================================
-    // ✅ MODO NAVIDAD
-    // ============================================================
-    function escucharModoNavidad() {
-        database.ref('web_kiko/modo_navidad').on('value', snap => {
-            const activo = snap.val() === true;
-            const sw = document.getElementById('navidadSwitch');
-            const st = document.getElementById('navidadStatus');
-            const prevImg = document.getElementById('navidadPreviewImg');
-            const prevName = document.getElementById('navidadPreviewName');
-            const prevDesc = document.getElementById('navidadPreviewDesc');
-
-            if (sw) sw.checked = activo;
-            if (st) {
-                st.textContent = activo ? 'Activo' : 'Inactivo';
-                st.className = 'status-badge ' + (activo ? 'status-active' : 'status-inactive');
-            }
-            if (prevImg) {
-                prevImg.src = activo ? 'nuevologo2.png' : 'nuevologo.png';
-                prevImg.onerror = () => { prevImg.src = 'nuevologo.png'; };
-            }
-            if (prevName) prevName.textContent = activo ? 'Logo Navideño' : 'Logo Normal';
-            if (prevDesc) prevDesc.textContent = activo ? 'nuevologo2.png · con nieve ❄️' : 'nuevologo.png · sin nieve';
-        });
-    }
-
-    function toggleNavidad() {
-        const activo = document.getElementById('navidadSwitch').checked;
-        database.ref('web_kiko/modo_navidad').set(activo, err => {
-            if (!err) mostrarFeedback(activo ? '✓ Modo Navidad activado ❄️' : '✓ Modo Navidad desactivado');
-        });
-    }
-
-    // ============================================================
-    // SORTEOS ANGUILLA
-    // ============================================================
     function fetchSorteos() {
         const fecha = document.getElementById('targetDate').value;
         if (!fecha) return;
@@ -607,10 +658,7 @@
         const fecha = document.getElementById('targetDate').value;
         if (!fecha) { alert('Selecciona una fecha'); return; }
         const nuevaData = CRONOGRAMA_HORAS.map(hora => ({
-            fecha,
-            hora,
-            noche: false,
-            premios: [null, null, null]
+            fecha, hora, noche: false, premios: [null, null, null]
         }));
         database.ref(`sorteos/${fecha}`).set(nuevaData, (err) => {
             if (err) { alert('Error: ' + err.message); return; }
@@ -626,172 +674,36 @@
         const p2 = document.getElementById(`n_${idx}_2`).value;
 
         const btn = document.getElementById(`btn_ok_${idx}`);
-        btn.innerText = "⏳";
-        btn.disabled = true;
+        btn.innerText = "⏳"; btn.disabled = true;
 
         database.ref(`sorteos/${fecha}/${idx}/premios`).set([p0 || null, p1 || null, p2 || null], (err) => {
-            btn.innerText = "✓";
-            btn.disabled = false;
+            btn.innerText = "✓"; btn.disabled = false;
             if (!err) {
                 setTimeout(() => { btn.innerText = "Ok"; }, 800);
                 mostrarFeedback('✓ Sorteo actualizado');
                 database.ref('stats/update').set({ timestamp: Date.now() });
             } else {
-                alert("Error al guardar: " + err.message);
-                btn.innerText = "Ok";
+                alert("Error al guardar: " + err.message); btn.innerText = "Ok";
             }
         });
     }
 
-    // ============================================================
-    // REAL NOCHE
-    // ============================================================
-    function escucharRealNoche() {
-        database.ref('sorteos_enloteria/resultados').on('value', snap => {
-            const contenedor = document.getElementById('listaRealNoche');
-            const countEl = document.getElementById('realCount');
-            contenedor.innerHTML = "";
-            const items = [];
-
-            snap.forEach(child => {
-                const v = child.val();
-                if (!v) return;
-                const nombre = String(v.nombre || '').toLowerCase();
-                if (!nombre.includes('real noche') && !nombre.includes('real_noche')) return;
-                items.push({ key: child.key, ...v });
-            });
-
-            countEl.textContent = items.length;
-
-            if (!items.length) {
-                contenedor.innerHTML = "<p style='color:#a0aec0; font-size:0.8rem; text-align:center; padding:10px;'>No hay sorteos de Real Noche.</p>";
-                return;
-            }
-
-            items.sort((a, b) => String(b.enviadoEn || '').localeCompare(String(a.enviadoEn || '')));
-
-            items.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'real-item';
-                const numeros = item.numeros || ['--','--','--'];
-                div.innerHTML = `
-                    <div class="real-info">
-                        <span class="fecha">${item.fecha || item.fechaRD || ''}</span>
-                        <span class="hora">${item.hora || ''}</span>
-                        <span class="nombre">${item.nombre || ''}</span>
-                    </div>
-                    <div class="real-balls">
-                        <span class="rb">${numeros[0] || '--'}</span>
-                        <span class="rb">${numeros[1] || '--'}</span>
-                        <span class="rb">${numeros[2] || '--'}</span>
-                    </div>
-                    <div class="real-actions">
-                        <button class="btn btn-danger" onclick="eliminarRealNoche('${item.key}')" title="Eliminar">🗑️</button>
-                    </div>
-                `;
-                contenedor.appendChild(div);
-            });
-        });
-    }
-
-    function construirClaveReal(fechaRD, id, nombre, horaTexto) {
-        const nombreKey = (nombre || 'Real_Noche').trim().replace(/\s+/g, '_');
-        return `${fechaRD}_${id}_${nombreKey}_${horaTexto}`;
-    }
-
-    function formatearHoraTexto(hora24) {
-        if (!hora24) return '8:00PM';
-        let [h, m] = hora24.split(":").map(Number);
-        const ampm = h >= 12 ? 'PM' : 'AM';
-        let h12 = h % 12 || 12;
-        return `${h12}:${String(m).padStart(2, '0')}${ampm}`;
-    }
-
-    function formatearFechaLegible(fechaRD) {
-        const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-        const [y, m, d] = fechaRD.split('-');
-        return `${d} ${meses[parseInt(m)-1]}, ${y}`;
-    }
-
-    async function guardarRealNoche() {
-        const fechaRD = document.getElementById('realFecha').value;
-        const hora24 = document.getElementById('realHora').value;
-        const id = document.getElementById('realId').value || "0";
-        const nombre = document.getElementById('realNombre').value.trim() || "Real Noche";
-        const horaTextoInput = document.getElementById('realHoraTexto').value.trim();
-        const horaTexto = horaTextoInput || formatearHoraTexto(hora24);
-        const n1 = document.getElementById('realN1').value;
-        const n2 = document.getElementById('realN2').value;
-        const n3 = document.getElementById('realN3').value;
-
-        if (!fechaRD || !hora24 || n1 === '' || n2 === '' || n3 === '') {
-            alert("Completa fecha, hora y los 3 números");
-            return;
-        }
-
-        const clave = construirClaveReal(fechaRD, id, nombre, horaTexto);
-        const payload = {
-            categoria: "dominicana",
-            enviadoEn: new Date().toISOString(),
-            fecha: formatearFechaLegible(fechaRD),
-            fechaRD: fechaRD,
-            hora: horaTexto,
-            id: String(id),
-            nombre: nombre,
-            numeros: [
-                String(n1).padStart(2, '0'),
-                String(n2).padStart(2, '0'),
-                String(n3).padStart(2, '0')
-            ]
-        };
-
-        try {
-            await database.ref(`sorteos_enloteria/resultados/${clave}`).set(payload);
-            mostrarFeedback('✓ Real Noche guardado correctamente');
-            document.getElementById('realN1').value = '';
-            document.getElementById('realN2').value = '';
-            document.getElementById('realN3').value = '';
-        } catch (e) {
-            alert("Error al guardar: " + e.message);
-        }
-    }
-
-    async function eliminarRealNoche(key) {
-        if (!confirm('¿Eliminar este sorteo de Real Noche?')) return;
-        try {
-            await database.ref(`sorteos_enloteria/resultados/${key}`).remove();
-            mostrarFeedback('✓ Eliminado');
-        } catch (e) {
-            alert("Error al eliminar: " + e.message);
-        }
-    }
-
-    // ============================================================
-    // CONFIG / CINTILLO / TRANSMISIÓN
-    // ============================================================
     function recargarMonitor() {
         const frame = document.getElementById('monitorFrame');
         const video = document.getElementById('monitorVideo');
-        if (frame.classList.contains('active-player')) {
-            frame.src = frame.src;
-        } else {
-            video.load();
-            video.play().catch(e => console.log("Auto-play prevenido:", e));
-        }
+        if (frame.classList.contains('active-player')) frame.src = frame.src;
+        else { video.load(); video.play().catch(e => console.log(e)); }
     }
-
     function forzarActualizarEstadisticas() {
         database.ref('stats/update').set({ timestamp: Date.now() }, err => {
             if (!err) mostrarFeedback('✓ Estadísticas actualizadas');
         });
     }
-
     function fetchConfiguracionGlobal() {
         database.ref('configuracion/tiempoPantalla').on('value', snap => {
             if (snap.val()) document.getElementById('globalTimeInp').value = snap.val();
         });
     }
-
     function guardarTiempoGlobal() {
         const tiempo = document.getElementById('globalTimeInp').value.trim();
         if (!tiempo || tiempo < 5) { alert("Introduce un tiempo válido (mín 5 segundos)"); return; }
@@ -799,7 +711,6 @@
             if (!err) mostrarFeedback('✓ Tiempo actualizado');
         });
     }
-
     function escucharCintillo() {
         database.ref('ticker').on('value', snap => {
             if (snap.val() !== null && document.activeElement !== document.getElementById('marqueeInp')) {
@@ -807,14 +718,11 @@
             }
         });
     }
-
     function guardarCintillo() {
-        const texto = document.getElementById('marqueeInp').value;
-        database.ref('ticker').set(texto, err => {
+        database.ref('ticker').set(document.getElementById('marqueeInp').value, err => {
             if (!err) mostrarFeedback('✓ Texto actualizado');
         });
     }
-
     function escucharEstadoTransmision() {
         database.ref('transmisionVivo').on('value', snap => {
             const data = snap.val();
@@ -829,14 +737,12 @@
                 btnStart.classList.add('live-active');
                 if (document.activeElement !== inpUrl) inpUrl.value = data.url || "";
                 btnStop.style.display = "inline-flex";
-
                 let url = data.url || "";
                 if (esVideoDirecto(url) || esImagen(url)) {
                     frame.classList.remove('active-player');
                     videoPlayer.classList.add('active-player');
                     videoPlayer.src = convertirLinkGitHub(url);
-                    videoPlayer.load();
-                    videoPlayer.play().catch(e => console.log("Esperando interacción:", e));
+                    videoPlayer.load(); videoPlayer.play().catch(e => console.log(e));
                 } else {
                     videoPlayer.classList.remove('active-player');
                     frame.classList.add('active-player');
@@ -847,7 +753,6 @@
                 btnStart.classList.remove('live-active');
                 btnStop.style.display = "none";
                 if (data && data.url && document.activeElement !== inpUrl) inpUrl.value = data.url;
-
                 videoPlayer.classList.remove('active-player');
                 videoPlayer.src = "";
                 frame.classList.add('active-player');
@@ -855,7 +760,6 @@
             }
         });
     }
-
     function iniciarTransmision() {
         const urlValue = document.getElementById('streamingUrlInp').value.trim();
         if (!urlValue) { alert("Introduce un enlace válido."); return; }
@@ -863,73 +767,54 @@
             if (!err) mostrarFeedback('✓ Transmisión activada');
         });
     }
-
     function detenerTransmision() {
         const urlValue = document.getElementById('streamingUrlInp').value.trim();
         database.ref('transmisionVivo').set({ activo: false, url: urlValue }, err => {
             if (!err) mostrarFeedback('✓ Transmisión finalizada');
         });
     }
-
     function esVideoDirecto(url) {
-        if (!url) return false;
-        const u = url.toLowerCase();
+        if (!url) return false; const u = url.toLowerCase();
         return u.includes('.mp4') || u.includes('.webm') || u.includes('.ogg') || u.includes('.mov') || u.includes('.avi') || u.includes('.mkv');
     }
-
     function esImagen(url) {
-        if (!url) return false;
-        const u = url.toLowerCase();
+        if (!url) return false; const u = url.toLowerCase();
         return u.includes('.jpg') || u.includes('.jpeg') || u.includes('.png') || u.includes('.gif') || u.includes('.webp') || u.includes('.bmp') || u.includes('.svg') || u.includes('.ico');
     }
-
     function convertirLinkGitHub(url) {
         if (!url) return url;
         if (url.includes('github.com') && !url.includes('raw.githubusercontent.com')) {
-            if (url.includes('/blob/')) {
-                return url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
-            }
+            if (url.includes('/blob/')) return url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
             if (!url.includes('?raw=true')) return url + '?raw=true';
         }
         return url;
     }
-
     function obtenerEmbedYouTube(url) {
         const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
         const match = url.match(regExp);
-        if (match && match[2] && match[2].length === 11) {
-            return `https://www.youtube.com/embed/${match[2]}?autoplay=1&mute=1`;
-        }
+        if (match && match[2] && match[2].length === 11) return `https://www.youtube.com/embed/${match[2]}?autoplay=1&mute=1`;
         return url;
     }
-
     function obtenerMiniaturaUrl(url) {
-        if (!url) return "";
-        url = url.trim();
-        if (esVideoDirecto(url)) return convertirLinkGitHub(url);
-        if (esImagen(url)) return convertirLinkGitHub(url);
+        if (!url) return ""; url = url.trim();
+        if (esVideoDirecto(url) || esImagen(url)) return convertirLinkGitHub(url);
         const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
         const match = url.match(regExp);
-        if (match && match[2] && match[2].length === 11) {
-            return `https://img.youtube.com/vi/${match[2]}/mqdefault.jpg`;
-        }
+        if (match && match[2] && match[2].length === 11) return `https://img.youtube.com/vi/${match[2]}/mqdefault.jpg`;
         return url;
     }
 
-    // ============================================================
-    // ANUNCIOS
-    // ============================================================
+    // ==========================================
+    // PESTAÑA 2: ANUNCIOS (CON CLOUDINARY CORREGIDO)
+    // ==========================================
     function escucharAnuncios() {
         database.ref('anunciosList').on('value', snap => {
             const container = document.getElementById('contenedorAnuncios');
-            container.innerHTML = "";
-            anunciosLocales = [];
+            container.innerHTML = ""; 
             let contador = 0;
-
             snap.forEach(child => {
                 const data = child.val();
                 const isActivo = data.activo !== undefined ? data.activo : true;
-                anunciosLocales.push({ url: data.url || "", tiempo: data.tiempo || 15, activo: isActivo });
                 inyectarEstructuraAnuncio(contador, data.url || "", data.tiempo || 15, isActivo);
                 contador++;
             });
@@ -938,13 +823,9 @@
 
     function inyectarEstructuraAnuncio(id, url = "", tiempo = "15", activo = true) {
         const div = document.createElement('div');
-        div.className = "ad-item";
-        div.id = `ad_box_${id}`;
-
-        let srcProcessed = "";
-        let isVid = false;
-        let hasPreview = false;
-
+        div.className = "ad-item"; div.id = `ad_box_${id}`;
+        let srcProcessed = "", isVid = false, hasPreview = false;
+        
         if (url && url.trim() !== "") {
             srcProcessed = obtenerMiniaturaUrl(url.trim());
             isVid = esVideoDirecto(url);
@@ -953,35 +834,19 @@
 
         div.innerHTML = `
             <div class="ad-row-main">
-                <div class="ad-preview-box" id="preview_img_box_${id}">
-                    ${hasPreview ? (isVid ?
-                        `<video src="${srcProcessed}" preload="metadata" muted playsinline style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'; document.getElementById('no_img_${id}').style.display='block';">` :
-                        `<img src="${srcProcessed}" style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'; document.getElementById('no_img_${id}').style.display='block';">`
-                    ) : ''}
-                    ${!hasPreview ? `<div class="no-img" id="no_img_${id}">Sin preview</div>` : `<div class="no-img" id="no_img_${id}" style="display:none;">Sin preview</div>`}
+                <div class="preview-box" id="preview_img_box_${id}" title="Subir archivo a Cloudinary">
+                    <input type="file" accept="image/*,video/mp4,video/webm" style="position:absolute; inset:0; opacity:0; cursor:pointer; z-index:10;" onchange="subirAnuncioCloudinary(event, ${id})">
+                    ${hasPreview ? (isVid ? `<video src="${srcProcessed}" preload="metadata" muted playsinline style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'; document.getElementById('no_img_${id}').style.display='flex';"></video>` : `<img src="${srcProcessed}" style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'; document.getElementById('no_img_${id}').style.display='flex';">`) : ''}
+                    ${!hasPreview ? `<div class="no-img" id="no_img_${id}"><i class="fas fa-cloud-arrow-up" style="font-size:16px; margin-bottom:4px; color:var(--neon-blue);"></i>Subir</div>` : `<div class="no-img" id="no_img_${id}" style="display:none;"><i class="fas fa-cloud-arrow-up" style="font-size:16px; margin-bottom:4px; color:var(--neon-blue);"></i>Subir</div>`}
                 </div>
                 <div class="ad-fields">
-                    <div class="form-group">
-                        <label>URL (Imagen, YouTube o GitHub MP4):</label>
-                        <input type="url" class="input-ad-url" value="${url}" placeholder="https://..." oninput="actualizarMiniaturaDinamica(${id}, this.value)">
-                    </div>
+                    <div class="form-group"><label>URL (Imagen, YouTube o MP4):</label><input type="url" class="input-ad-url" value="${url}" placeholder="https://... o sube un archivo" oninput="actualizarMiniaturaDinamica(${id}, this.value)"></div>
                 </div>
             </div>
             <div style="display:flex; gap:10px; align-items:center; justify-content: space-between; flex-wrap: wrap;">
                 <div class="flex-wrap">
-                    <div style="width: 70px;">
-                        <label class="form-group"><span style="font-size: 0.7rem; color: var(--text-muted);">Segundos:</span></label>
-                        <input type="number" class="input-ad-time" value="${tiempo}" min="3" style="padding: 4px 8px; width: 60px; font-size:0.8rem;">
-                    </div>
-                    <div>
-                        <label class="switch-container">
-                            <div class="switch">
-                                <input type="checkbox" class="input-ad-status" ${activo ? 'checked' : ''}>
-                                <span class="slider"></span>
-                            </div>
-                            <span style="font-size: 0.7rem; color: var(--text-muted);">Activo</span>
-                        </label>
-                    </div>
+                    <div style="width: 70px;"><label class="form-group"><span style="font-size: 0.7rem; color: var(--text-muted);">Segs:</span></label><input type="number" class="input-ad-time" value="${tiempo}" min="3" style="padding: 4px 8px; width: 60px; font-size:0.8rem;"></div>
+                    <div><label class="switch-container"><div class="switch"><input type="checkbox" class="input-ad-status" ${activo ? 'checked' : ''}><span class="slider"></span></div><span style="font-size: 0.7rem; color: var(--text-muted);">Activo</span></label></div>
                     <span class="status-badge ${activo ? 'status-active' : 'status-inactive'}">${activo ? 'Activo' : 'Inactivo'}</span>
                 </div>
                 <button class="btn btn-danger" style="min-height: 30px; padding: 4px 12px; font-size:0.75rem;" onclick="eliminarNodoAd(${id})">🗑️</button>
@@ -989,81 +854,476 @@
         document.getElementById('contenedorAnuncios').appendChild(div);
     }
 
+    async function subirAnuncioCloudinary(event, id) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        const isVid = file.type.startsWith('video/');
+        const isImg = file.type.startsWith('image/');
+        if (!isVid && !isImg) return alert('Selecciona una imagen o video válido.');
+
+        const box = document.getElementById(`preview_img_box_${id}`);
+        const noImg = document.getElementById(`no_img_${id}`);
+        
+        const mediaActual = box.querySelector('img, video');
+        if (mediaActual) mediaActual.style.display = 'none';
+        if (noImg) noImg.style.display = 'none';
+        
+        const spinner = document.createElement('i');
+        spinner.className = 'fa-solid fa-spinner fa-spin';
+        spinner.style.color = 'var(--neon-blue)';
+        spinner.style.fontSize = '20px';
+        spinner.id = `spinner_${id}`;
+        box.appendChild(spinner);
+
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("upload_preset", UPLOAD_PRESET);
+            formData.append("folder", "bancas_kiko/anuncios");
+
+            const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, { method: "POST", body: formData });
+            const data = await res.json();
+            
+            if (!data.secure_url) throw new Error(data.error?.message || 'Error en Cloudinary');
+
+            const urlInput = document.querySelector(`#ad_box_${id} .input-ad-url`);
+            if (urlInput) urlInput.value = data.secure_url;
+            
+            actualizarMiniaturaDinamica(id, data.secure_url);
+            mostrarFeedback('✓ Archivo subido a Cloudinary');
+
+        } catch (err) {
+            alert("❌ Error subiendo archivo: " + err.message);
+            if (spinner) spinner.remove();
+            if (mediaActual) mediaActual.style.display = 'block';
+            if (noImg && !mediaActual) noImg.style.display = 'flex';
+        }
+    }
+
     function actualizarMiniaturaDinamica(id, url) {
         const box = document.getElementById(`preview_img_box_${id}`);
         const noImgLabel = document.getElementById(`no_img_${id}`);
-        url = url.trim();
-        const src = obtenerMiniaturaUrl(url);
+        
+        const spinner = document.getElementById(`spinner_${id}`);
+        if (spinner) spinner.remove();
 
-        const imgExistente = box.querySelector('img');
-        const vidExistente = box.querySelector('video');
-        if (imgExistente) imgExistente.remove();
-        if (vidExistente) vidExistente.remove();
+        url = url.trim(); const src = obtenerMiniaturaUrl(url);
+        
+        Array.from(box.children).forEach(child => {
+            if(child.tagName === 'IMG' || child.tagName === 'VIDEO') child.remove();
+        });
 
         if (src && src !== url) {
             if (esVideoDirecto(url)) {
                 const nuevoVid = document.createElement('video');
-                nuevoVid.src = src;
-                nuevoVid.preload = "metadata";
-                nuevoVid.muted = true;
-                nuevoVid.playsInline = true;
-                nuevoVid.style.width = "100%";
-                nuevoVid.style.height = "100%";
-                nuevoVid.style.objectFit = "cover";
-                nuevoVid.onerror = () => { nuevoVid.style.display = 'none'; noImgLabel.style.display = 'block'; };
+                nuevoVid.src = src; nuevoVid.preload = "metadata"; nuevoVid.muted = true; nuevoVid.playsInline = true;
+                nuevoVid.style.width = "100%"; nuevoVid.style.height = "100%"; nuevoVid.style.objectFit = "cover";
+                nuevoVid.onerror = () => { nuevoVid.style.display = 'none'; noImgLabel.style.display = 'flex'; };
                 box.insertBefore(nuevoVid, noImgLabel);
             } else {
                 const nuevaImg = document.createElement('img');
-                nuevaImg.src = src;
-                nuevaImg.style.width = "100%";
-                nuevaImg.style.height = "100%";
-                nuevaImg.style.objectFit = "cover";
-                nuevaImg.onerror = () => { nuevaImg.style.display = 'none'; noImgLabel.style.display = 'block'; };
+                nuevaImg.src = src; nuevaImg.style.width = "100%"; nuevaImg.style.height = "100%"; nuevaImg.style.objectFit = "cover";
+                nuevaImg.onerror = () => { nuevaImg.style.display = 'none'; noImgLabel.style.display = 'flex'; };
                 box.insertBefore(nuevaImg, noImgLabel);
             }
             noImgLabel.style.display = 'none';
-        } else {
-            noImgLabel.style.display = 'block';
-        }
+        } else { noImgLabel.style.display = 'flex'; }
     }
 
     function agregarNuevoAnuncioVacio() {
         let idSiguiente = document.querySelectorAll('.ad-item').length;
         inyectarEstructuraAnuncio(idSiguiente, "", "15", true);
     }
-
     function eliminarNodoAd(id) {
-        const el = document.getElementById(`ad_box_${id}`);
-        if (el) el.remove();
+        const el = document.getElementById(`ad_box_${id}`); if (el) el.remove();
     }
-
     function guardarTodosLosAnuncios() {
         let lista = [];
-        const boxes = document.querySelectorAll('.ad-item');
-
-        boxes.forEach((box) => {
+        document.querySelectorAll('.ad-item').forEach((box) => {
             const urlInput = box.querySelector('.input-ad-url');
             const timeInput = box.querySelector('.input-ad-time');
             const statusInput = box.querySelector('.input-ad-status');
-
             if (urlInput && urlInput.value.trim() !== "") {
-                lista.push({
-                    url: urlInput.value.trim(),
-                    tiempo: timeInput.value || "15",
-                    activo: statusInput.checked
-                });
+                lista.push({ url: urlInput.value.trim(), tiempo: timeInput.value || "15", activo: statusInput.checked });
             }
         });
-
         database.ref('anunciosList').set(lista, err => {
-            if (err) alert("Fallo al guardar anuncios");
-            else mostrarFeedback('✓ Anuncios guardados');
+            if (err) alert("Fallo al guardar anuncios"); else mostrarFeedback('✓ Anuncios guardados');
         });
     }
 
-    // ============================================================
+    // ==========================================
+    // PESTAÑA 3: WEB KIKO Y PROMO
+    // ==========================================
+    function escucharWebKiko() {
+        database.ref('web_kiko/modo_navidad').on('value', snap => {
+            const activo = snap.val() === true;
+            const sw = document.getElementById('navidadSwitch');
+            const st = document.getElementById('navidadStatus');
+            const prevImg = document.getElementById('navidadPreviewImg');
+            const prevName = document.getElementById('navidadPreviewName');
+            const prevDesc = document.getElementById('navidadPreviewDesc');
+            if (sw) sw.checked = activo;
+            if (st) { st.textContent = activo ? 'Activo' : 'Inactivo'; st.className = 'status-badge ' + (activo ? 'status-active' : 'status-inactive'); }
+            if (prevImg) { prevImg.src = activo ? 'nuevologo2.png' : 'nuevologo.png'; prevImg.onerror = () => { prevImg.src = 'nuevologo.png'; }; }
+            if (prevName) prevName.textContent = activo ? 'Logo Navideño' : 'Logo Normal';
+            if (prevDesc) prevDesc.textContent = activo ? 'nuevologo2.png · con nieve ❄️' : 'nuevologo.png · sin nieve';
+        });
+
+        database.ref('promocion_navidad_2026/config').on('value', snap => {
+            const swPromo = document.getElementById('togglePromo');
+            const txtPromo = document.getElementById('textoEstadoPromo');
+            const inpMinimo = document.getElementById('montoMinimo');
+            
+            if (snap.exists()) {
+                const data = snap.val();
+                document.getElementById('fechaInicio').value = data.inicio || '';
+                document.getElementById('fechaFin').value = data.fin || '';
+                if (inpMinimo) inpMinimo.value = data.montoMinimo || '';
+                
+                const isActive = data.activo === true;
+                if (swPromo) swPromo.checked = isActive;
+                
+                if (txtPromo) {
+                    txtPromo.innerText = isActive ? "Botón ACTIVADO" : "Botón DESACTIVADO";
+                    txtPromo.style.color = isActive ? "#39ff14" : "#e63946";
+                }
+            } else {
+                if (swPromo) swPromo.checked = false;
+                if (inpMinimo) inpMinimo.value = '';
+                if (txtPromo) {
+                    txtPromo.innerText = "Botón DESACTIVADO";
+                    txtPromo.style.color = "#e63946";
+                }
+            }
+        });
+    }
+
+    function toggleNavidad() {
+        const activo = document.getElementById('navidadSwitch').checked;
+        database.ref('web_kiko/modo_navidad').set(activo, err => {
+            if (!err) mostrarFeedback(activo ? '✓ Modo Navidad activado ❄️' : '✓ Modo Navidad desactivado');
+        });
+    }
+
+    function cambiarEstadoPromo(checkbox) {
+        const activo = checkbox.checked;
+        const txtPromo = document.getElementById('textoEstadoPromo');
+        
+        if (txtPromo) {
+            txtPromo.innerText = activo ? "Botón ACTIVADO" : "Botón DESACTIVADO";
+            txtPromo.style.color = activo ? "#39ff14" : "#e63946";
+        }
+
+        database.ref('promocion_navidad_2026/config/activo').set(activo)
+            .then(() => {
+                mostrarFeedback(activo ? '✓ Promo activada' : '✓ Promo desactivada');
+            })
+            .catch(err => {
+                alert("Error al guardar estado: " + err.message);
+                checkbox.checked = !activo;
+            });
+    }
+
+    function guardarConfiguracionPromo() {
+        const inicio = document.getElementById('fechaInicio').value;
+        const fin = document.getElementById('fechaFin').value;
+        const montoMin = parseFloat(document.getElementById('montoMinimo').value) || 1;
+
+        if (!inicio || !fin) return alert("Selecciona ambas fechas.");
+        if (inicio > fin) return alert("La fecha de inicio no puede ser mayor que la de fin.");
+        
+        database.ref('promocion_navidad_2026/config').update({ 
+            inicio, 
+            fin,
+            montoMinimo: montoMin
+        }).then(() => mostrarFeedback('✓ Configuración guardada'));
+    }
+
+    // ==========================================
+    // PESTAÑA 4: LOGOS LOTERÍAS
+    // ==========================================
+    function escucharLogos() {
+        database.ref('web_kiko/logos').on('value', snap => {
+            LOGOS_ACTUALES = snap.val() || {};
+            renderListaLogos();
+        });
+
+        database.ref('sorteos_enloteria/resultados').on('value', snap => {
+            LOTERIAS_UNICAS.clear();
+            if(snap.exists()) snap.forEach(child => {
+                const data = child.val();
+                if(data && data.nombre) LOTERIAS_UNICAS.add(data.nombre);
+            });
+            Object.keys(LOGOS_ACTUALES).forEach(k => { if(k !== '_default') LOTERIAS_UNICAS.add(k); });
+            renderListaLogos();
+        });
+    }
+
+    function resolverLogo(nombre) {
+        const val = LOGOS_ACTUALES[nombre];
+        if (!val) return '';
+        if (typeof val === 'string' && val.startsWith('@')) {
+            const base = val.slice(1);
+            const baseVal = LOGOS_ACTUALES[base];
+            if (baseVal && typeof baseVal === 'string' && !baseVal.startsWith('@')) return baseVal;
+            return '';
+        }
+        return val;
+    }
+
+    function renderListaLogos() {
+        const cont = document.getElementById('listaLogos');
+        cont.innerHTML = '';
+        const arrLoterias = Array.from(LOTERIAS_UNICAS).sort();
+        if(arrLoterias.length === 0) {
+            cont.innerHTML = '<p style="color:var(--text-muted);">No hay loterías registradas en los sorteos.</p>';
+            return;
+        }
+
+        const conLogoPropio = arrLoterias.filter(n => {
+            const v = LOGOS_ACTUALES[n];
+            return v && typeof v === 'string' && !v.startsWith('@');
+        });
+
+        arrLoterias.forEach(nombre => {
+            const valorRaw = LOGOS_ACTUALES[nombre] || '';
+            const esAlias = typeof valorRaw === 'string' && valorRaw.startsWith('@');
+            const aliasTarget = esAlias ? valorRaw.slice(1) : null;
+            const urlResuelta = resolverLogo(nombre);
+            const safeId = nombre.replace(/\s+/g, '_').replace(/[^\w]/g, '');
+
+            let selectAlias = '<option value="">— Logo propio —</option>';
+            conLogoPropio.forEach(base => {
+                if (base === nombre) return;
+                const sel = (aliasTarget === base) ? 'selected' : '';
+                selectAlias += `<option value="${base.replace(/"/g, '&quot;')}" ${sel}>Usar logo de: ${base}</option>`;
+            });
+
+            let previewHTML = '';
+            if (esAlias) {
+                previewHTML = `
+                    <div class="logo-upload-box" style="border-color:var(--dorado);" title="Compartiendo logo de ${aliasTarget}">
+                        ${urlResuelta ? `<img src="${urlResuelta}">` : `<i class="fa-solid fa-link" style="color:var(--dorado);"></i>`}
+                    </div>
+                `;
+            } else {
+                previewHTML = `
+                    <div class="logo-upload-box" title="Subir logo desde tu PC">
+                        <input type="file" accept="image/*" onchange="subirLogoArchivo(event, '${nombre.replace(/'/g, "\\'")}')">
+                        ${urlResuelta ? `<img src="${urlResuelta}">` : `<i class="fa-solid fa-cloud-arrow-up"></i>`}
+                    </div>
+                `;
+            }
+
+            cont.innerHTML += `
+                <div class="logo-item ${esAlias ? 'alias' : ''}">
+                    ${previewHTML}
+                    <div class="logo-item-info">
+                        <div class="nombre">
+                            ${nombre}
+                            ${esAlias ? `<span class="alias-badge">→ ${aliasTarget}</span>` : ''}
+                        </div>
+                        <select id="select_alias_${safeId}" onchange="cambiarAlias('${nombre.replace(/'/g, "\\'")}', this.value)">
+                            ${selectAlias}
+                        </select>
+                        ${!esAlias ? `<input type="url" id="input_logo_${safeId}" value="${valorRaw}" placeholder="O pega la URL del logo aquí..." style="margin-bottom:0;">` : ''}
+                    </div>
+                    ${!esAlias ? `<button class="btn btn-success" style="min-height:30px; padding: 4px 10px;" onclick="guardarLogo('${nombre.replace(/'/g, "\\'")}')">💾</button>` : ''}
+                    ${valorRaw ? `<button class="btn btn-danger" style="min-height:30px; padding: 4px 10px;" onclick="eliminarLogo('${nombre.replace(/'/g, "\\'")}')">🗑️</button>` : ''}
+                </div>
+            `;
+        });
+    }
+
+    async function cambiarAlias(nombre, baseSeleccionada) {
+        try {
+            if (baseSeleccionada === '') await database.ref(`web_kiko/logos/${nombre}`).remove();
+            else await database.ref(`web_kiko/logos/${nombre}`).set('@' + baseSeleccionada);
+            mostrarFeedback('✓ Alias actualizado');
+        } catch (err) { alert('Error al cambiar alias: ' + err.message); }
+    }
+
+    async function subirLogoArchivo(event, nombreLoteria) {
+        const file = event.target.files[0];
+        if (!file) return;
+        if (!file.type.startsWith('image/')) return alert('Selecciona una imagen válida.');
+
+        const box = event.target.closest('.logo-upload-box');
+        const originalHTML = box.innerHTML;
+        box.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="color:var(--neon-blue);"></i>';
+
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("upload_preset", UPLOAD_PRESET);
+            formData.append("folder", "bancas_kiko/logos");
+
+            const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: "POST", body: formData });
+            const data = await res.json();
+            if (!data.secure_url) throw new Error(data.error?.message || 'Error en Cloudinary');
+
+            await database.ref(`web_kiko/logos/${nombreLoteria}`).set(data.secure_url);
+            mostrarFeedback(`✓ Logo de "${nombreLoteria}" subido`);
+        } catch (err) {
+            alert("❌ Error subiendo logo: " + err.message);
+            box.innerHTML = originalHTML;
+        }
+    }
+
+    function guardarLogo(nombre) {
+        const safeId = nombre.replace(/\s+/g, '_').replace(/[^\w]/g, '');
+        const url = document.getElementById(`input_logo_${safeId}`).value.trim();
+        if (!url) return alert('Pega una URL válida');
+        database.ref(`web_kiko/logos/${nombre}`).set(url)
+            .then(() => mostrarFeedback(`✓ Logo de ${nombre} guardado`))
+            .catch(err => alert('Error: ' + err.message));
+    }
+
+    function eliminarLogo(nombre) {
+        if (confirm(`¿Eliminar logo de ${nombre}?`)) {
+            database.ref(`web_kiko/logos/${nombre}`).remove().then(() => mostrarFeedback('✓ Logo eliminado'));
+        }
+    }
+
+    // ==========================================
+    // PESTAÑA 5: PROMO NAVIDAD (TICKETS)
+    // ==========================================
+    function escucharPromocion() {
+        database.ref('promocion_navidad_2026/tickets').on('value', (snapshot) => {
+            const contenedor = document.getElementById('listaClientes');
+            contenedor.innerHTML = '';
+            if (!snapshot.exists()) { 
+                contenedor.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:20px;">Aún no hay tickets registrados.</p>'; 
+                return; 
+            }
+
+            const clientes = {};
+            snapshot.forEach(child => {
+                const t = child.val(); t._key = child.key;
+                if (!clientes[t.telefono]) { clientes[t.telefono] = { nombre: t.nombreCliente, telefono: t.telefono, tickets: [] }; }
+                clientes[t.telefono].tickets.push(t);
+            });
+
+            clientesGlobales = Object.values(clientes);
+            clientesGlobales.forEach((c, index) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'cliente-wrapper';
+                let tablaFilas = '';
+                
+                c.tickets.forEach((t) => {
+                    const montoMostrar = t.monto ? Number(t.monto).toFixed(2) : '0.00';
+                    const fechaT = t.fechaTicket ? t.fechaTicket.split('-').reverse().join('/') : 'N/A';
+                    let fechaR = 'N/A';
+                    if (t.fechaRegistro) { 
+                        const d = new Date(t.fechaRegistro); 
+                        fechaR = d.toLocaleDateString('es-DO') + ' ' + d.toLocaleTimeString('es-DO', {hour: '2-digit', minute:'2-digit'}); 
+                    }
+                    tablaFilas += `
+                        <tr>
+                            <td><b>${t.numeroTicket}</b></td>
+                            <td>${t.banca}</td>
+                            <td>${fechaT}</td>
+                            <td><span class="fecha-reg-tag">${fechaR}</span></td>
+                            <td><span class="monto-tag">RD$ ${montoMostrar}</span></td>
+                            <td><button class="btn btn-danger" style="padding: 4px 8px; min-height: 28px; font-size:0.75rem;" onclick="eliminarTicketIndividual('${t._key}')">🗑️</button></td>
+                        </tr>
+                    `;
+                });
+
+                wrapper.innerHTML = `
+                    <button class="cliente-btn" onclick="toggleTickets(${index})">
+                        <div class="cliente-datos">
+                            <span class="cliente-nombre">${c.nombre}</span>
+                            <span class="cliente-telefono"><i class="fas fa-phone"></i> ${c.telefono}</span>
+                        </div>
+                        <div class="cliente-badge"><i class="fas fa-ticket-alt"></i> ${c.tickets.length} Ticket(s)</div>
+                    </button>
+                    <div class="tickets-panel" id="panel-${index}">
+                        <div style="overflow-x:auto;">
+                            <table class="tabla-interna">
+                                <thead>
+                                    <tr><th>Ticket #</th><th>Banca</th><th>Fecha Ticket</th><th>Registrado el</th><th>Monto</th><th>Borrar</th></tr>
+                                </thead>
+                                <tbody>${tablaFilas}</tbody>
+                            </table>
+                        </div>
+                        <button class="btn btn-danger" onclick="eliminarTodosTickets('${c.telefono}')" style="width: 100%; margin-top: 15px; font-size:0.8rem;">🗑️ Eliminar TODOS los tickets de este cliente</button>
+                    </div>
+                `;
+                contenedor.appendChild(wrapper);
+            });
+        });
+    }
+
+    function toggleTickets(index) {
+        const panel = document.getElementById('panel-' + index);
+        if (!panel) return;
+        if (panel.classList.contains('active')) { panel.classList.remove('active'); return; }
+        document.querySelectorAll('.tickets-panel').forEach(p => p.classList.remove('active'));
+        panel.classList.add('active');
+    }
+
+    async function guardarTicketManual() {
+        const nombre = document.getElementById('manNombre').value.trim();
+        const telefono = document.getElementById('manTelefono').value.trim();
+        const numeroTicket = document.getElementById('manTicket').value.trim();
+        const banca = document.getElementById('manBanca').value;
+        const fechaTicket = document.getElementById('manFecha').value;
+        const monto = parseFloat(document.getElementById('manMonto').value) || 0;
+
+        if (!nombre || !telefono || !numeroTicket || !fechaTicket) return alert("Por favor, llena todos los campos obligatorios.");
+
+        try {
+            const ticketsRef = database.ref('promocion_navidad_2026/tickets');
+            const snapshot = await ticketsRef.orderByChild('numeroTicket').equalTo(numeroTicket).once('value');
+            if (snapshot.exists()) return alert("Error: Este número de ticket ya está registrado en el sistema.");
+
+            const clienteRef = database.ref('promocion_navidad_2026/clientes').child(telefono);
+            const clienteSnap = await clienteRef.once('value');
+            let nombreFinal = nombre;
+
+            if (clienteSnap.exists()) { nombreFinal = clienteSnap.val().nombre; } else { await clienteRef.set({ nombre: nombre, telefono: telefono }); }
+
+            await ticketsRef.push({
+                telefono: telefono, nombreCliente: nombreFinal, numeroTicket: numeroTicket, banca: banca,
+                fechaTicket: fechaTicket, monto: monto, fechaRegistro: firebase.database.ServerValue.TIMESTAMP
+            });
+
+            mostrarFeedback("¡Ticket guardado con éxito!");
+            document.getElementById('manNombre').value = ''; 
+            document.getElementById('manTelefono').value = '';
+            document.getElementById('manTicket').value = ''; 
+            document.getElementById('manFecha').value = ''; 
+            document.getElementById('manMonto').value = '';
+
+        } catch (error) { alert("Error al guardar: " + error.message); }
+    }
+
+    function eliminarTicketIndividual(ticketKey) {
+        if (confirm("¿Estás seguro de eliminar SOLO este ticket? Esta acción no se puede deshacer.")) {
+            database.ref('promocion_navidad_2026/tickets/' + ticketKey).remove().then(() => mostrarFeedback("Ticket eliminado correctamente."));
+        }
+    }
+
+    function eliminarTodosTickets(telefono) {
+        if (confirm("¿Estás seguro de eliminar TODOS los tickets de este cliente?")) {
+            database.ref('promocion_navidad_2026/tickets').orderByChild('telefono').equalTo(telefono).once('value').then(snap => {
+                const updates = {};
+                snap.forEach(child => { updates[child.key] = null; });
+                database.ref('promocion_navidad_2026/tickets').update(updates).then(() => {
+                    mostrarFeedback("Tickets del cliente eliminados.");
+                    document.querySelectorAll('.tickets-panel').forEach(p => p.classList.remove('active'));
+                });
+            });
+        }
+    }
+
+    // ==========================================
     // EXPONER FUNCIONES GLOBALES
-    // ============================================================
+    // ==========================================
+    window.switchTab = switchTab;
     window.recargarMonitor = recargarMonitor;
     window.guardarTiempoGlobal = guardarTiempoGlobal;
     window.guardarCintillo = guardarCintillo;
@@ -1073,14 +1333,24 @@
     window.eliminarNodoAd = eliminarNodoAd;
     window.guardarTodosLosAnuncios = guardarTodosLosAnuncios;
     window.actualizarMiniaturaDinamica = actualizarMiniaturaDinamica;
+    window.subirAnuncioCloudinary = subirAnuncioCloudinary;
     window.crearEstructuraBase = crearEstructuraBase;
     window.actualizarSorteo = actualizarSorteo;
     window.fetchSorteos = fetchSorteos;
     window.cambiarDia = cambiarDia;
     window.forzarActualizarEstadisticas = forzarActualizarEstadisticas;
-    window.guardarRealNoche = guardarRealNoche;
-    window.eliminarRealNoche = eliminarRealNoche;
-    window.toggleNavidad = toggleNavidad;  // ✅ NUEVO
+    window.toggleNavidad = toggleNavidad;
+    window.cambiarEstadoPromo = cambiarEstadoPromo;
+    window.guardarConfiguracionPromo = guardarConfiguracionPromo;
+    window.cambiarAlias = cambiarAlias;
+    window.subirLogoArchivo = subirLogoArchivo;
+    window.guardarLogo = guardarLogo;
+    window.eliminarLogo = eliminarLogo;
+    window.formatearTelefonoAdmin = formatearTelefonoAdmin;
+    window.guardarTicketManual = guardarTicketManual;
+    window.toggleTickets = toggleTickets;
+    window.eliminarTicketIndividual = eliminarTicketIndividual;
+    window.eliminarTodosTickets = eliminarTodosTickets;
 </script>
 </body>
 </html>
