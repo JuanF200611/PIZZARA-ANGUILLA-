@@ -172,8 +172,11 @@
         padding: 4px 18px; border-radius: 20px; margin-bottom: 6px;
     }
     .card-fecha.ayer { color: var(--rojo); background: #fee2e2; }
+    .card-fecha.proximo-label { color: #fff; background: var(--rojo); animation: pulseRed 1.5s infinite; }
 
-    /* BOLOS - AZULES CON EFECTO 3D */
+    @keyframes pulseRed { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+
+    /* BOLOS */
     .bolos-container {
         display: flex;
         justify-content: center;
@@ -195,37 +198,24 @@
         box-shadow: 0 6px 12px rgba(0,0,0,0.5), inset 0 0 15px rgba(0,0,0,0.3);
         position: relative;
     }
-    /* ✅ BOLO HOY - AZUL 3D (como estaba antes, pero con volumen) */
     .bolo.hoy {
-        background:
-            radial-gradient(circle at 30% 25%, #6ea8ff 0%, #0055ff 35%, #0033a0 70%, #001a4d 100%);
+        background: radial-gradient(circle at 30% 25%, #6ea8ff 0%, #0055ff 35%, #0033a0 70%, #001a4d 100%);
         color: white;
-        text-shadow:
-            0 2px 0 #000,
-            0 4px 6px rgba(0,0,0,0.6),
-            1px 1px 0 #000,
-            -1px -1px 0 #000,
-            1px -1px 0 #000,
-            -1px 1px 0 #000;
-        box-shadow:
-            0 8px 18px rgba(0,0,0,0.6),
-            inset -8px -10px 20px rgba(0,0,0,0.55),
-            inset 8px 10px 18px rgba(255,255,255,0.35),
-            inset 0 0 30px rgba(0,0,0,0.25);
+        text-shadow: 0 2px 0 #000, 0 4px 6px rgba(0,0,0,0.6), 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+        box-shadow: 0 8px 18px rgba(0,0,0,0.6), inset -8px -10px 20px rgba(0,0,0,0.55), inset 8px 10px 18px rgba(255,255,255,0.35), inset 0 0 30px rgba(0,0,0,0.25);
     }
-    /* ✅ BOLO AYER - BLANCO 3D */
     .bolo.ayer {
-        background:
-            radial-gradient(circle at 30% 25%, #ffffff 0%, #f1f5f9 35%, #cbd5e1 75%, #94a3b8 100%);
+        background: radial-gradient(circle at 30% 25%, #ffffff 0%, #f1f5f9 35%, #cbd5e1 75%, #94a3b8 100%);
         color: #000;
         text-shadow: 0 1px 0 rgba(255,255,255,0.8);
-        box-shadow:
-            0 8px 18px rgba(0,0,0,0.5),
-            inset -8px -10px 20px rgba(0,0,0,0.25),
-            inset 8px 10px 18px rgba(255,255,255,0.9),
-            inset 0 0 30px rgba(0,0,0,0.08);
+        box-shadow: 0 8px 18px rgba(0,0,0,0.5), inset -8px -10px 20px rgba(0,0,0,0.25), inset 8px 10px 18px rgba(255,255,255,0.9), inset 0 0 30px rgba(0,0,0,0.08);
     }
-    /* Brillo superior tipo esfera */
+    .bolo.esperando {
+        background: radial-gradient(circle at 30% 25%, #e2e8f0 0%, #cbd5e1 100%);
+        color: #64748b; font-size: 50px;
+        border: 5px dashed #94a3b8;
+        box-shadow: none;
+    }
     .bolo::after {
         content: '';
         position: absolute;
@@ -247,8 +237,7 @@
         background: #fee2e2; padding: 6px 18px; border-radius: 12px;
         margin-bottom: 6px; border: 2px solid var(--rojo);
     }
-
-    .card-footer { display: none; }
+    .card-timer.esperando { color: #856404; background: #fff3cd; border-color: #ffeeba; }
 
     /* VISTA FEATURED */
     .split-container { display: flex; gap: 15px; height: 100%; width: 100%; }
@@ -264,7 +253,6 @@
     .dest-logo { height: 220px; margin-bottom: 5px; object-fit: contain; }
     .dest-nombre { font-size: 55px; font-weight: 900; color: var(--dorado); margin-bottom: 5px; text-transform: uppercase; text-shadow: 2px 2px 4px #000; }
 
-    /* ✅ HORA CON CONTORNO NEGRO GRUESO */
     .dest-hora-box {
         font-size: 80px;
         background-color: #ff6600;
@@ -276,37 +264,20 @@
         box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         -webkit-text-stroke: 3px #000;
         paint-order: stroke fill;
-        text-shadow:
-            3px 3px 0 #000,
-            -3px -3px 0 #000,
-            3px -3px 0 #000,
-            -3px 3px 0 #000,
-            0 6px 12px rgba(0,0,0,0.7);
+        text-shadow: 3px 3px 0 #000, -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 0 6px 12px rgba(0,0,0,0.7);
         letter-spacing: 2px;
     }
 
     .dest-bolos { display: flex; justify-content: center; gap: 35px; margin-bottom: 10px; }
     .dest-bolo-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-    /* ✅ BOLO DESTACADO AZUL 3D */
     .dest-bolo {
         width: 200px; height: 200px; border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
         font-size: 100px; font-weight: 900; color: white;
-        background:
-            radial-gradient(circle at 30% 25%, #6ea8ff 0%, #0055ff 35%, #0033a0 70%, #001a4d 100%);
+        background: radial-gradient(circle at 30% 25%, #6ea8ff 0%, #0055ff 35%, #0033a0 70%, #001a4d 100%);
         border: 6px solid #000;
-        box-shadow:
-            0 12px 26px rgba(0,0,0,0.7),
-            inset -12px -14px 28px rgba(0,0,0,0.6),
-            inset 12px 14px 26px rgba(255,255,255,0.4),
-            inset 0 0 40px rgba(0,0,0,0.25);
-        text-shadow:
-            0 3px 0 #000,
-            0 6px 10px rgba(0,0,0,0.7),
-            2px 2px 0 #000,
-            -2px -2px 0 #000,
-            2px -2px 0 #000,
-            -2px 2px 0 #000;
+        box-shadow: 0 12px 26px rgba(0,0,0,0.7), inset -12px -14px 28px rgba(0,0,0,0.6), inset 12px 14px 26px rgba(255,255,255,0.4), inset 0 0 40px rgba(0,0,0,0.25);
+        text-shadow: 0 3px 0 #000, 0 6px 10px rgba(0,0,0,0.7), 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
         position: relative;
     }
     .dest-bolo::after {
@@ -352,35 +323,17 @@
         box-shadow: 0 4px 8px rgba(0,0,0,0.4);
         position: relative;
     }
-    /* ✅ SIDE BOLO HOY - AZUL 3D */
     .side-bolo.hoy {
-        background:
-            radial-gradient(circle at 30% 25%, #6ea8ff 0%, #0055ff 35%, #0033a0 70%, #001a4d 100%);
+        background: radial-gradient(circle at 30% 25%, #6ea8ff 0%, #0055ff 35%, #0033a0 70%, #001a4d 100%);
         color: white;
-        text-shadow:
-            0 1px 0 #000,
-            0 2px 4px rgba(0,0,0,0.6),
-            1px 1px 0 #000,
-            -1px -1px 0 #000,
-            1px -1px 0 #000,
-            -1px 1px 0 #000;
-        box-shadow:
-            0 6px 14px rgba(0,0,0,0.6),
-            inset -5px -6px 12px rgba(0,0,0,0.55),
-            inset 5px 6px 12px rgba(255,255,255,0.35),
-            inset 0 0 20px rgba(0,0,0,0.25);
+        text-shadow: 0 1px 0 #000, 0 2px 4px rgba(0,0,0,0.6), 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+        box-shadow: 0 6px 14px rgba(0,0,0,0.6), inset -5px -6px 12px rgba(0,0,0,0.55), inset 5px 6px 12px rgba(255,255,255,0.35), inset 0 0 20px rgba(0,0,0,0.25);
     }
-    /* ✅ SIDE BOLO AYER - BLANCO 3D */
     .side-bolo.ayer {
-        background:
-            radial-gradient(circle at 30% 25%, #ffffff 0%, #f1f5f9 35%, #cbd5e1 75%, #94a3b8 100%);
+        background: radial-gradient(circle at 30% 25%, #ffffff 0%, #f1f5f9 35%, #cbd5e1 75%, #94a3b8 100%);
         color: var(--azul-oscuro);
         text-shadow: 0 1px 0 rgba(255,255,255,0.8);
-        box-shadow:
-            0 6px 14px rgba(0,0,0,0.5),
-            inset -5px -6px 12px rgba(0,0,0,0.25),
-            inset 5px 6px 12px rgba(255,255,255,0.9),
-            inset 0 0 20px rgba(0,0,0,0.08);
+        box-shadow: 0 6px 14px rgba(0,0,0,0.5), inset -5px -6px 12px rgba(0,0,0,0.25), inset 5px 6px 12px rgba(255,255,255,0.9), inset 0 0 20px rgba(0,0,0,0.08);
     }
     .side-bolo::after {
         content: '';
@@ -481,10 +434,9 @@
     let modoNavidad = false;
 
     // ============================================================
-    // ESTADO DE ROTACIÓN
-    // Ciclo: GRID (páginas) → FEATURED → AD → BRANDING → AD → GRID ...
+    // LÓGICA DE ROTACIÓN
     // ============================================================
-    let estado = 'grid';
+    let estado = 'grid'; 
     let gridPage = 0;
     let adIndex = 0;
     let rotationTimer = null;
@@ -717,31 +669,37 @@
         if (rotationTimer) { clearTimeout(rotationTimer); rotationTimer = null; }
     }
 
+    // ============================================================
+    // LÓGICA DEL CICLO DE ROTACIÓN (CORREGIDA)
+    // Grid -> Featured -> Anuncio 1 -> Branding -> Grid -> Featured -> Anuncio 2 -> Branding ...
+    // ============================================================
     function pasoRotacion() {
         if (enTransmisionVivo || !sistemaIniciado) return;
+
         let nextTime = tiempoRotacionGlobal;
         const totalPages = Math.max(1, Math.ceil(SORTEOS.length / 8));
 
-        if (estado === 'grid') {
-            if (gridPage < totalPages - 1) {
-                gridPage++;
-                mostrarVista('grid'); renderGrid();
-            } else {
+        // Si estamos en el grid, pero hay más páginas
+        if (estado === 'grid' && gridPage < totalPages - 1) {
+            gridPage++;
+            mostrarVista('grid'); 
+            renderGrid();
+        } 
+        else {
+            // Flujo lineal cuando el grid ya terminó sus páginas
+            if (estado === 'grid' || estado === 'branding') {
                 estado = 'featured';
-                mostrarVista('featured'); renderFeatured();
+                mostrarVista('featured'); 
+                renderFeatured();
+            } 
+            else if (estado === 'featured') {
+                estado = 'ad';
+                nextTime = renderAnuncioActual();
+            } 
+            else if (estado === 'ad') {
+                estado = 'branding';
+                mostrarVista('branding');
             }
-        } else if (estado === 'featured') {
-            estado = 'ad';
-            nextTime = renderAnuncioActual();
-        } else if (estado === 'ad') {
-            estado = 'branding';
-            mostrarVista('branding');
-        } else if (estado === 'branding') {
-            estado = 'ad';
-            nextTime = renderAnuncioActual();
-        } else {
-            estado = 'grid'; gridPage = 0;
-            mostrarVista('grid'); renderGrid();
         }
 
         programarRotacion(nextTime);
@@ -749,23 +707,28 @@
 
     function renderAnuncioActual() {
         const activos = ANUNCIOS.filter(ad => ad && ad.activo !== false && ad.url && ad.url.trim());
+        
+        // Si no hay anuncios, saltamos directo al grid
         if (activos.length === 0) {
-            estado = 'branding';
-            mostrarVista('branding');
-            return 5000;
+            estado = 'grid'; 
+            gridPage = 0;
+            mostrarVista('grid'); 
+            renderGrid();
+            return tiempoRotacionGlobal;
         }
 
+        // Si el índice se pasa, reiniciamos al primer anuncio
         if (adIndex >= activos.length) {
             adIndex = 0;
-            estado = 'grid'; gridPage = 0;
-            mostrarVista('grid'); renderGrid();
-            return tiempoRotacionGlobal;
         }
 
         const ad = activos[adIndex];
         mostrarVista('ads');
         const box = document.getElementById('adDisplay');
+        
+        // ✅ IMPORTANTE: Limpiar el contenedor para que NO se sobrepongan los anuncios
         box.innerHTML = '';
+        
         const url = ad.url.trim();
         const urlP = convertirLinkGitHub(url);
 
@@ -783,8 +746,10 @@
             };
         }
 
-        const t = (parseInt(ad.tiempo) || 15) * 1000;
+        // Avanzamos el índice para la próxima vez que toque anuncio
         adIndex++;
+        
+        const t = (parseInt(ad.tiempo) || 15) * 1000;
         return t;
     }
 
