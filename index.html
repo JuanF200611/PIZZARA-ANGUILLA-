@@ -352,7 +352,8 @@
 
     /* ADS / LIVE */
     .ad-box { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #000; overflow: hidden; position: relative; }
-    .ad-box img, .ad-box video { width: 100%; height: 100%; object-fit: contain; }
+    /* ✅ CAMBIO CLAVE: object-fit: cover en lugar de contain para llenar la pantalla */
+    .ad-box img, .ad-box video { width: 100%; height: 100%; object-fit: cover; }
     .ad-box iframe { width: 100%; height: 100%; border: none; }
 
     .card * { min-width: 0; min-height: 0; }
@@ -636,7 +637,7 @@
                 const box = document.getElementById('liveDisplay');
                 const raw = live.url || '';
                 if (esVideoDirecto(raw)) {
-                    box.innerHTML = `<video src="${convertirLinkGitHub(raw)}" autoplay muted playsinline controls style="width:100%;height:100%;background:#000;"></video>`;
+                    box.innerHTML = `<video src="${convertirLinkGitHub(raw)}" autoplay muted playsinline controls style="width:100%;height:100%;object-fit:cover;background:#000;"></video>`;
                 } else {
                     let embed = raw.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/');
                     if (embed.includes('?')) embed = embed.split('?')[0];
@@ -670,8 +671,7 @@
     }
 
     // ============================================================
-    // LÓGICA DEL CICLO DE ROTACIÓN (CORREGIDA)
-    // Grid -> Featured -> Anuncio 1 -> Branding -> Grid -> Featured -> Anuncio 2 -> Branding ...
+    // LÓGICA DEL CICLO DE ROTACIÓN
     // ============================================================
     function pasoRotacion() {
         if (enTransmisionVivo || !sistemaIniciado) return;
@@ -708,7 +708,6 @@
     function renderAnuncioActual() {
         const activos = ANUNCIOS.filter(ad => ad && ad.activo !== false && ad.url && ad.url.trim());
         
-        // Si no hay anuncios, saltamos directo al grid
         if (activos.length === 0) {
             estado = 'grid'; 
             gridPage = 0;
@@ -717,7 +716,6 @@
             return tiempoRotacionGlobal;
         }
 
-        // Si el índice se pasa, reiniciamos al primer anuncio
         if (adIndex >= activos.length) {
             adIndex = 0;
         }
@@ -726,27 +724,28 @@
         mostrarVista('ads');
         const box = document.getElementById('adDisplay');
         
-        // ✅ IMPORTANTE: Limpiar el contenedor para que NO se sobrepongan los anuncios
+        // Limpiar el contenedor
         box.innerHTML = '';
         
         const url = ad.url.trim();
         const urlP = convertirLinkGitHub(url);
 
         if (esVideoDirecto(url)) {
-            box.innerHTML = `<video src="${urlP}" autoplay muted playsinline preload="auto" style="width:100%;height:100%;object-fit:contain;background:#000;"></video>`;
+            // ✅ object-fit: cover para llenar la pantalla completa sin franjas
+            box.innerHTML = `<video src="${urlP}" autoplay muted playsinline preload="auto" style="width:100%;height:100%;object-fit:cover;background:#000;"></video>`;
         } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
             let embed = url.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/');
             if (embed.includes('?')) embed = embed.split('?')[0];
             box.innerHTML = `<iframe src="${embed}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%;height:100%;border:none;" loading="lazy"></iframe>`;
         } else {
-            box.innerHTML = `<img src="${urlP}" loading="eager" style="width:100%;height:100%;object-fit:contain;background:#000;" alt="Anuncio">`;
+            // ✅ object-fit: cover para imágenes también
+            box.innerHTML = `<img src="${urlP}" loading="eager" style="width:100%;height:100%;object-fit:cover;background:#000;" alt="Anuncio">`;
             const img = box.querySelector('img');
             if (img) img.onerror = () => {
                 box.innerHTML = `<div style="color:white; font-size:60px; font-weight:800;">BANCAS KIKO</div>`;
             };
         }
 
-        // Avanzamos el índice para la próxima vez que toque anuncio
         adIndex++;
         
         const t = (parseInt(ad.tiempo) || 15) * 1000;
