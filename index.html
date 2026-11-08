@@ -352,7 +352,6 @@
 
     /* ADS / LIVE */
     .ad-box { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #000; overflow: hidden; position: relative; }
-    /* ✅ CAMBIO CLAVE: object-fit: cover en lugar de contain para llenar la pantalla */
     .ad-box img, .ad-box video { width: 100%; height: 100%; object-fit: cover; }
     .ad-box iframe { width: 100%; height: 100%; border: none; }
 
@@ -370,7 +369,6 @@
 <div id="preloader-cache" style="position:absolute;width:1px;height:1px;opacity:0.01;overflow:hidden;bottom:0;left:0;pointer-events:none;"></div>
 
 <div id="canvas-master">
-    <!-- TOPBAR -->
     <div class="topbar">
         <div class="brand-area">
             <img src="nuevologo.png" id="headerLogo" alt="Bancas Kiko">
@@ -388,12 +386,10 @@
         </div>
     </div>
 
-    <!-- TICKER -->
     <div class="ticker-bar">
         <div class="ticker-text" id="marqueeText">CARGANDO ANUNCIOS...</div>
     </div>
 
-    <!-- VISTAS -->
     <div id="view-grid" class="hidden">
         <div class="grid-container" id="mainGrid"></div>
     </div>
@@ -405,7 +401,6 @@
         </div>
     </div>
 
-    <!-- BRANDING -->
     <div id="view-branding">
         <img src="nuevologo.png" id="brandingLogo" class="branding-logo" alt="Bancas Kiko">
         <div class="branding-title">Bancas <span>Kiko</span></div>
@@ -671,7 +666,8 @@
     }
 
     // ============================================================
-    // LÓGICA DEL CICLO DE ROTACIÓN
+    // LÓGICA DEL CICLO DE ROTACIÓN (CORREGIDA)
+    // Grid -> Featured -> Anuncio 1 -> Branding -> Grid -> Featured -> Anuncio 2 -> Branding...
     // ============================================================
     function pasoRotacion() {
         if (enTransmisionVivo || !sistemaIniciado) return;
@@ -679,26 +675,37 @@
         let nextTime = tiempoRotacionGlobal;
         const totalPages = Math.max(1, Math.ceil(SORTEOS.length / 8));
 
-        // Si estamos en el grid, pero hay más páginas
+        // Si estamos en el grid, avanzar a la siguiente página (si hay)
         if (estado === 'grid' && gridPage < totalPages - 1) {
             gridPage++;
             mostrarVista('grid'); 
             renderGrid();
         } 
         else {
-            // Flujo lineal cuando el grid ya terminó sus páginas
-            if (estado === 'grid' || estado === 'branding') {
+            // Flujo lineal de estados
+            if (estado === 'grid') {
+                // Terminamos las páginas del grid, pasamos a destacado
                 estado = 'featured';
                 mostrarVista('featured'); 
                 renderFeatured();
             } 
             else if (estado === 'featured') {
+                // Después de destacado, mostramos el anuncio actual
                 estado = 'ad';
                 nextTime = renderAnuncioActual();
             } 
             else if (estado === 'ad') {
+                // Después del anuncio, branding
                 estado = 'branding';
                 mostrarVista('branding');
+            }
+            else if (estado === 'branding') {
+                // ✅ AQUÍ ESTABA EL BUG: al terminar branding, reiniciamos gridPage a 0
+                // para que el ciclo vuelva a empezar desde la primera página del grid
+                estado = 'grid';
+                gridPage = 0;
+                mostrarVista('grid'); 
+                renderGrid();
             }
         }
 
@@ -709,13 +716,12 @@
         const activos = ANUNCIOS.filter(ad => ad && ad.activo !== false && ad.url && ad.url.trim());
         
         if (activos.length === 0) {
-            estado = 'grid'; 
-            gridPage = 0;
-            mostrarVista('grid'); 
-            renderGrid();
-            return tiempoRotacionGlobal;
+            estado = 'branding';
+            mostrarVista('branding');
+            return 5000;
         }
 
+        // Si el índice se pasa, reiniciamos al primer anuncio
         if (adIndex >= activos.length) {
             adIndex = 0;
         }
@@ -731,14 +737,12 @@
         const urlP = convertirLinkGitHub(url);
 
         if (esVideoDirecto(url)) {
-            // ✅ object-fit: cover para llenar la pantalla completa sin franjas
             box.innerHTML = `<video src="${urlP}" autoplay muted playsinline preload="auto" style="width:100%;height:100%;object-fit:cover;background:#000;"></video>`;
         } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
             let embed = url.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/');
             if (embed.includes('?')) embed = embed.split('?')[0];
             box.innerHTML = `<iframe src="${embed}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay; encrypted-media" style="width:100%;height:100%;border:none;" loading="lazy"></iframe>`;
         } else {
-            // ✅ object-fit: cover para imágenes también
             box.innerHTML = `<img src="${urlP}" loading="eager" style="width:100%;height:100%;object-fit:cover;background:#000;" alt="Anuncio">`;
             const img = box.querySelector('img');
             if (img) img.onerror = () => {
@@ -746,6 +750,7 @@
             };
         }
 
+        // Avanzamos el índice para el próximo ciclo
         adIndex++;
         
         const t = (parseInt(ad.tiempo) || 15) * 1000;
