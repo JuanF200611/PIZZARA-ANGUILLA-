@@ -356,7 +356,6 @@
                             <input type="date" id="targetDate" onchange="fetchSorteos()" style="max-width: 160px;">
                             <button class="btn btn-outline" onclick="cambiarDia(-1)" style="padding: 8px 12px; font-size: 0.75rem;">◀ Ayer</button>
                             <button class="btn btn-outline" onclick="cambiarDia(0)" style="padding: 8px 12px; font-size: 0.75rem;">Hoy</button>
-                            <button class="btn btn-primary" id="btnInit" style="display:none; padding: 8px 16px; font-size:0.8rem;" onclick="crearEstructuraBase()">⚙ Inicializar Día</button>
                         </div>
                         <div class="sorteos-container" id="listado"></div>
                     </div>
@@ -510,16 +509,14 @@
     const CLOUD_NAME = "fvgu3y66";
     const UPLOAD_PRESET = "wjs_preset";
 
-    let listenerSorteosActual = null;
+    let listenerAnguillaActual = null;
     let LOGOS_ACTUALES = {};
     let LOTERIAS_UNICAS = new Set();
     let clientesGlobales = [];
 
-    const CRONOGRAMA_HORAS = [
-        "08:00AM", "09:00AM", "10:00AM", "11:00AM", "12:00PM",
-        "01:00PM", "02:00PM", "03:00PM", "04:00PM", "05:00PM",
-        "06:00PM", "07:00PM", "08:00PM", "09:00PM", "10:00PM"
-    ];
+    // ✅ FIX: doble protección para el switch de promo
+    let promoSwitchBloqueado = false;
+    let promoUltimoClick = 0;
 
     window.onload = () => {
         document.getElementById('targetDate').value = hoyISO();
@@ -566,7 +563,7 @@
     }
 
     // ==========================================
-    // PESTAÑA 1: SORTEOS Y PIZARRA
+    // PESTAÑA 1: ANGUILLAS (desde sorteos_enloteria/resultados)
     // ==========================================
     function cambiarDia(offset) {
         const input = document.getElementById('targetDate');
@@ -585,20 +582,27 @@
         return `${m[1].padStart(2,'0')}:${m[2]}${m[3]}`;
     }
 
+    // Convierte "2026-09-06" -> "06 sep, 2026" (formato usado en la DB)
+    function fechaISOaFormatoDB(fechaISO) {
+        const meses = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+        const [y, m, d] = fechaISO.split('-');
+        return `${d} ${meses[parseInt(m, 10) - 1]}, ${y}`;
+    }
+
     function fetchSorteos() {
         const fecha = document.getElementById('targetDate').value;
         if (!fecha) return;
 
         const listado = document.getElementById('listado');
-        listado.innerHTML = "<p style='color:#a0aec0; font-size:0.9rem; padding:10px;'>⏳ Cargando registros...</p>";
-        document.getElementById('btnInit').style.display = 'none';
+        listado.innerHTML = "<p style='color:#a0aec0; font-size:0.9rem; padding:10px;'>⏳ Cargando Anguillas...</p>";
 
-        if (listenerSorteosActual) {
-            listenerSorteosActual.ref.off('value', listenerSorteosActual.cb);
-            listenerSorteosActual = null;
+        // Desconectar listener anterior
+        if (listenerAnguillaActual) {
+            listenerAnguillaActual.ref.off('value', listenerAnguillaActual.cb);
+            listenerAnguillaActual = null;
         }
 
-        const ref = database.ref(`sorteos/${fecha}`);
+        const ref = database.ref('sorteos_enloteria/resultados');
         const cb = (snapshot) => {
             const focused = document.activeElement;
             if (focused && focused.classList && focused.classList.contains('ball-inp')) return;
@@ -607,85 +611,81 @@
             listado.innerHTML = "";
 
             if (!data) {
-                listado.innerHTML = "<p style='color:#718096; font-size:0.9rem; padding:10px;'>📭 No hay datos para esta fecha.<br><small style='color:#4a5568;'>Usa '⚙ Inicializar Día' para crear la estructura.</small></p>";
-                document.getElementById('btnInit').style.display = 'block';
+                listado.innerHTML = "<p style='color:#718096; font-size:0.9rem; padding:10px;'>📭 No hay resultados en la base.</p>";
                 return;
             }
 
-            let items = [];
-            if (Array.isArray(data)) {
-                items = data.map((v, i) => ({ idx: i, data: v }));
-            } else {
-                items = Object.keys(data).map(k => ({ idx: k, data: data[k] }));
-            }
+            const fechaDB = fechaISOaFormatoDB(fecha);
 
-            items.sort((a, b) => {
-                const ha = normalizarHora(a.data?.hora || '');
-                const hb = normalizarHora(b.data?.hora || '');
-                return ha.localeCompare(hb);
+            // Filtrar solo Anguillas (categoría extranjera + nombre incluye "Anguilla" + fecha coincide)
+            const anguillas = [];
+            Object.keys(data).forEach(key => {
+                const item = data[key];
+                if (!item || typeof item !== 'object') return;
+                const esExtranjera = String(item.categoria || '').toLowerCase() === 'extranjera';
+                const esAnguilla = String(item.nombre || '').toLowerCase().includes('anguilla');
+                const esFecha = String(item.fecha || '').trim() === fechaDB;
+                if (esExtranjera && esAnguilla && esFecha) {
+                    anguillas.push({ key, ...item });
+                }
             });
 
-            if (items.length === 0) {
-                listado.innerHTML = "<p style='color:#718096; font-size:0.9rem; padding:10px;'>📭 El día está vacío.</p>";
-                document.getElementById('btnInit').style.display = 'block';
+            if (anguillas.length === 0) {
+                listado.innerHTML = `<p style='color:#718096; font-size:0.9rem; padding:10px;'>📭 No hay Anguillas para el ${fechaDB}.</p>`;
                 return;
             }
 
-            items.forEach(({ idx, data: s }) => {
-                if (!s) return;
-                const premios = s.premios || [];
-                const tienePremios = premios[0] !== undefined && premios[0] !== null && premios[0] !== '';
+            // Ordenar por hora
+            anguillas.sort((a, b) => normalizarHora(a.hora || '').localeCompare(normalizarHora(b.hora || '')));
+
+            anguillas.forEach(item => {
+                const nums = item.numeros || {};
+                const p0 = nums[0] ?? nums['0'] ?? '';
+                const p1 = nums[1] ?? nums['1'] ?? '';
+                const p2 = nums[2] ?? nums['2'] ?? '';
+                const tienePremios = p0 !== '' || p1 !== '' || p2 !== '';
+
                 const div = document.createElement('div');
                 div.className = 'sorteo-item';
                 div.innerHTML = `
-                    <div class="sorteo-time">${s.hora || '--'}</div>
+                    <div class="sorteo-time" title="${item.nombre || ''}">${item.hora || '--'}</div>
                     <div class="balls-group">
-                        <input type="number" inputmode="numeric" class="ball-inp" id="n_${idx}_0" value="${premios[0] ?? ''}" oninput="if(this.value.length > 2) this.value = this.value.slice(0,2)" placeholder="0">
-                        <input type="number" inputmode="numeric" class="ball-inp" id="n_${idx}_1" value="${premios[1] ?? ''}" oninput="if(this.value.length > 2) this.value = this.value.slice(0,2)" placeholder="0">
-                        <input type="number" inputmode="numeric" class="ball-inp" id="n_${idx}_2" value="${premios[2] ?? ''}" oninput="if(this.value.length > 2) this.value = this.value.slice(0,2)" placeholder="0">
+                        <input type="number" inputmode="numeric" class="ball-inp" id="ang_${item.key}_0" value="${p0}" oninput="if(this.value.length > 2) this.value = this.value.slice(0,2)" placeholder="0">
+                        <input type="number" inputmode="numeric" class="ball-inp" id="ang_${item.key}_1" value="${p1}" oninput="if(this.value.length > 2) this.value = this.value.slice(0,2)" placeholder="0">
+                        <input type="number" inputmode="numeric" class="ball-inp" id="ang_${item.key}_2" value="${p2}" oninput="if(this.value.length > 2) this.value = this.value.slice(0,2)" placeholder="0">
                     </div>
-                    <button class="btn btn-success" id="btn_ok_${idx}" style="min-width: 50px; padding: 6px 12px; font-size:0.8rem;" onclick="actualizarSorteo('${idx}')">${tienePremios ? '✓' : 'Ok'}</button>
+                    <button class="btn btn-success" id="ang_btn_${item.key}" style="min-width: 50px; padding: 6px 12px; font-size:0.8rem;" onclick="actualizarAnguilla('${item.key}')">${tienePremios ? '✓' : 'Ok'}</button>
                 `;
                 listado.appendChild(div);
             });
         };
 
         ref.on('value', cb);
-        listenerSorteosActual = { ref, cb };
+        listenerAnguillaActual = { ref, cb };
     }
 
-    function crearEstructuraBase() {
-        const fecha = document.getElementById('targetDate').value;
-        if (!fecha) { alert('Selecciona una fecha'); return; }
-        const nuevaData = CRONOGRAMA_HORAS.map(hora => ({
-            fecha, hora, noche: false, premios: [null, null, null]
-        }));
-        database.ref(`sorteos/${fecha}`).set(nuevaData, (err) => {
-            if (err) { alert('Error: ' + err.message); return; }
-            fetchSorteos();
-            mostrarFeedback('✓ Estructura creada');
-        });
-    }
+    function actualizarAnguilla(key) {
+        const p0 = document.getElementById(`ang_${key}_0`).value;
+        const p1 = document.getElementById(`ang_${key}_1`).value;
+        const p2 = document.getElementById(`ang_${key}_2`).value;
 
-    function actualizarSorteo(idx) {
-        const fecha = document.getElementById('targetDate').value;
-        const p0 = document.getElementById(`n_${idx}_0`).value;
-        const p1 = document.getElementById(`n_${idx}_1`).value;
-        const p2 = document.getElementById(`n_${idx}_2`).value;
-
-        const btn = document.getElementById(`btn_ok_${idx}`);
+        const btn = document.getElementById(`ang_btn_${key}`);
         btn.innerText = "⏳"; btn.disabled = true;
 
-        database.ref(`sorteos/${fecha}/${idx}/premios`).set([p0 || null, p1 || null, p2 || null], (err) => {
-            btn.innerText = "✓"; btn.disabled = false;
-            if (!err) {
-                setTimeout(() => { btn.innerText = "Ok"; }, 800);
-                mostrarFeedback('✓ Sorteo actualizado');
-                database.ref('stats/update').set({ timestamp: Date.now() });
-            } else {
-                alert("Error al guardar: " + err.message); btn.innerText = "Ok";
+        database.ref(`sorteos_enloteria/resultados/${key}/numeros`).set(
+            [p0 || null, p1 || null, p2 || null],
+            (err) => {
+                btn.innerText = "✓"; btn.disabled = false;
+                if (!err) {
+                    setTimeout(() => { btn.innerText = "Ok"; }, 800);
+                    mostrarFeedback('✓ Anguilla actualizada');
+                    database.ref('stats/update').set({ timestamp: Date.now() });
+                } else {
+                    alert("Error al guardar: " + err.message);
+                    btn.innerText = "Ok";
+                }
             }
-        });
+        );
     }
 
     function recargarMonitor() {
@@ -805,7 +805,7 @@
     }
 
     // ==========================================
-    // PESTAÑA 2: ANUNCIOS (CON CLOUDINARY CORREGIDO)
+    // PESTAÑA 2: ANUNCIOS
     // ==========================================
     function escucharAnuncios() {
         database.ref('anunciosList').on('value', snap => {
@@ -982,17 +982,21 @@
                 document.getElementById('fechaFin').value = data.fin || '';
                 if (inpMinimo) inpMinimo.value = data.montoMinimo || '';
                 
-                const isActive = data.activo === true;
-                if (swPromo) swPromo.checked = isActive;
+                const isActive = data.activo === true || data.activo === "true" || data.activo === 1;
+                const hacePoco = (Date.now() - promoUltimoClick) < 3000;
                 
-                if (txtPromo) {
+                if (swPromo && !promoSwitchBloqueado && !hacePoco) {
+                    swPromo.checked = isActive;
+                }
+                if (txtPromo && !promoSwitchBloqueado && !hacePoco) {
                     txtPromo.innerText = isActive ? "Botón ACTIVADO" : "Botón DESACTIVADO";
                     txtPromo.style.color = isActive ? "#39ff14" : "#e63946";
                 }
             } else {
-                if (swPromo) swPromo.checked = false;
+                const hacePoco = (Date.now() - promoUltimoClick) < 3000;
+                if (swPromo && !promoSwitchBloqueado && !hacePoco) swPromo.checked = false;
                 if (inpMinimo) inpMinimo.value = '';
-                if (txtPromo) {
+                if (txtPromo && !promoSwitchBloqueado && !hacePoco) {
                     txtPromo.innerText = "Botón DESACTIVADO";
                     txtPromo.style.color = "#e63946";
                 }
@@ -1009,21 +1013,46 @@
 
     function cambiarEstadoPromo(checkbox) {
         const activo = checkbox.checked;
+        promoUltimoClick = Date.now();
+        promoSwitchBloqueado = true;
+        console.log('🖱️ Click en switch. Nuevo valor:', activo);
+
         const txtPromo = document.getElementById('textoEstadoPromo');
-        
         if (txtPromo) {
             txtPromo.innerText = activo ? "Botón ACTIVADO" : "Botón DESACTIVADO";
             txtPromo.style.color = activo ? "#39ff14" : "#e63946";
         }
 
-        database.ref('promocion_navidad_2026/config/activo').set(activo)
-            .then(() => {
-                mostrarFeedback(activo ? '✓ Promo activada' : '✓ Promo desactivada');
-            })
-            .catch(err => {
-                alert("Error al guardar estado: " + err.message);
-                checkbox.checked = !activo;
-            });
+        database.ref('promocion_navidad_2026/config').once('value').then(snap => {
+            const cfg = snap.val() || {};
+            const nuevaConfig = {
+                inicio: cfg.inicio || '',
+                fin: cfg.fin || '',
+                montoMinimo: cfg.montoMinimo || 1,
+                activo: activo
+            };
+            console.log('💾 Guardando:', nuevaConfig);
+            return database.ref('promocion_navidad_2026/config').set(nuevaConfig);
+        })
+        .then(() => {
+            return database.ref('promocion_navidad_2026/config/activo').once('value');
+        })
+        .then(verify => {
+            console.log('🔍 En Firebase ahora:', verify.val(), '| tipo:', typeof verify.val());
+            mostrarFeedback(activo ? '✓ Promo activada' : '✓ Promo desactivada');
+        })
+        .catch(err => {
+            console.error('❌ Error:', err);
+            alert("Error al guardar: " + err.message);
+            checkbox.checked = !activo;
+            if (txtPromo) {
+                txtPromo.innerText = !activo ? "Botón ACTIVADO" : "Botón DESACTIVADO";
+                txtPromo.style.color = !activo ? "#39ff14" : "#e63946";
+            }
+        })
+        .finally(() => {
+            setTimeout(() => { promoSwitchBloqueado = false; }, 3000);
+        });
     }
 
     function guardarConfiguracionPromo() {
@@ -1034,11 +1063,18 @@
         if (!inicio || !fin) return alert("Selecciona ambas fechas.");
         if (inicio > fin) return alert("La fecha de inicio no puede ser mayor que la de fin.");
         
-        database.ref('promocion_navidad_2026/config').update({ 
-            inicio, 
-            fin,
-            montoMinimo: montoMin
-        }).then(() => mostrarFeedback('✓ Configuración guardada'));
+        database.ref('promocion_navidad_2026/config').once('value').then(snap => {
+            const cfg = snap.val() || {};
+            const nuevaConfig = {
+                activo: cfg.activo === true || cfg.activo === "true" || cfg.activo === 1,
+                inicio: inicio,
+                fin: fin,
+                montoMinimo: montoMin
+            };
+            return database.ref('promocion_navidad_2026/config').set(nuevaConfig);
+        })
+        .then(() => mostrarFeedback('✓ Configuración guardada'))
+        .catch(err => alert('Error: ' + err.message));
     }
 
     // ==========================================
@@ -1334,8 +1370,7 @@
     window.guardarTodosLosAnuncios = guardarTodosLosAnuncios;
     window.actualizarMiniaturaDinamica = actualizarMiniaturaDinamica;
     window.subirAnuncioCloudinary = subirAnuncioCloudinary;
-    window.crearEstructuraBase = crearEstructuraBase;
-    window.actualizarSorteo = actualizarSorteo;
+    window.actualizarAnguilla = actualizarAnguilla;
     window.fetchSorteos = fetchSorteos;
     window.cambiarDia = cambiarDia;
     window.forzarActualizarEstadisticas = forzarActualizarEstadisticas;
