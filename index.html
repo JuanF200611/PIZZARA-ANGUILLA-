@@ -428,6 +428,7 @@
     let SORTEOS = [];
     let ANUNCIOS = [];
     let modoNavidad = false;
+    let LOGOS_DINAMICOS = {};
 
     // ============================================================
     // LÓGICA DE ROTACIÓN
@@ -486,8 +487,27 @@
         return h * 60 + min;
     }
 
+    // Convierte "2026-09-06" -> "06 sep, 2026" (formato usado en la DB)
+    function fechaISOaFormatoDB(fechaISO) {
+        const meses = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+        const [y, m, d] = fechaISO.split('-');
+        return `${d} ${meses[parseInt(m, 10) - 1]}, ${y}`;
+    }
+
     function getLogoByNombre(nombre) {
         if (!nombre) return 'anguilla.png';
+        // Buscar en logos dinámicos (resolviendo alias @)
+        const raw = LOGOS_DINAMICOS[nombre];
+        if (raw) {
+            if (typeof raw === 'string' && raw.startsWith('@')) {
+                const base = raw.slice(1);
+                const baseVal = LOGOS_DINAMICOS[base];
+                if (baseVal && typeof baseVal === 'string' && !baseVal.startsWith('@')) return baseVal;
+            } else if (typeof raw === 'string') {
+                return raw;
+            }
+        }
+        // Fallback a logos locales
         const n = nombre.toLowerCase();
         if (n.includes('loteka')) return 'lotekalogo.png';
         if (n.includes('real')) return 'logoreal.png';
@@ -524,15 +544,45 @@
         if (t?.data) document.getElementById('marqueeText').innerText = t.data;
     }
 
-    function procesarSorteosData(dataHoy, dataAyer) {
+    // Procesa los datos crudos de sorteos_enloteria/resultados filtrando Anguillas
+    function procesarSorteosData(dataResultados, fechaHoyISO, fechaAyerISO) {
         const out = [];
         const rd = getAhoraRD();
         const horaAct = rd.hours * 60 + rd.minutes;
-        if (!dataHoy || dataHoy.length === 0) return out;
 
-        dataHoy.forEach((sHoy, index) => {
-            if (!sHoy) return;
-            const m = (sHoy.hora || '').match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+        if (!dataResultados) return out;
+
+        const fechaHoyDB = fechaISOaFormatoDB(fechaHoyISO);
+        const fechaAyerDB = fechaISOaFormatoDB(fechaAyerISO);
+
+        // Convertir objeto a array
+        const items = Object.keys(dataResultados).map(k => ({ key: k, ...dataResultados[k] }));
+
+        // Filtrar solo Anguillas (extranjera + nombre incluye "Anguilla")
+        const anguillas = items.filter(it => {
+            if (!it || typeof it !== 'object') return false;
+            const esExtranjera = String(it.categoria || '').toLowerCase() === 'extranjera';
+            const esAnguilla = String(it.nombre || '').toLowerCase().includes('anguilla');
+            return esExtranjera && esAnguilla;
+        });
+
+        // Agrupar por hora (para combinar hoy + ayer)
+        const porHora = {};
+        anguillas.forEach(it => {
+            const horaNorm = (it.hora || '').trim();
+            if (!porHora[horaNorm]) porHora[horaNorm] = { hoy: null, ayer: null };
+            if (String(it.fecha).trim() === fechaHoyDB) porHora[horaNorm].hoy = it;
+            else if (String(it.fecha).trim() === fechaAyerDB) porHora[horaNorm].ayer = it;
+        });
+
+        Object.keys(porHora).forEach(hora => {
+            const { hoy: sHoy, ayer: sAyer } = porHora[hora];
+
+            // Necesitamos al menos uno de los dos para mostrar la tarjeta
+            const base = sHoy || sAyer;
+            if (!base) return;
+
+            const m = hora.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
             let hSor = 0, mSor = 0;
             if (m) {
                 hSor = parseInt(m[1]); mSor = parseInt(m[2]);
@@ -540,34 +590,41 @@
                 if (ap === 'PM' && hSor !== 12) hSor += 12;
                 if (ap === 'AM' && hSor === 12) hSor = 0;
             }
-            const tieneHoy = sHoy.premios && sHoy.premios[0] !== "" && sHoy.premios[0] != null;
+
+            const numsHoy = sHoy?.numeros || {};
+            const tieneHoy = numsHoy[0] !== undefined && numsHoy[0] !== null && numsHoy[0] !== '';
+
             const minutosRestantes = (hSor * 60 + mSor) - horaAct;
             const yaPaso = minutosRestantes <= -5;
             const faltan20 = !tieneHoy && !yaPaso && minutosRestantes <= 20 && minutosRestantes > 0;
 
             const s = {
-                hour: (sHoy.hora || '').replace(/(AM|PM)/, ' $1').trim(),
-                key: index,
-                nombre: sHoy.nombre || sHoy.name || sHoy.loteria || '',
+                hour: hora.replace(/(AM|PM)/, ' $1').trim(),
+                key: hora,
+                nombre: base.nombre || '',
                 minutosRestantes
             };
+
             if (tieneHoy) {
                 s.day = 'hoy'; s.date = 'HOY';
-                s.nums = [sHoy.premios[0], sHoy.premios[1], sHoy.premios[2]];
+                s.nums = [numsHoy[0] || '', numsHoy[1] || '', numsHoy[2] || ''];
                 s.isWaiting = false; s.isProximo = false;
-            } else if (yaPaso) {
+            } else if (yaPaso && sHoy) {
+                // Ya pasó la hora y aún no hay resultado hoy
                 s.day = 'hoy'; s.date = 'HOY';
                 s.nums = null; s.isWaiting = true; s.isProximo = false;
             } else {
-                const sAyer = Array.isArray(dataAyer) ? dataAyer.find(a => a && a.hora === sHoy.hora) : null;
+                // Aún no llega la hora: mostramos el resultado de ayer
+                const numsAyer = sAyer?.numeros || {};
+                const tieneAyer = numsAyer[0] !== undefined && numsAyer[0] !== null && numsAyer[0] !== '';
                 s.day = 'ayer'; s.date = 'AYER';
-                s.nombre = sHoy.nombre || sAyer?.nombre || '';
-                s.nums = (sAyer?.premios?.[0] !== "" && sAyer?.premios?.[0] != null)
-                    ? [sAyer.premios[0], sAyer.premios[1], sAyer.premios[2]] : null;
+                s.nums = tieneAyer ? [numsAyer[0], numsAyer[1], numsAyer[2]] : null;
                 s.isWaiting = false; s.isProximo = faltan20;
             }
+
             out.push(s);
         });
+
         return out;
     }
 
@@ -603,22 +660,30 @@
             if (adIndex >= ANUNCIOS.length) adIndex = 0;
         });
 
+        // Logos dinámicos desde el admin
+        database.ref('web_kiko/logos').on('value', snap => {
+            LOGOS_DINAMICOS = snap.val() || {};
+            if (sistemaIniciado && !enTransmisionVivo) {
+                if (estado === 'grid') renderGrid();
+                if (estado === 'featured') renderFeatured();
+            }
+        });
+
+        // ✅ NUEVA RUTA: sorteos_enloteria/resultados
         const hoyStr = getFormatDateRD(0);
         const ayerStr = getFormatDateRD(1);
-        database.ref(`sorteos/${hoyStr}`).on('value', snapHoy => {
-            const dataHoy = snapHoy.val() || [];
-            database.ref(`sorteos/${ayerStr}`).once('value', snapAyer => {
-                const dataAyer = snapAyer.val() || [];
-                const proc = procesarSorteosData(dataHoy, dataAyer);
-                if (proc.length > 0) {
-                    SORTEOS = ordenarSorteosCronologicamente(proc);
-                    guardarEnCache('sorteos', SORTEOS);
-                }
-                if (sistemaIniciado && !enTransmisionVivo) {
-                    if (estado === 'grid') renderGrid();
-                    if (estado === 'featured') renderFeatured();
-                }
-            });
+
+        database.ref('sorteos_enloteria/resultados').on('value', snap => {
+            const data = snap.val() || {};
+            const proc = procesarSorteosData(data, hoyStr, ayerStr);
+            if (proc.length > 0) {
+                SORTEOS = ordenarSorteosCronologicamente(proc);
+                guardarEnCache('sorteos', SORTEOS);
+            }
+            if (sistemaIniciado && !enTransmisionVivo) {
+                if (estado === 'grid') renderGrid();
+                if (estado === 'featured') renderFeatured();
+            }
         });
 
         database.ref('transmisionVivo').on('value', snap => {
@@ -666,7 +731,7 @@
     }
 
     // ============================================================
-    // LÓGICA DEL CICLO DE ROTACIÓN (CORREGIDA)
+    // LÓGICA DEL CICLO DE ROTACIÓN
     // Grid -> Featured -> Anuncio 1 -> Branding -> Grid -> Featured -> Anuncio 2 -> Branding...
     // ============================================================
     function pasoRotacion() {
@@ -675,33 +740,26 @@
         let nextTime = tiempoRotacionGlobal;
         const totalPages = Math.max(1, Math.ceil(SORTEOS.length / 8));
 
-        // Si estamos en el grid, avanzar a la siguiente página (si hay)
         if (estado === 'grid' && gridPage < totalPages - 1) {
             gridPage++;
             mostrarVista('grid'); 
             renderGrid();
         } 
         else {
-            // Flujo lineal de estados
             if (estado === 'grid') {
-                // Terminamos las páginas del grid, pasamos a destacado
                 estado = 'featured';
                 mostrarVista('featured'); 
                 renderFeatured();
             } 
             else if (estado === 'featured') {
-                // Después de destacado, mostramos el anuncio actual
                 estado = 'ad';
                 nextTime = renderAnuncioActual();
             } 
             else if (estado === 'ad') {
-                // Después del anuncio, branding
                 estado = 'branding';
                 mostrarVista('branding');
             }
             else if (estado === 'branding') {
-                // ✅ AQUÍ ESTABA EL BUG: al terminar branding, reiniciamos gridPage a 0
-                // para que el ciclo vuelva a empezar desde la primera página del grid
                 estado = 'grid';
                 gridPage = 0;
                 mostrarVista('grid'); 
@@ -721,7 +779,6 @@
             return 5000;
         }
 
-        // Si el índice se pasa, reiniciamos al primer anuncio
         if (adIndex >= activos.length) {
             adIndex = 0;
         }
@@ -730,7 +787,6 @@
         mostrarVista('ads');
         const box = document.getElementById('adDisplay');
         
-        // Limpiar el contenedor
         box.innerHTML = '';
         
         const url = ad.url.trim();
@@ -750,7 +806,6 @@
             };
         }
 
-        // Avanzamos el índice para el próximo ciclo
         adIndex++;
         
         const t = (parseInt(ad.tiempo) || 15) * 1000;
